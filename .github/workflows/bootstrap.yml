@@ -1,0 +1,52 @@
+name: bootstrap
+
+# Manual only. Generates the Flutter platform folders on a runner, because the
+# authoring sandbox has no Flutter SDK (decision D-004). It refuses to run if
+# app/ already exists, so it can never overwrite real work.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Refuse to overwrite an existing app
+        run: |
+          if [ -d app ]; then
+            echo "app/ already exists; bootstrap will not touch it." >&2
+            exit 1
+          fi
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Print toolchain versions
+        run: |
+          flutter --version
+          dart --version
+
+      - name: Generate the project
+        run: flutter create --org com.zdmgold --project-name ruach --platforms android,ios app
+
+      - name: Remove the generated sample files
+        run: |
+          rm -f app/test/widget_test.dart
+          rm -f app/README.md
+
+      - name: Commit the scaffold
+        run: |
+          git config user.name "zdmgold"
+          git config user.email "zdmgold@users.noreply.github.com"
+          git add app
+          git commit -m "p1b: generated Flutter platform scaffold (bootstrap workflow)"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

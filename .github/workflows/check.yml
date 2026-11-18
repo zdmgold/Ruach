@@ -1,0 +1,94 @@
+name: check
+
+# Light quality gate. Runs on every push to every branch.
+# It never builds an app and never signs anything.
+on:
+  push:
+    branches: ['**']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Detect the app
+        id: app
+        run: |
+          if [ -f app/pubspec.yaml ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "No app/pubspec.yaml yet; Flutter steps are skipped (decision D-003)."
+          fi
+
+      - name: Set up Flutter
+        if: steps.app.outputs.present == 'true'
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Print toolchain versions
+        if: steps.app.outputs.present == 'true'
+        run: |
+          flutter --version
+          dart --version
+
+      - name: Check repository files
+        run: |
+          test -f README.md
+          test -f docs/decisions.md
+          test -f docs/scripture_sources.md
+          test -f .gitignore
+          echo "Repository files present."
+
+      - name: Check for committed secrets
+        run: |
+          set -e
+          if git ls-files | grep -E '\.(jks|keystore|p12|pem|mobileprovision)$'; then
+            echo "A signing or key file is committed." >&2
+            exit 1
+          fi
+          if git grep -nE 'ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----' -- . ':!.github/workflows/check.yml'; then
+            echo "A token or private key appears in the repository." >&2
+            exit 1
+          fi
+          echo "No secrets found."
+
+      - name: Install dependencies
+        if: steps.app.outputs.present == 'true'
+        working-directory: app
+        run: flutter pub get
+
+      - name: Check for literal strings in widgets
+        if: steps.app.outputs.present == 'true'
+        run: dart tools/check_literals.dart
+
+      - name: Check ARB key parity
+        if: steps.app.outputs.present == 'true'
+        run: dart tools/check_arb.dart
+
+      - name: Analyze
+        if: steps.app.outputs.present == 'true'
+        working-directory: app
+        run: flutter analyze
+
+      - name: Test with coverage
+        if: steps.app.outputs.present == 'true'
+        working-directory: app
+        run: |
+          if [ -d test ]; then
+            flutter test --coverage
+          else
+            echo "No test directory yet."
+          fi
