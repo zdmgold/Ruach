@@ -66,6 +66,9 @@ jobs:
           fi
           echo "No secrets found."
 
+      - name: Check the website
+        run: python3 tools/check_website.py
+
       - name: Install dependencies
         if: steps.app.outputs.present == 'true'
         working-directory: app
