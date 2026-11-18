@@ -1,0 +1,54 @@
+# Flutter / Dart
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+coverage/
+*.iml
+.flutter-plugins
+.flutter-plugins-dependencies
+pubspec.lock.bak
+
+# Android
+**/android/.gradle/
+**/android/local.properties
+**/android/gradle-wrapper.jar
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+**/android/key.properties
+**/android/captures/
+**/android/.cxx/
+*.jks
+*.keystore
+*.p12
+
+# iOS
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Flutter/ephemeral/
+**/ios/Runner.xcworkspace/xcuserdata/
+**/xcuserdata/
+*.ipa
+*.mobileprovision
+
+# Secrets and local files
+.env
+.env.*
+*.pem
+secrets/
+*.secret
+
+# Editors and OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Tooling output
+tools/**/__pycache__/
+tools/scripture/cache/
+tools/scripture/out/
