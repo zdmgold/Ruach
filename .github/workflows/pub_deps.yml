@@ -1,0 +1,93 @@
+name: pub_deps
+
+# Manual only. The authoring sandbox cannot reach pub.dev or run Flutter, so
+# dependencies are added here, on a runner (decisions D-004 and D-012).
+#
+# Inputs:
+#   add     space-separated package names to add (may be empty to only refresh the lock)
+#   inspect optional package name whose version and library files are printed to the log,
+#           so the API can be read before code is written against it
+#
+# The workflow commits app/pubspec.yaml and app/pubspec.lock to the branch it
+# was started from. Run it from ci-analyser.
+on:
+  workflow_dispatch:
+    inputs:
+      add:
+        description: 'Packages to add, space separated (blank = only refresh the lock)'
+        required: false
+        default: ''
+      inspect:
+        description: 'Package to print version and library source for (optional)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  deps:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.50.0'
+          channel: stable
+          cache: true
+
+      - name: Add packages
+        working-directory: app
+        env:
+          PACKAGES: ${{ inputs.add }}
+        run: |
+          if [ -n "$PACKAGES" ]; then
+            flutter pub add $PACKAGES
+          fi
+          flutter pub get
+
+      - name: Show direct dependencies
+        working-directory: app
+        run: |
+          grep -n -A40 '^dependencies:' pubspec.yaml | head -60
+          echo "---- resolved versions of direct dependencies"
+          flutter pub deps --style=compact --no-dev | head -40
+
+      - name: Inspect a package
+        if: inputs.inspect != ''
+        working-directory: app
+        env:
+          PKG: ${{ inputs.inspect }}
+        run: |
+          dir="$(flutter pub deps --json | python3 -c "import json,sys; print([p for p in json.load(sys.stdin)['packages'] if p['name']==sys.argv[1]][0]['version'])" "$PKG")"
+          echo "version: $dir"
+          root="$(find "$HOME/.pub-cache/hosted" -maxdepth 2 -type d -name "${PKG}-${dir}" | head -1)"
+          echo "package dir: $root"
+          echo "---- pubspec"
+          sed -n '1,60p' "$root/pubspec.yaml"
+          echo "---- library tree"
+          (cd "$root" && find lib -type f | sort | head -60)
+          echo "---- imports of material or cupertino"
+          grep -rnE "package:flutter/(material|cupertino)\.dart" "$root/lib" | head -10 || true
+          echo "---- main library"
+          sed -n '1,140p' "$root/lib/$PKG.dart" || true
+          echo "---- license"
+          ls "$root" | grep -i licen || true
+
+      - name: Commit dependency changes
+        env:
+          ADD: ${{ inputs.add }}
+        run: |
+          git config user.name "zdmgold"
+          git config user.email "zdmgold@users.noreply.github.com"
+          git add app/pubspec.yaml app/pubspec.lock
+          if git diff --cached --quiet; then
+            echo "Nothing to commit."
+          else
+            git commit -m "deps: ${ADD:-refresh lockfile}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
