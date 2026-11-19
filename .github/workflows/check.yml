@@ -82,6 +82,10 @@ jobs:
         if: steps.app.outputs.present == 'true'
         run: dart tools/check_arb.dart
 
+      - name: Check layering
+        if: steps.app.outputs.present == 'true'
+        run: dart tools/check_layers.dart
+
       - name: Analyze
         if: steps.app.outputs.present == 'true'
         working-directory: app
