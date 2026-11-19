@@ -37,8 +37,8 @@ All rows marked Proposed in blueprint section 1 were confirmed by the owner on 2
 | p1c | Done | Website: landing, privacy, support, style, robots, link checker; check.yml green on ci-analyser |
 | p1d | Done | Tokens, typography, icon wrapper and alias file, theme, formatters, error handler, Barlow font, notices, contrast test; check.yml green on ci-analyser |
 | p1e | Done | Core race models (Vec2, Track, Vehicle, DriveInput, UpgradeLevels, Rival, RaceConfig, RaceResult), tests, layering check |
-| p1f | Next | Core support models: progress, verse, settings, app error, ad state |
-| p2a | Not started | Scripture tools, curated verses for 11 languages, notices |
+| p1f | Done | Core support models: progress, verse, settings, app error, ad state, tolerant JSON readers |
+| p2a | Next | Scripture tools, curated verses for 11 languages, notices |
 | p2b to p8c | Not started | See blueprint section 10 |
 
 ## Open items
@@ -139,3 +139,10 @@ The first p1d build failed because `phosphor_flutter` 2.1.0 does not compile on 
 
 ### D-022: Core models are plain final classes with asserts, no Flutter annotations
 Core is pure Dart (no `package:meta`/`@immutable`), so models are `final class` with `const` constructors where all fields are const-friendly. Invariants are `assert`s (debug and test only); data from outside (saved progress, sensors) is forced into range by `clamped`/`fromMap` factories. `Track.validate()` returns a list of problems and the catalog test (p2g) requires it to be empty. `tools/check_layers.dart` runs in check.yml and fails if anything under `app/lib/core` imports Flutter, Flame, `dart:ui`, `dart:io` or a higher layer.
+
+### D-023: Saved data is read tolerantly; progress and settings carry their own JSON
+`Progress` and `Settings` have `toJson`/`fromJson` in the model files, built on `core/models/json_read.dart`. Reading never throws: a missing key, a wrong type or an out-of-range number becomes the default or is clamped, and unknown keys are ignored. Writing sorts keys and set members so the same data always encodes to the same text (needed for tests and for backup comparison). `progress_codec.dart` (p2d) adds the version check, migrations, atomic write and backup recovery on top; a schema newer than the app is kept as read and never overwritten there.
+- Stars are best-per-track (0 to 3); a track is cleared at one star or more. Gifts are stored as earned and spent totals, and the balance is their difference.
+- Daily Run dates are `yyyy-MM-dd` strings supplied by the caller; core never reads the clock.
+- Ghosts are base64 text in progress; reader bookmarks and highlights have fields now so p8 needs no schema change.
+- `AdState.canRequestAds` is only ever set from UMP's answer. Banners and interstitials need it and no Remove Ads purchase; rewarded needs only it.
