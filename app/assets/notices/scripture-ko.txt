@@ -1,0 +1,7 @@
+Korean Revised Version 1961 (Korean)
+
+Source: seven1m/open-bibles, file kor-korean.osis.xml at commit 8b330654ade69f7c96268c761da18dc83a1f49b7
+SHA-256 of the file: fa55e0dcd7ee1dd3cced563b1e3108c01c6bd774f095a3e773996c4b0a2e7f24
+
+Licence: the source file states "Korean Revised Version © Korean Bible Society 1961. Public Domain: the Korean Bible Society records that economic copyright expired on December 31, 2011."
+Credit: Korean Bible Society, Korean Revised Version (1961).

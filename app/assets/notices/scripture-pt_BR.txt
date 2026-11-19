@@ -1,0 +1,9 @@
+Bíblia Livre (Portuguese, Brazil)
+
+Source: scrollmapper/bible_databases, file formats/json/PorBLivre.json at commit 59b18c5af5845728c275d5b7178ad0d024172b1f
+SHA-256 of the file: 21b726be1a30abf1bb41dbf06c4bfceda258d5d5f667778713c1803d2dd16f7a
+
+Licence: Creative Commons Attribution 3.0 Brazil, as stated by the source repository (scrollmapper/bible_databases). Earlier project notes said 4.0; the source says 3.0, so 3.0 is recorded here.
+Licence link: https://creativecommons.org/licenses/by/3.0/br/
+Credit: Bíblia Livre (BLIVRE), Copyright 2018 Diego Santos, Mario Sérgio e Marco Teles.
+Changes: none to the wording; the text is cut into single verses for verse cards.

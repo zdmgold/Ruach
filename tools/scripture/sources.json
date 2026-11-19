@@ -1,0 +1,122 @@
+[
+  {
+    "language": "en",
+    "name": "Berean Standard Bible",
+    "format": "usfx",
+    "file": "ob_eng-bsb.usfx.xml",
+    "repo": "seven1m/open-bibles",
+    "commit": "8b330654ade69f7c96268c761da18dc83a1f49b7",
+    "path": "eng-bsb.usfx.xml",
+    "sha256": "7bf75004ecbc8901f179bd36078cf48fa4eb34cb2894791342ac840bcbf586fb"
+  },
+  {
+    "language": "es",
+    "name": "Reina-Valera 1909",
+    "format": "usfx",
+    "file": "ob_spa-rv1909.usfx.xml",
+    "repo": "seven1m/open-bibles",
+    "commit": "8b330654ade69f7c96268c761da18dc83a1f49b7",
+    "path": "spa-rv1909.usfx.xml",
+    "sha256": "b59592def67de45f223da447ea376627e586c6568531171019084117df503151"
+  },
+  {
+    "language": "fr",
+    "name": "Louis Segond 1910",
+    "format": "beblia",
+    "file": "bb_FrenchBible.xml",
+    "repo": "Beblia/Holy-Bible-XML-Format",
+    "commit": "61622da8959f66266a977e50effd9534e9093384",
+    "path": "FrenchBible.xml",
+    "sha256": "ce46424902e4a35dfaf0afb83a4d91a3baa5ae16ac128f34af17e15d32c5786c"
+  },
+  {
+    "language": "de",
+    "name": "Luther 1912",
+    "format": "osis",
+    "file": "ob_deu-luther1912.osis.xml",
+    "repo": "seven1m/open-bibles",
+    "commit": "8b330654ade69f7c96268c761da18dc83a1f49b7",
+    "path": "deu-luther1912.osis.xml",
+    "sha256": "5df33f4bf3e086b6490b467cf8ddbf4cf95126b2826efaddf17b223ddd07f92b"
+  },
+  {
+    "language": "pt_BR",
+    "name": "Bíblia Livre",
+    "format": "scrollmapper_positional",
+    "file": "sm_PorBLivre.json",
+    "repo": "scrollmapper/bible_databases",
+    "commit": "59b18c5af5845728c275d5b7178ad0d024172b1f",
+    "path": "formats/json/PorBLivre.json",
+    "sha256": "21b726be1a30abf1bb41dbf06c4bfceda258d5d5f667778713c1803d2dd16f7a"
+  },
+  {
+    "language": "ar",
+    "name": "Smith and Van Dyck 1865",
+    "format": "beblia",
+    "file": "bb_ArabicSVDBible.xml",
+    "repo": "Beblia/Holy-Bible-XML-Format",
+    "commit": "61622da8959f66266a977e50effd9534e9093384",
+    "path": "ArabicSVDBible.xml",
+    "sha256": "bb7701321cdb8b81cb4f23bd70d9fb287502d795921d9604114bb5460fe32f73"
+  },
+  {
+    "language": "hi",
+    "name": "Indian Revised Version 2019",
+    "format": "beblia",
+    "file": "bb_HindiIRVBible.xml",
+    "repo": "Beblia/Holy-Bible-XML-Format",
+    "commit": "61622da8959f66266a977e50effd9534e9093384",
+    "path": "HindiIRVBible.xml",
+    "sha256": "a21d22e84fe97f01003723d9b07fc04fdd7ca93b2ca3bb8171eae77efdac2dc8"
+  },
+  {
+    "language": "ja",
+    "name": "Kougo-yaku 1954/55",
+    "format": "osis",
+    "file": "ob_jpn-kougo.osis.xml",
+    "repo": "seven1m/open-bibles",
+    "commit": "8b330654ade69f7c96268c761da18dc83a1f49b7",
+    "path": "jpn-kougo.osis.xml",
+    "sha256": "6930015f5d0faf49f3038a7e2f482aeb45939510b6acb8a8fb1945640c1d91b6"
+  },
+  {
+    "language": "ko",
+    "name": "Korean Revised Version 1961",
+    "format": "osis",
+    "file": "ob_kor-korean.osis.xml",
+    "repo": "seven1m/open-bibles",
+    "commit": "8b330654ade69f7c96268c761da18dc83a1f49b7",
+    "path": "kor-korean.osis.xml",
+    "sha256": "fa55e0dcd7ee1dd3cced563b1e3108c01c6bd774f095a3e773996c4b0a2e7f24"
+  },
+  {
+    "language": "zh_Hans",
+    "name": "Chinese Union Version",
+    "format": "usfx",
+    "file": "ob_chi-cuv-simp.usfx.xml",
+    "repo": "seven1m/open-bibles",
+    "commit": "8b330654ade69f7c96268c761da18dc83a1f49b7",
+    "path": "chi-cuv-simp.usfx.xml",
+    "sha256": "bea9f6e4fd35b70a67e3978ce8b9dc0ad853078e67472653cf1b34f357ae3abf"
+  },
+  {
+    "language": "he",
+    "name": "Westminster Leningrad Codex (Old Testament)",
+    "format": "scrollmapper",
+    "file": "sm_WLC.json",
+    "repo": "scrollmapper/bible_databases",
+    "commit": "59b18c5af5845728c275d5b7178ad0d024172b1f",
+    "path": "formats/json/WLC.json",
+    "sha256": "9e126b91beee6feb87378b7bb84092093c2f76752cf0f043f3c81b611a3473fa"
+  },
+  {
+    "language": "he",
+    "name": "Delitzsch Hebrew New Testament 1885",
+    "format": "beblia",
+    "file": "bb_Hebrew1885Bible.xml",
+    "repo": "Beblia/Holy-Bible-XML-Format",
+    "commit": "61622da8959f66266a977e50effd9534e9093384",
+    "path": "Hebrew1885Bible.xml",
+    "sha256": "3c3011a438eae86627dac6996abf76a1c45ddb4edc3743031fa9fddc8b3fd0ff"
+  }
+]

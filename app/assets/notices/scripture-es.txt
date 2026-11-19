@@ -1,0 +1,7 @@
+Reina-Valera 1909 (Spanish)
+
+Source: seven1m/open-bibles, file spa-rv1909.usfx.xml at commit 8b330654ade69f7c96268c761da18dc83a1f49b7
+SHA-256 of the file: b59592def67de45f223da447ea376627e586c6568531171019084117df503151
+
+Licence: public domain, as stated by the source repository (seven1m/open-bibles).
+Credit: Reina-Valera 1909.

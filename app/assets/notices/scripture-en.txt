@@ -1,0 +1,7 @@
+Berean Standard Bible (English)
+
+Source: seven1m/open-bibles, file eng-bsb.usfx.xml at commit 8b330654ade69f7c96268c761da18dc83a1f49b7
+SHA-256 of the file: 7bf75004ecbc8901f179bd36078cf48fa4eb34cb2894791342ac840bcbf586fb
+
+Licence: public domain, as stated by the source repository (seven1m/open-bibles).
+Credit: Berean Standard Bible (BSB), Berean Bible Translation Committee, with Bible Hub and OpenBible.com. The text in this app is taken from a mirror file titled "Berean Study Bible", so it may differ in places from the current official edition.

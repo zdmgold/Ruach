@@ -1,0 +1,10 @@
+Indian Revised Version 2019 (Hindi)
+
+Source: Beblia/Holy-Bible-XML-Format, file HindiIRVBible.xml at commit 61622da8959f66266a977e50effd9534e9093384
+SHA-256 of the file: a21d22e84fe97f01003723d9b07fc04fdd7ca93b2ca3bb8171eae77efdac2dc8
+
+Copyright: the source file states "copyright © 2017, 2018 Bridge Connectivity Solutions".
+Licence: Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0), as recorded in the project plan from the publisher's terms. The source file itself carries no licence line, so this must be re-confirmed against the publisher's own page before release.
+Licence link: https://creativecommons.org/licenses/by-sa/4.0/
+Credit: Indian Revised Version (IRV) Hindi, 2019, Bridge Connectivity Solutions.
+Changes: footnote markers (#) were removed and the text is cut into single verses. Hindi verse cards and the Hindi pack are shared under the same CC BY-SA 4.0 terms.

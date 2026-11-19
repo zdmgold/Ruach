@@ -1,0 +1,8 @@
+Kougo-yaku 1954/55 (Japanese)
+
+Source: seven1m/open-bibles, file jpn-kougo.osis.xml at commit 8b330654ade69f7c96268c761da18dc83a1f49b7
+SHA-256 of the file: 6930015f5d0faf49f3038a7e2f482aeb45939510b6acb8a8fb1945640c1d91b6
+
+Licence: marked public domain by the source repository (seven1m/open-bibles). This has not been independently confirmed; the source will be swapped if the status is doubtful.
+Credit: Japanese Kougo-yaku (Colloquial) Bible, 1954/55.
+Changes: furigana annotations were dropped.

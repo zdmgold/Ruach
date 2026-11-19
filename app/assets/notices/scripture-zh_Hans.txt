@@ -1,0 +1,7 @@
+Chinese Union Version, Simplified (Chinese)
+
+Source: seven1m/open-bibles, file chi-cuv-simp.usfx.xml at commit 8b330654ade69f7c96268c761da18dc83a1f49b7
+SHA-256 of the file: bea9f6e4fd35b70a67e3978ce8b9dc0ad853078e67472653cf1b34f357ae3abf
+
+Licence: public domain, as stated by the source repository (seven1m/open-bibles).
+Credit: Chinese Union Version (CUV).

@@ -38,7 +38,7 @@ All rows marked Proposed in blueprint section 1 were confirmed by the owner on 2
 | p1d | Done | Tokens, typography, icon wrapper and alias file, theme, formatters, error handler, Barlow font, notices, contrast test; check.yml green on ci-analyser |
 | p1e | Done | Core race models (Vec2, Track, Vehicle, DriveInput, UpgradeLevels, Rival, RaceConfig, RaceResult), tests, layering check |
 | p1f | Done | Core support models: progress, verse, settings, app error, ad state, tolerant JSON readers |
-| p2a | Next | Scripture tools, curated verses for 11 languages, notices |
+| p2a | In progress | Scripture tools, curated verses for 11 languages, notices |
 | p2b to p8c | Not started | See blueprint section 10 |
 
 ## Open items
@@ -146,3 +146,15 @@ Core is pure Dart (no `package:meta`/`@immutable`), so models are `final class` 
 - Daily Run dates are `yyyy-MM-dd` strings supplied by the caller; core never reads the clock.
 - Ghosts are base64 text in progress; reader bookmarks and highlights have fields now so p8 needs no schema change.
 - `AdState.canRequestAds` is only ever set from UMP's answer. Banners and interstitials need it and no Remove Ads purchase; rewarded needs only it.
+
+### D-024: Scripture sources, and where they differ from the blueprint
+Eleven translations are pinned in `tools/scripture/sources.json` (repository, commit, file, SHA-256); details in `docs/scripture_sources.md`. Differences from the blueprint:
+- **Portuguese licence is CC BY 3.0 Brazil**, as the scrollmapper source states, not 4.0. The notice records 3.0 with the attribution line from the blueprint.
+- **Hebrew Old Testament** comes from scrollmapper's WLC file. The open-bibles WLC file strips spaces between words and marks morphemes with `/`, so it was not used.
+- **Hindi** (Beblia) has no licence line in its file; CC BY-SA 4.0 is kept from the plan and flagged to re-confirm. It lacks 1 Kings 18 and 46 verses in total (gap logged; p8a must resolve it).
+- **French** has no doubled apostrophes in the pinned file; the correction exists but changes nothing.
+- The English file is titled "Berean Study Bible" in the mirror; the notice says so.
+- Scripture verification runs in check.yml on every push (fetch with cache, checksum, byte-for-byte compare of the bundles).
+
+### D-025: Curated verse selection rules
+332 verses (quotas from blueprint section 5, plus 6 for the upgrades) are chosen from `candidates.json` in priority order. A verse is only eligible if it has text in all 11 languages and its chapter has the same verse count in every language (one reviewed exception: Acts 28:15). Verses are single verses; verses that start mid-sentence in English were replaced by complete ones. Bundles are `app/assets/verses/<language>.json.gz` (`{schema, language, source, verses:[{ref, moments, text}]}`) written with a fixed gzip timestamp so rebuilding gives identical bytes. A verse can carry several moments but none is currently reused. Rewarded-ad, wording and spiritual-advantage rules still apply to the verse tone: gratitude on wins, steadiness on podiums, gentle comfort after a poor finish.

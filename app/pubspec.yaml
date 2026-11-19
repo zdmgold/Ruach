@@ -51,3 +51,4 @@ flutter:
   # Licence notices shown on the Licenses screen.
   assets:
     - assets/notices/
+    - assets/verses/

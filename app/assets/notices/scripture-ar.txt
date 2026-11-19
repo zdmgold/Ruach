@@ -1,0 +1,7 @@
+Smith and Van Dyck 1865 (Arabic)
+
+Source: Beblia/Holy-Bible-XML-Format, file ArabicSVDBible.xml at commit 61622da8959f66266a977e50effd9534e9093384
+SHA-256 of the file: bb7701321cdb8b81cb4f23bd70d9fb287502d795921d9604114bb5460fe32f73
+
+Licence: marked "Public Domain" in the source file (Beblia/Holy-Bible-XML-Format).
+Credit: Arabic Bible, Smith and Van Dyck, 1865.

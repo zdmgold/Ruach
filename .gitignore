@@ -52,3 +52,4 @@ Thumbs.db
 tools/**/__pycache__/
 tools/scripture/cache/
 tools/scripture/out/
+.scripture_cache/

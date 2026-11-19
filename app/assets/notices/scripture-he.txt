@@ -1,0 +1,14 @@
+Hebrew: Westminster Leningrad Codex (Old Testament) and Delitzsch Hebrew New Testament 1885
+
+Old Testament
+Source: scrollmapper/bible_databases, file formats/json/WLC.json at commit 59b18c5af5845728c275d5b7178ad0d024172b1f
+SHA-256 of the file: 9e126b91beee6feb87378b7bb84092093c2f76752cf0f043f3c81b611a3473fa
+Licence: the Westminster Leningrad Codex text may be viewed or copied without restriction; citation of the version is asked for (tanach.us/License.html).
+Credit: The Westminster Leningrad Codex, version 26.0 as cited by the open-bibles project; this copy comes from the scrollmapper mirror, whose own version number is not stated, so the exact version is to be confirmed.
+Note: the Old Testament text is pointed and has cantillation marks; the New Testament text is unpointed.
+
+New Testament
+Source: Beblia/Holy-Bible-XML-Format, file Hebrew1885Bible.xml at commit 61622da8959f66266a977e50effd9534e9093384
+SHA-256 of the file: 3c3011a438eae86627dac6996abf76a1c45ddb4edc3743031fa9fddc8b3fd0ff
+Licence: marked "Public Domain" in the source file (Beblia/Holy-Bible-XML-Format).
+Credit: Delitzsch Hebrew New Testament, 1885.

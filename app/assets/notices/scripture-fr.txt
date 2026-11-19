@@ -1,0 +1,8 @@
+Louis Segond 1910 (French)
+
+Source: Beblia/Holy-Bible-XML-Format, file FrenchBible.xml at commit 61622da8959f66266a977e50effd9534e9093384
+SHA-256 of the file: ce46424902e4a35dfaf0afb83a4d91a3baa5ae16ac128f34af17e15d32c5786c
+
+Licence: marked "Public Domain" in the source file (Beblia/Holy-Bible-XML-Format).
+Credit: La Sainte Bible par Louis Segond, 1910.
+Note: the origin of this mirror has not been verified. The text should be compared with a second source before release.
