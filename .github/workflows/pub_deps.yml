@@ -77,6 +77,17 @@ jobs:
           sed -n '1,140p' "$root/lib/$PKG.dart" || true
           echo "---- license"
           ls "$root" | grep -i licen || true
+          echo "---- source files (first 60 lines each)"
+          for f in "$root"/lib/src/*.dart; do echo "=== $f"; sed -n '1,60p' "$f"; done
+          echo "---- SDK: does flutter/material.dart exist in this Flutter?"
+          ls "$FLUTTER_ROOT/packages/flutter/lib" | head -30
+          if [ -f "$FLUTTER_ROOT/packages/flutter/lib/material.dart" ]; then
+            echo "material.dart present:"; sed -n '1,40p' "$FLUTTER_ROOT/packages/flutter/lib/material.dart"
+          else
+            echo "material.dart NOT present in the SDK"
+          fi
+          echo "---- license text"
+          sed -n '1,12p' "$root/LICENSE"
 
       - name: Commit dependency changes
         env:
