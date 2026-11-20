@@ -45,8 +45,15 @@ Rival _rival(String id, double skill) => Rival(
       consistency: 0.5,
     );
 
-double _finishSeconds(RaceSimulation sim, String id) =>
-    sim.cars.firstWhere((RaceCar c) => c.id == id).tracker.finishSeconds ?? double.infinity;
+/// Steps the race (player on the line follower) until [ticks] racing steps.
+void _runFor(RaceSimulation sim, int ticks) {
+  while (sim.phase != RacePhase.finished && sim.raceTick < ticks) {
+    sim.step(follow(sim, sim.player));
+  }
+}
+
+double _progress(RaceSimulation sim, String id) =>
+    sim.cars.firstWhere((RaceCar c) => c.id == id).progress;
 
 void main() {
   test('a full field of rivals finishes the race', () {
@@ -88,28 +95,28 @@ void main() {
     expect(hashAfter(7), isNot(hashAfter(8)));
   });
 
-  test('a more skilled rival is faster than a weaker one', () {
-    int skilledFaster = 0;
+  test('a more skilled rival covers more ground than a weaker one', () {
+    int skilledAhead = 0;
     for (int seed = 1; seed <= 5; seed++) {
       final RaceSimulation sim = _sim(
         _config(seed: seed, rivals: <Rival>[_rival('weak', 0.1), _rival('strong', 0.95)]),
       );
-      _runToEnd(sim);
-      if (_finishSeconds(sim, 'strong') < _finishSeconds(sim, 'weak')) skilledFaster++;
+      _runFor(sim, 3000);
+      if (_progress(sim, 'strong') > _progress(sim, 'weak')) skilledAhead++;
     }
-    expect(skilledFaster, greaterThanOrEqualTo(4));
+    expect(skilledAhead, greaterThanOrEqualTo(4));
   });
 
-  test('harder difficulty is faster than easy for the same rival', () {
-    double lap(Difficulty d) {
+  test('harder difficulty covers more ground than easy for the same rival', () {
+    double covered(Difficulty d) {
       final RaceSimulation sim = _sim(
-        _config(laps: 1, difficulty: d, rivals: <Rival>[_rival('solo', 0.6)]),
+        _config(difficulty: d, rivals: <Rival>[_rival('solo', 0.6)]),
       );
-      _runToEnd(sim);
-      return _finishSeconds(sim, 'solo');
+      _runFor(sim, 3000);
+      return _progress(sim, 'solo');
     }
 
-    expect(lap(Difficulty.hard), lessThan(lap(Difficulty.easy)));
+    expect(covered(Difficulty.hard), greaterThan(covered(Difficulty.easy)));
   });
 
   test('rubber-banding is capped and eases the leader', () {

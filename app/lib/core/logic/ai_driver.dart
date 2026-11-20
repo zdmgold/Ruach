@@ -136,7 +136,7 @@ final class AiDriver implements CarController {
     // Spend the Ruach meter on a clear straight.
     final bool boost = car.meter.canSpend &&
         !car.boosting &&
-        turn < 0.1 &&
+        turn < 0.2 &&
         _rng.nextDouble() < 0.02 * (0.5 + rival.skill);
 
     return DriveInput(steer: steer, throttle: throttle, brake: brake, boost: boost);
