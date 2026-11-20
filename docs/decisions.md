@@ -39,7 +39,8 @@ All rows marked Proposed in blueprint section 1 were confirmed by the owner on 2
 | p1e | Done | Core race models (Vec2, Track, Vehicle, DriveInput, UpgradeLevels, Rival, RaceConfig, RaceResult), tests, layering check |
 | p1f | Done | Core support models: progress, verse, settings, app error, ad state, tolerant JSON readers |
 | p2a | Done | Scripture tools, curated verses for 11 languages, notices |
-| p2b to p8c | Not started | See blueprint section 10 |
+| p2b | Done | Race logic (p2b-1 physics and rules, p2b-2 rival AI) |
+| p2c to p8c | Not started | See blueprint section 10 |
 
 ## Open items
 
@@ -166,3 +167,6 @@ Eleven translations are pinned in `tools/scripture/sources.json` (repository, co
 - **Rules:** `RaceSimulation` has a 3-second countdown, the player starts last on a two-wide grid, the race ends when the player finishes or after `(par x laps x 3 + 60)` seconds. Cars far off the road are held at 14 m beyond the edge. Rival input comes from a `CarController` (implemented by the AI in p2b-2). Mode rules (p2c) use `eliminate()`.
 - **Clean driving:** on the road and no contact in the last second. It feeds the clean-driving score and fills the Ruach meter (0.075 segment per second, so three segments take 40 s). Slipstream charges after 0.5 s behind a rival within 22 m at 0.25 segment per second; drifting charges at 0.2.
 - Determinism: `stateHash()` summarises positions, velocities and laps; tests check two identical races agree.
+
+### D-027: Rival AI (p2b-2)
+`AiDriver` (one per rival, built by `AiDriver.forRace(config)` with RNG streams forked from the race seed) follows the centreline with an offset to the inside of the next corner, brakes for corners using `13 x vehicle grip x cornerUse` where cornerUse runs from 0.55 (skill 0) to 0.92 (skill 1), passes cars ahead on the side with room (aggression sets how far), leans towards a car behind when defending (aggression above 0.55), wanders by `(1 - consistency)`, waits `(1 - skill) x 0.35 s` plus up to 0.15 s after the lights, and spends boost on straights. `AiTuning` holds the difficulty pace (0.90, 0.96, 1.00) and the rubber band, capped at plus or minus 4 percent over 150 m. All values are starting points for the p2c balance simulation.
