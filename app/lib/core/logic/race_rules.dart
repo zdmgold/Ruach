@@ -329,16 +329,23 @@ final class RaceSimulation {
   }
 
   void _checkFinish() {
-    if (player.finished || _raceTick >= maxTicks) {
-      _phase = RacePhase.finished;
-      _finishTick = _raceTick;
-    }
+    if (player.finished || _raceTick >= maxTicks) endRace();
   }
 
-  /// Drops a car from the race (Elimination, batch p2c).
+  /// Drops a car from the race (Elimination). If it is the player's car the
+  /// race ends.
   void eliminate(RaceCar car) {
     car.eliminated = true;
     _updateRanking();
+    if (car.isPlayer) endRace();
+  }
+
+  /// Ends the race now: used when a mode rule ends it (the player is dropped
+  /// in Elimination, or caught in Escape Run).
+  void endRace() {
+    if (_phase == RacePhase.finished) return;
+    _phase = RacePhase.finished;
+    _finishTick = _raceTick;
   }
 
   /// Every car's result, ranked. Cars that had not finished when the race

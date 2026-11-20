@@ -60,6 +60,14 @@ final class LapTracker {
     return p < 0 ? 0 : (p > 1 ? 1 : p);
   }
 
+  /// Marks the car as finished now, for a mode rule that ends its race
+  /// (the last car standing in Elimination).
+  void forceFinish(double elapsedSeconds) {
+    if (_finished) return;
+    _finished = true;
+    _finishSeconds = elapsedSeconds;
+  }
+
   /// Updates with the car's current [distance] along the centreline (0 to the
   /// lap length) and the race clock in seconds.
   void update(double distance, double elapsedSeconds) {

@@ -170,3 +170,12 @@ Eleven translations are pinned in `tools/scripture/sources.json` (repository, co
 
 ### D-027: Rival AI (p2b-2)
 `AiDriver` (one per rival, built by `AiDriver.forRace(config)` with RNG streams forked from the race seed) follows the centreline with an offset to the inside of the next corner, brakes for corners using `13 x vehicle grip x cornerUse` where cornerUse runs from 0.55 (skill 0) to 0.92 (skill 1), passes cars ahead on the side with room (aggression sets how far), leans towards a car behind when defending (aggression above 0.55), wanders by `(1 - consistency)`, waits `(1 - skill) x 0.35 s` plus up to 0.15 s after the lights, and spends boost on straights. `AiTuning` holds the difficulty pace (0.90, 0.96, 1.00) and the rubber band, capped at plus or minus 4 percent over 150 m. All values are starting points for the p2c balance simulation.
+
+## D-028 (p2c) Modes, upgrades, stars, daily seeds, input strategies
+- Star keys: Journey/Quick/Daily use the track id; Time Trial uses `tt:<track>`; Escape Run uses `escape:<track>`. Time Trial and Escape stars feed the Gift pool so 90 Gifts is reachable. Only improvements earn Gifts.
+- Unlocks: tracks sequential (a star on the previous track), Now variants after the Then track is cleared; chariots open, cart and modern vehicles open with track 9; Quick/Time Trial after track 1, Escape after track 2, Elimination after track 5, Weekly after a completed Daily.
+- Upgrades cost 1..5 Gifts per level (15 per upgrade, 90 for all six).
+- Daily/Weekly seeds are pure functions of the civil date (ISO week); streak resets gently with a welcome-back prompt.
+- Input strategies (buttons, drag steer, tilt) are pure Dart in core/logic/input_strategy.dart.
+- Elimination drops last place per leader lap; Escape Run wall 24 m/s +0.12/s, cap 52.
+- race_rules: `eliminate()` ends the race if the player is dropped; public `endRace()`; `LapTracker.forceFinish`. Ids live in catalog_ids.dart.
