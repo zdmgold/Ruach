@@ -78,7 +78,7 @@ void main() {
 
   test('a jump across the infield earns no credit', () {
     final LapTracker t = _tracker(behind: 0);
-    t.update(100, 1);
+    _drive(t, 0, 100);
     expect(t.totalDistance, closeTo(100, 1e-9));
     t.update(600, 2);
     expect(t.totalDistance, closeTo(100, 1e-9));
@@ -86,7 +86,7 @@ void main() {
 
   test('after a long stay away the tracker re-anchors without credit', () {
     final LapTracker t = _tracker(behind: 0);
-    t.update(100, 1);
+    _drive(t, 0, 100);
     for (int i = 0; i < LapTracker.reanchorAfter; i++) {
       t.update(600, 2);
     }

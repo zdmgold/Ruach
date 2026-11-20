@@ -101,9 +101,10 @@ final class RaceSimulation {
     cars = <RaceCar>[];
     for (int i = 0; i < field; i++) {
       final bool isPlayer = i == 0;
-      // Rivals take the front grid slots; the player starts at the back.
+      // Rivals take the front grid slots; the player starts at the back. Slots
+      // are staggered 3.5 m apart and alternate sides.
       final int slot = isPlayer ? field - 1 : i - 1;
-      final double back = 8.0 + 7.0 * (slot ~/ 2);
+      final double back = 8.0 + 3.5 * slot;
       final double side = (slot.isEven ? -1.0 : 1.0) * 0.4;
       final double startDistance = geometry.length - back;
       final Vec2 tangent = geometry.tangentAt(startDistance);
