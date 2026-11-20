@@ -85,7 +85,6 @@ final class AiDriver implements CarController {
     final double speed = car.state.forwardSpeed;
     final double distance = car.projection.distance;
     final double halfWidth = car.projection.halfWidth;
-    final double lateral = car.projection.lateral;
 
     // Slow drift around the line, smaller for consistent drivers.
     if (race.raceTick >= _wanderTick) {
