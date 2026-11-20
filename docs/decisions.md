@@ -38,7 +38,7 @@ All rows marked Proposed in blueprint section 1 were confirmed by the owner on 2
 | p1d | Done | Tokens, typography, icon wrapper and alias file, theme, formatters, error handler, Barlow font, notices, contrast test; check.yml green on ci-analyser |
 | p1e | Done | Core race models (Vec2, Track, Vehicle, DriveInput, UpgradeLevels, Rival, RaceConfig, RaceResult), tests, layering check |
 | p1f | Done | Core support models: progress, verse, settings, app error, ad state, tolerant JSON readers |
-| p2a | In progress | Scripture tools, curated verses for 11 languages, notices |
+| p2a | Done | Scripture tools, curated verses for 11 languages, notices |
 | p2b to p8c | Not started | See blueprint section 10 |
 
 ## Open items
@@ -158,3 +158,11 @@ Eleven translations are pinned in `tools/scripture/sources.json` (repository, co
 
 ### D-025: Curated verse selection rules
 332 verses (quotas from blueprint section 5, plus 6 for the upgrades) are chosen from `candidates.json` in priority order. A verse is only eligible if it has text in all 11 languages and its chapter has the same verse count in every language (one reviewed exception: Acts 28:15). Verses are single verses; verses that start mid-sentence in English were replaced by complete ones. Bundles are `app/assets/verses/<language>.json.gz` (`{schema, language, source, verses:[{ref, moments, text}]}`) written with a fixed gzip timestamp so rebuilding gives identical bytes. A verse can carry several moments but none is currently reused. Rewarded-ad, wording and spiritual-advantage rules still apply to the verse tone: gratitude on wins, steadiness on podiums, gentle comfort after a poor finish.
+
+### D-026: p2b race logic design
+- **Added file:** `core/logic/track_geometry.dart` (not in the blueprint list). It turns a `Track` into a dense closed Catmull-Rom polyline and answers "where along the road is this point" (`project`, with a segment hint for speed) and "where is this distance" (`positionAt`, `tangentAt`, `widthAt`, `curvatureAhead`, `surfaceAt`). Lateral offset is positive to the right of travel. `numeric.dart` holds `clampDouble` and `wrapAngle`.
+- **Physics:** arcade model at a fixed 60 Hz (`RaceSimulation.dt`). Forward speed follows throttle, brake and a cap set by surface, boost and upgrades; steering is limited by grip (`yaw limit = 13 * grip / speed`); sideways velocity decays at `7 * grip` per second. Drag only applies when coasting. All values are tuning starting points; the balance simulation (p2c) adjusts them.
+- **Laps:** `LapTracker` credits only small forward steps (30 m maximum), so cutting across the infield earns nothing and the lap needs the missed distance afterwards. After 120 steps away it re-anchors without credit.
+- **Rules:** `RaceSimulation` has a 3-second countdown, the player starts last on a two-wide grid, the race ends when the player finishes or after `(par x laps x 3 + 60)` seconds. Cars far off the road are held at 14 m beyond the edge. Rival input comes from a `CarController` (implemented by the AI in p2b-2). Mode rules (p2c) use `eliminate()`.
+- **Clean driving:** on the road and no contact in the last second. It feeds the clean-driving score and fills the Ruach meter (0.075 segment per second, so three segments take 40 s). Slipstream charges after 0.5 s behind a rival within 22 m at 0.25 segment per second; drifting charges at 0.2.
+- Determinism: `stateHash()` summarises positions, velocities and laps; tests check two identical races agree.
