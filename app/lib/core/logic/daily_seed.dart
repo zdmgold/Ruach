@@ -16,7 +16,7 @@ final class CivilDate implements Comparable<CivilDate> {
     final RegExpMatch? m = RegExp(r'^(\d{4})-(\d{2})-(\d{2})$').firstMatch(text);
     if (m == null) return null;
     final CivilDate d = CivilDate(int.parse(m.group(1)!), int.parse(m.group(2)!), int.parse(m.group(3)!));
-    return fromDayNumber(d.dayNumber) == d ? d : null;
+    return CivilDate.fromDayNumber(d.dayNumber) == d ? d : null;
   }
 
   /// The date [days] days after 1970-01-01 (before it if negative).
