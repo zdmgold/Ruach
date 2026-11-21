@@ -13,6 +13,10 @@ on:
         description: 'Optional regex; only lines matching it (with 2 lines of context) are printed from each package lib'
         required: false
         default: ''
+      dir:
+        description: 'Subfolder of each package to search (default lib; use . for the whole package, example, README)'
+        required: false
+        default: 'lib'
 
 jobs:
   api:
@@ -30,6 +34,7 @@ jobs:
         env:
           PKGS: ${{ inputs.packages }}
           PATTERN: ${{ inputs.grep }}
+          SUBDIR: ${{ inputs.dir }}
         run: |
           flutter pub get >/dev/null
           for pkg in $PKGS; do
@@ -44,7 +49,7 @@ jobs:
             echo "######## $pkg  $root"
             grep -m1 '^version:' "$root/pubspec.yaml"
             if [ -n "$PATTERN" ]; then
-              grep -rnE -B1 -A2 "$PATTERN" "$root/lib" | head -300
+              grep -rnE -B1 -A2 "$PATTERN" "$root/${SUBDIR:-lib}" | head -300
             else
               sed -n '1,200p' "$root/lib/$pkg.dart"
               ls -R "$root/lib" | head -60
