@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart' as gma;
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:ruach/core/models/ad_state.dart';
 import 'package:ruach/core/ports/billing_port.dart';
 import 'package:ruach/platform/billing_service.dart';
 import 'package:ruach/platform/consent_service.dart';
-import 'package:ruach/core/models/ad_state.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart' as gma;
 
 PurchaseDetails _purchase(String id, PurchaseStatus status) => PurchaseDetails(
       productID: id,

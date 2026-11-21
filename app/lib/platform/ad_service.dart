@@ -182,10 +182,10 @@ final class AdService implements AdsPort {
     if (!_initialized) return 0;
     try {
       final gma.AnchoredAdaptiveBannerAdSize? size =
-          await gma.AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(width.truncate());
+          await gma.AdSize.getLargeAnchoredAdaptiveBannerAdSize(width.truncate());
       if (size == null) return 0;
       final Completer<bool> done = Completer<bool>();
-      _banner?.dispose();
+      await _banner?.dispose();
       _bannerLoaded = false;
       final gma.BannerAd ad = gma.BannerAd(
         adUnitId: units.banner,
