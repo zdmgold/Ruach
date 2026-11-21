@@ -1,0 +1,52 @@
+name: pub_api
+
+# Manual only. Prints the public API of packages already in app/pubspec.lock so
+# adapters can be written against the real signatures (the sandbox cannot reach
+# pub.dev). Does not commit anything.
+on:
+  workflow_dispatch:
+    inputs:
+      packages:
+        description: 'Space separated package names'
+        required: true
+      grep:
+        description: 'Optional regex; only lines matching it (with 2 lines of context) are printed from each package lib'
+        required: false
+        default: ''
+
+jobs:
+  api:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.50.0'
+          channel: stable
+          cache: true
+      - name: Print API
+        working-directory: app
+        env:
+          PKGS: ${{ inputs.packages }}
+          PATTERN: ${{ inputs.grep }}
+        run: |
+          flutter pub get >/dev/null
+          for pkg in $PKGS; do
+            root="$(python3 - "$pkg" <<'PY'
+          import json,sys,re
+          cfg=json.load(open('.dart_tool/package_config.json'))
+          for p in cfg['packages']:
+              if p['name']==sys.argv[1]:
+                  print(p['rootUri'].replace('file://',''))
+          PY
+          )"
+            echo "######## $pkg  $root"
+            grep -m1 '^version:' "$root/pubspec.yaml"
+            if [ -n "$PATTERN" ]; then
+              grep -rnE -B1 -A2 "$PATTERN" "$root/lib" | head -300
+            else
+              sed -n '1,200p' "$root/lib/$pkg.dart"
+              ls -R "$root/lib" | head -60
+            fi
+          done
