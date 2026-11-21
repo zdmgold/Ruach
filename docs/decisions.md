@@ -179,3 +179,10 @@ Eleven translations are pinned in `tools/scripture/sources.json` (repository, co
 - Input strategies (buttons, drag steer, tilt) are pure Dart in core/logic/input_strategy.dart.
 - Elimination drops last place per leader lap; Escape Run wall 24 m/s +0.12/s, cap 52.
 - race_rules: `eliminate()` ends the race if the player is dropped; public `endRace()`; `LapTracker.forceFinish`. Ids live in catalog_ids.dart.
+
+## D-029 (p2d) Ports, progress file, verse access
+- Ports live in core/ports (one import: ports.dart). `FileStore` is primitive (read/write/rename/delete/exists); the atomic save sequence is in `ProgressRepository`, so it is tested with an in-memory fake (test/support/fakes.dart).
+- Save: write progress.json.tmp; if progress.json decodes, move it to progress.json.bak (a damaged file never replaces a good backup); rename tmp into place. Load: main, then backup (notice shown), else start clean (notice shown). A newer schema loads read-only and is never overwritten.
+- Migrations: `Migrations.steps` is empty at schema 1; add step n to move n to n+1.
+- Verses: `VerseRepository` picks by moment, seed and seen refs from sorted candidates, so one seed gives the same reference in every language. Missing language falls back to English. `VerseDataSource` (adapter reads and gunzips the asset) keeps core free of dart:io.
+- `VerseMap` is identity by default; the per-language differences are generated from the full texts in p8a (docs/scripture_sources.md).
