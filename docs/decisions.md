@@ -186,3 +186,9 @@ Eleven translations are pinned in `tools/scripture/sources.json` (repository, co
 - Migrations: `Migrations.steps` is empty at schema 1; add step n to move n to n+1.
 - Verses: `VerseRepository` picks by moment, seed and seen refs from sorted candidates, so one seed gives the same reference in every language. Missing language falls back to English. `VerseDataSource` (adapter reads and gunzips the asset) keeps core free of dart:io.
 - `VerseMap` is identity by default; the per-language differences are generated from the full texts in p8a (docs/scripture_sources.md).
+
+## D-030 (p2e) Platform adapters A
+- Packages (added through pub_deps.yml, APIs read through the new pub_api.yml workflow): shared_preferences 2.5.6 (SharedPreferencesAsync), path_provider, sensors_plus 7.1.1, share_plus 13.3.1 (`SharePlus.instance.share(ShareParams(...))`), url_launcher, flutter_local_notifications 23.0.3 (named parameters), flutter_timezone 5.1.1, timezone, audioplayers 6.8.1.
+- Adapters in app/lib/platform: DirectoryFileStore + PreferencesStore, LogService (rolling 400 lines, file `ruach_log.txt`, written 2 s after a change), HapticsService, AudioService (files `assets/audio/<effect>.ogg` and `music.ogg`, made in p7a; missing files are skipped silently), TiltService (roll = atan2(-x, y), phone held upright and turned like a wheel), ShareService, UrlService, NotificationService (daily local reminder, inexact schedule so no exact-alarm permission is needed; permission only when the player turns it on).
+- Android: core library desugaring enabled in build.gradle.kts (required by flutter_local_notifications). UNVERIFIED: no APK has been built yet; the first debug build (Test APK 1) confirms it. If the Gradle build fails on notifications, check the plugin's README for receivers/permissions first.
+- Audio assets are not declared in pubspec yet; p7a adds `assets/audio/`.
