@@ -17,6 +17,7 @@ environment:
 # depend on it (decision D-007).
 dependencies:
   audioplayers: ^6.8.1
+  flame: ^1.38.2
   flutter:
     sdk: flutter
   flutter_local_notifications: ^23.0.3
