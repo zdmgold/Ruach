@@ -40,8 +40,8 @@ All rows marked Proposed in blueprint section 1 were confirmed by the owner on 2
 | p1f | Done | Core support models: progress, verse, settings, app error, ad state, tolerant JSON readers |
 | p2a | Done | Scripture tools, curated verses for 11 languages, notices |
 | p2b | Done | Race logic (p2b-1 physics and rules, p2b-2 rival AI) |
-| p2c to p4b | Done | D-027 to D-036 |
-| p4c to p8c | Not started | See blueprint section 10 |
+| p2c to p4c | Done | D-027 to D-037 |
+| p5a to p8c | Not started | See blueprint section 10 |
 
 ## Open items
 
@@ -232,3 +232,13 @@ Eleven translations are pinned in `tools/scripture/sources.json` (repository, co
 - Badges, the boost meter, the upgrade tile and the error view take every visible and spoken string from the caller (the language files), including plural forms such as "12 Gifts".
 - `BoostMeter` fills from the start side (right in Arabic and Hebrew); the race HUD that hosts it caps its own text scale (p4c).
 - `ErrorView` scrolls, so it stays usable at 200% text on a small screen.
+
+## D-037 (p4c) Flame race world
+- Flame 1.38.2 added on a runner (`pub_deps`). The game uses only `FlameGame`, `Component` and `GameWidget`: the follow camera is our own pure `CameraRig` and `RaceView.renderTree` applies it to the canvas, so a Flame camera change cannot move the race.
+- World coordinates are screen coordinates (y down), so a car at heading `h` points at screen angle `h`; the camera rotates the world so the car points up, and anchors it at 68% of the screen height.
+- The track is recorded once into a `Picture` and replayed each frame. Cars read `RaceCar` state every frame and keep no state. Particles use a fixed pool of 160 and are off under Reduce Motion; the Escape Run dust wall stays on (it is game information) but stops rippling.
+- The Time Trial ghost is a position log (position and heading every 0.1 s, about 3 KB a lap, base64 in `Progress.ghosts`), not an input log as the blueprint says. It replays exactly without re-running the physics. Only the best lap is kept; a damaged log is ignored. The ghost loops its lap and takes no part in the race.
+- Pursuit tracks outside Escape Run (Red Sea Crossing, Babylon Gates) draw no wall yet; their "dust wall" scenery tag is not drawn either. Revisit at Test APK 1 if it should be.
+- HUD is plain Flutter with every string supplied through `HudLabels`; it caps text scale at 120%. Left column: position, lap, time, boost meter, Escape Run distance. Right column: minimap, pause. Four 80-wide controls do not fit across a 360 phone, so brake and boost stack in a column beside the steering pair. One-handed play stacks pedals above steering on one side.
+- Race controls never mirror in right-to-left; handedness moves them. Steering icons are separate non-mirroring symbols (`steerLeft`, `steerRight`). The brake is a drawn stop square because no suitable glyph codepoint could be confirmed in the bundled font (glyph names in the file are `uniXXXX`).
+- Test lesson: never `await` a `StreamController.close()` inside `testWidgets`; it waits on the real event loop and hangs the run.
