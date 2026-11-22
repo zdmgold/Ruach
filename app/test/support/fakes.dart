@@ -1,3 +1,4 @@
+import 'package:ruach/core/ports/billing_port.dart';
 import 'package:ruach/core/ports/file_store.dart';
 
 /// An in-memory [FileStore]. Set [failWrites] or [failRenames] to simulate
@@ -49,4 +50,29 @@ final class FakeKeyValueStore implements KeyValueStore {
 
   @override
   Future<void> remove(String key) async => values.remove(key);
+}
+
+/// A [BillingPort] you can steer from a test.
+final class FakeBilling implements BillingPort {
+  bool owns = false;
+  bool restoreFinds = false;
+  PurchaseResult purchaseResult = PurchaseResult.purchased;
+  Object? failWith;
+  int reads = 0;
+
+  @override
+  Future<bool> ownsRemoveAds() async {
+    reads++;
+    if (failWith != null) throw failWith!;
+    return owns;
+  }
+
+  @override
+  Future<PurchaseResult> buyRemoveAds() async => purchaseResult;
+
+  @override
+  Future<bool> restore() async => restoreFinds;
+
+  @override
+  Future<String?> priceText() async => r'$2.99';
 }
