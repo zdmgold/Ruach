@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 import 'package:ruach/core/logic/mode_rules.dart';
 import 'package:ruach/core/logic/race_rules.dart';
 import 'package:ruach/core/logic/track_geometry.dart';
-import 'package:ruach/core/models/race_config.dart';
 import 'package:ruach/core/models/track.dart';
 import 'package:ruach/core/models/vec2.dart';
 import 'package:ruach/game/vehicle_component.dart';
