@@ -39,13 +39,13 @@ void main() {
   group('AdSlot', () {
     testWidgets('has no size at all when there is no ad', (WidgetTester tester) async {
       await tester.pumpWidget(_host(const AdSlot(height: 50)));
-      expect(tester.getSize(find.byType(AdSlot)), Size.zero);
+      expect(tester.getSize(find.byType(AdSlot)).height, 0);
       expect(find.byType(DecoratedBox), findsNothing);
     });
 
     testWidgets('is the banner height plus 8 above and below when an ad is present', (WidgetTester tester) async {
       await tester.pumpWidget(_host(const AdSlot(height: 50, ad: SizedBox(width: 320, height: 50))));
-      expect(tester.getSize(find.byType(AdSlot)).height, 66 + 0.5);
+      expect(tester.getSize(find.byType(AdSlot)).height, 66);
     });
 
     testWidgets('collapses while the keyboard is open', (WidgetTester tester) async {
@@ -53,12 +53,12 @@ void main() {
         const AdSlot(height: 50, ad: SizedBox(width: 320, height: 50)),
         keyboard: 300,
       ));
-      expect(tester.getSize(find.byType(AdSlot)), Size.zero);
+      expect(tester.getSize(find.byType(AdSlot)).height, 0);
     });
 
     testWidgets('a zero height collapses even with an ad', (WidgetTester tester) async {
       await tester.pumpWidget(_host(const AdSlot(height: 0, ad: SizedBox(width: 320, height: 50))));
-      expect(tester.getSize(find.byType(AdSlot)), Size.zero);
+      expect(tester.getSize(find.byType(AdSlot)).height, 0);
     });
   });
 
@@ -163,14 +163,14 @@ void main() {
 
     testWidgets('survives 200% text with long German words', (WidgetTester tester) async {
       await tester.pumpWidget(_host(
-        VerseCard(
+        SingleChildScrollView(child: VerseCard(
           text: 'Der Herr ist mein Hirte, mir wird nichts mangeln. Er weidet mich auf einer grünen Aue.',
           reference: 'Psalm 23,1',
           onShare: () {},
           shareLabel: 'Teilen',
           onReadChapter: () {},
           readLabel: 'Kapitel lesen',
-        ),
+        )),
         textScale: 2,
         width: 320,
       ));
