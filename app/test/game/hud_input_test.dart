@@ -232,7 +232,7 @@ void main() {
       await pumpInput(tester, c, settings: const Settings(controlScheme: ControlScheme.tilt), tiltAvailable: false);
       expect(find.bySemanticsLabel('Steer left'), findsOneWidget);
       expect(find.text('No tilt sensor, using buttons'), findsOneWidget);
-      await roll.close();
+      roll.close().ignore();
     });
 
     testWidgets('leaving the screen releases every control', (WidgetTester tester) async {
