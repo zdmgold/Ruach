@@ -40,8 +40,8 @@ All rows marked Proposed in blueprint section 1 were confirmed by the owner on 2
 | p1f | Done | Core support models: progress, verse, settings, app error, ad state, tolerant JSON readers |
 | p2a | Done | Scripture tools, curated verses for 11 languages, notices |
 | p2b | Done | Race logic (p2b-1 physics and rules, p2b-2 rival AI) |
-| p2c to p4a | Done | D-027 to D-035 |
-| p4b to p8c | Not started | See blueprint section 10 |
+| p2c to p4b | Done | D-027 to D-036 |
+| p4c to p8c | Not started | See blueprint section 10 |
 
 ## Open items
 
@@ -226,3 +226,9 @@ Eleven translations are pinned in `tools/scripture/sources.json` (repository, co
 - `AppChip` has two tones only (neutral, accent), because those are the pairs the contrast test covers. Add a tone only together with its contrast pair.
 - `NavBar` takes the status-bar inset itself, shows the brand or a back button (a back button must have a spoken label), and the title wraps to two lines instead of clipping at large text sizes.
 - Tests use `isSemantics` (Flutter 3.50 removed `SemanticsFlag`; `containsSemantics` is deprecated).
+
+## D-036 (p4b) Feature widgets
+- `AdSlot` is a plain widget: the screen passes the banner widget (or null) and the height from the ad port. It collapses to zero height with no border when the ad is null, the height is 0, or the keyboard is open. The widget that draws the real banner (it needs the ad plugin) is supplied by the shell at p6a, so `widgets/` stays free of ad plugins.
+- Badges, the boost meter, the upgrade tile and the error view take every visible and spoken string from the caller (the language files), including plural forms such as "12 Gifts".
+- `BoostMeter` fills from the start side (right in Arabic and Hebrew); the race HUD that hosts it caps its own text scale (p4c).
+- `ErrorView` scrolls, so it stays usable at 200% text on a small screen.
