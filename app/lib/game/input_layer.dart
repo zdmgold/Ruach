@@ -140,17 +140,19 @@ class _InputLayerState extends State<InputLayer> {
     final bool dominantRight = s.handedness == Handedness.right;
     final bool steerButtons = _scheme == ControlScheme.buttons;
 
-    final Widget pedals = Row(
+    final Widget brakeButton =
+        _RaceButton(label: l.brake, onChanged: (bool v) => c.brake = v, child: const _StopGlyph());
+    final Widget boostButton =
+        _RaceButton(label: l.boost, onChanged: (bool v) => c.boost = v, icon: AppIcons.boost);
+    // Two buttons wide for the one-handed stack; one column wide beside the
+    // steering, because four 80-wide controls do not fit across a 360 phone.
+    final Widget pedalsRow = Row(
       mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        _RaceButton(label: l.brake, onChanged: (bool v) => c.brake = v, child: const _StopGlyph()),
-        const SizedBox(width: InputLayer.gap),
-        _RaceButton(
-          label: l.boost,
-          onChanged: (bool v) => c.boost = v,
-          icon: AppIcons.boost,
-        ),
-      ],
+      children: <Widget>[brakeButton, const SizedBox(width: InputLayer.gap), boostButton],
+    );
+    final Widget pedalsColumn = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[boostButton, const SizedBox(height: InputLayer.gap), brakeButton],
     );
     final Widget steering = Row(
       mainAxisSize: MainAxisSize.min,
@@ -201,15 +203,15 @@ class _InputLayerState extends State<InputLayer> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: dominantRight ? CrossAxisAlignment.end : CrossAxisAlignment.start,
             children: <Widget>[
-              pedals,
+              pedalsRow,
               if (steerButtons) ...<Widget>[const SizedBox(height: InputLayer.gap), steering],
             ],
           ),
         ),
       );
     } else {
-      children.add(opposite(pedals));
-      if (steerButtons) children.add(cluster(steering));
+      children.add(cluster(pedalsColumn));
+      if (steerButtons) children.add(opposite(steering));
     }
     if (widget.settings.controlScheme == ControlScheme.tilt && !widget.tiltAvailable) {
       final AppThemeData theme = AppTheme.of(context);

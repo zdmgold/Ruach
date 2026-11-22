@@ -122,34 +122,81 @@ class _Hud extends StatelessWidget {
 
     return Stack(
       children: <Widget>[
+        // Left (start) column: position, lap and time, then the boost meter
+        // and, in an Escape Run, the distance and danger bar.
         PositionedDirectional(
           top: top + AppSpacing.s8,
           start: AppSpacing.s16,
-          child: _Panel(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Semantics(
-                  label: labels.positionSemantic(player.position, field),
-                  excludeSemantics: true,
-                  child: Text(labels.position(player.position, field), style: theme.type.display),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              _Panel(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Semantics(
+                      label: labels.positionSemantic(player.position, field),
+                      excludeSemantics: true,
+                      child: Text(labels.position(player.position, field), style: theme.type.display),
+                    ),
+                    Semantics(
+                      label: labels.lapSemantic(lap, laps),
+                      excludeSemantics: true,
+                      child: Text(labels.lap(lap, laps), style: theme.type.callout),
+                    ),
+                    Semantics(
+                      label: labels.timeSemantic(time),
+                      excludeSemantics: true,
+                      child: Text(
+                        time,
+                        style: theme.type.callout.copyWith(
+                          fontFeatures: const <FontFeature>[FontFeature.tabularFigures()],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                Semantics(
-                  label: labels.lapSemantic(lap, laps),
-                  excludeSemantics: true,
-                  child: Text(labels.lap(lap, laps), style: theme.type.callout),
+              ),
+              const SizedBox(height: AppSpacing.s8),
+              _Panel(
+                child: BoostMeter(
+                  fill: player.meter.fill,
+                  label: labels.boost,
+                  semanticValue: labels.boostValue(player.meter.fullSegments, 3),
+                ),
+              ),
+              if (escape != null && !counting) ...<Widget>[
+                const SizedBox(height: AppSpacing.s8),
+                _Panel(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(labels.escapeDistance(race.escapeMetres.floor()), style: theme.type.callout),
+                      const SizedBox(height: AppSpacing.s4),
+                      _DangerBar(danger: escape.danger),
+                    ],
+                  ),
                 ),
               ],
-            ),
+            ],
           ),
         ),
+        // Right (end) column: the minimap, with the pause button under it.
         PositionedDirectional(
           top: top + AppSpacing.s8,
           end: AppSpacing.s16,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
+              Semantics(
+                label: labels.minimap,
+                excludeSemantics: true,
+                child: _Minimap(race: race, sim: sim),
+              ),
+              const SizedBox(height: AppSpacing.s8),
               Pressable(
                 onTap: onPause,
                 semanticLabel: labels.pause,
@@ -157,68 +204,16 @@ class _Hud extends StatelessWidget {
                   child: AppIcon(AppIcons.pause, size: AppIconSizes.navBar, color: theme.colors.textPrimary),
                 ),
               ),
-              const SizedBox(width: AppSpacing.s8),
-              Semantics(
-                label: labels.minimap,
-                excludeSemantics: true,
-                child: _Minimap(race: race, sim: sim),
-              ),
             ],
           ),
         ),
-        PositionedDirectional(
-          top: top + AppSpacing.s8 + 84,
-          start: AppSpacing.s16,
-          child: _Panel(
-            child: BoostMeter(
-              fill: player.meter.fill,
-              label: labels.boost,
-              semanticValue: labels.boostValue(player.meter.fullSegments, 3),
-            ),
-          ),
-        ),
-        Positioned(
-          top: top + AppSpacing.s8,
-          left: 0,
-          right: 0,
-          child: Center(
-            child: Semantics(
-              label: labels.timeSemantic(time),
-              excludeSemantics: true,
-              child: _Panel(
-                child: Text(
-                  time,
-                  style: theme.type.title2.copyWith(
-                    fontFeatures: const <FontFeature>[FontFeature.tabularFigures()],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-        if (escape != null && !counting)
-          Positioned(
-            top: top + AppSpacing.s8 + 44,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: _Panel(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(labels.escapeDistance(race.escapeMetres.floor()), style: theme.type.callout),
-                    const SizedBox(height: AppSpacing.s4),
-                    _DangerBar(danger: escape.danger),
-                  ],
-                ),
-              ),
-            ),
-          ),
         if (counting || showGo)
-          Center(
-            child: Text(
-              counting ? '${sim.countdownSeconds.ceil()}' : labels.go,
-              style: theme.type.display.copyWith(fontSize: 96, color: theme.colors.textPrimary),
+          IgnorePointer(
+            child: Center(
+              child: Text(
+                counting ? '${sim.countdownSeconds.ceil()}' : labels.go,
+                style: theme.type.display.copyWith(fontSize: 96, color: theme.colors.textPrimary),
+              ),
             ),
           ),
       ],
