@@ -179,7 +179,7 @@ void main() {
       final SemanticsHandle handle = tester.ensureSemantics();
       await tester.pumpWidget(_host(const SectionHeader('Modes')));
       expect(find.text('MODES'), findsOneWidget);
-      expect(tester.getSemantics(find.text('MODES')).hasFlag(SemanticsFlag.isHeader), isTrue);
+      expect(tester.getSemantics(find.text('MODES')), containsSemantics(isHeader: true));
       handle.dispose();
     });
 
