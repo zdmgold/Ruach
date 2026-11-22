@@ -5,6 +5,8 @@ import 'package:flame/game.dart';
 import 'package:ruach/core/logic/race_rules.dart';
 import 'package:ruach/core/models/drive_input.dart';
 import 'package:ruach/game/camera_rig.dart';
+import 'package:ruach/game/effects.dart';
+import 'package:ruach/game/ghost_component.dart';
 import 'package:ruach/game/track_renderer.dart';
 import 'package:ruach/game/vehicle_component.dart';
 import 'package:ruach/providers/race_provider.dart';
@@ -88,7 +90,10 @@ final class RaceView extends Component {
     _renderer?.dispose();
     _renderer = TrackRenderer(sim.config.track);
     removeAll(children.toList());
-    // Rivals first so the player's car is drawn on top.
+    // Back to front: wall, effects, ghost, rivals, then the player on top.
+    add(PursuitWall(race: game.race, reduceMotion: game.reduceMotion));
+    add(EffectsLayer(race: game.race, reduceMotion: game.reduceMotion));
+    add(GhostComponent(race: game.race));
     for (final RaceCar car in sim.cars.reversed) {
       add(
         VehicleComponent(

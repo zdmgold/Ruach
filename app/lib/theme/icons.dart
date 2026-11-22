@@ -25,6 +25,11 @@ abstract final class AppIcons {
   static const IconData info = IconData(0xe2ce, fontFamily: _family); // info
   static const IconData warning = IconData(0xe4e0, fontFamily: _family); // warning
 
+  // Race steering. The same carets as back and forward, but never mirrored:
+  // in a race the left button always steers left, in every language.
+  static const IconData steerLeft = IconData(0xe138, fontFamily: _family); // caretLeft
+  static const IconData steerRight = IconData(0xe13a, fontFamily: _family); // caretRight
+
   // Race and progress
   static const IconData play = IconData(0xe3d0, fontFamily: _family); // play
   static const IconData pause = IconData(0xe39e, fontFamily: _family); // pause

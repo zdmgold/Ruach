@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:ruach/core/logic/ai_driver.dart';
 import 'package:ruach/core/logic/car_physics.dart';
+import 'package:ruach/core/logic/ghost.dart';
 import 'package:ruach/core/logic/mode_rules.dart';
 import 'package:ruach/core/logic/race_rules.dart';
 import 'package:ruach/core/logic/star_rules.dart';
@@ -37,6 +38,18 @@ final class RaceProvider extends ChangeNotifier {
   double _escapeMetres = 0;
   bool _committed = false;
   int _giftsGained = 0;
+
+  // Time Trial ghost: the saved best lap to race against, and the lap being
+  // recorded now.
+  GhostLap? _ghost;
+  final GhostRecorder _recorder = GhostRecorder();
+  int _lapStartTick = 0;
+  int _lapsSeen = 0;
+  int? _bestGhostMillis;
+  String? _bestGhostText;
+
+  /// The saved best lap to show as a ghost car, or null.
+  GhostLap? get ghost => _ghost;
 
   RaceSimulation? get simulation => _sim;
   RaceStage get stage => _stage;
@@ -73,6 +86,13 @@ final class RaceProvider extends ChangeNotifier {
     _escapeMetres = 0;
     _committed = false;
     _giftsGained = 0;
+    _recorder.startLap();
+    _lapStartTick = 0;
+    _lapsSeen = 0;
+    _bestGhostMillis = null;
+    _bestGhostText = null;
+    final String? saved = config.mode == RaceMode.timeTrial ? _progress.value.ghosts[config.track.id] : null;
+    _ghost = saved == null ? null : GhostCodec.decode(saved);
     notifyListeners();
   }
 
@@ -108,6 +128,7 @@ final class RaceProvider extends ChangeNotifier {
       _accumulator -= RaceSimulation.dt;
       steps++;
       sim.step(input);
+      if (sim.config.mode == RaceMode.timeTrial && sim.phase == RacePhase.racing) _recordGhost(sim);
       if (sim.phase == RacePhase.racing || sim.phase == RacePhase.finished) {
         _elimination?.update(sim);
         final EscapeRun? escape = _escape;
@@ -124,6 +145,24 @@ final class RaceProvider extends ChangeNotifier {
     // Drop time the cap could not use, so the game does not run fast later.
     if (steps == maxStepsPerAdvance) _accumulator = 0;
     notifyListeners();
+  }
+
+  void _recordGhost(RaceSimulation sim) {
+    final RaceCar player = sim.player;
+    final List<double> laps = player.tracker.lapTimes;
+    if (laps.length > _lapsSeen) {
+      _lapsSeen = laps.length;
+      final double seconds = laps.last;
+      final int millis = (seconds * 1000).round();
+      final GhostLap? lap = _recorder.finish(seconds);
+      if (lap != null && (_bestGhostMillis == null || millis < _bestGhostMillis!)) {
+        _bestGhostMillis = millis;
+        _bestGhostText = GhostCodec.encode(lap);
+      }
+      _recorder.startLap();
+      _lapStartTick = sim.raceTick;
+    }
+    _recorder.sample(sim.raceTick - _lapStartTick, player.state.position, player.state.heading);
   }
 
   void _finish(RaceSimulation sim) {
@@ -163,6 +202,16 @@ final class RaceProvider extends ChangeNotifier {
         if (old == null || ms < old) {
           next = next.copyWith(
             bestLapMillis: <String, int>{...p.bestLapMillis, config.track.id: ms},
+          );
+        }
+        final String? ghostText = _bestGhostText;
+        final int? ghostMillis = _bestGhostMillis;
+        if (config.mode == RaceMode.timeTrial &&
+            ghostText != null &&
+            ghostMillis != null &&
+            (old == null || ghostMillis < old)) {
+          next = next.copyWith(
+            ghosts: <String, String>{...p.ghosts, config.track.id: ghostText},
           );
         }
       }
