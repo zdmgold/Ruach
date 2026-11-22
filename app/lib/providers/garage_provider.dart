@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:ruach/core/catalog/vehicles.dart';
-import 'package:ruach/core/logic/catalog_ids.dart';
 import 'package:ruach/core/logic/car_physics.dart';
+import 'package:ruach/core/logic/catalog_ids.dart';
 import 'package:ruach/core/logic/mode_rules.dart';
 import 'package:ruach/core/logic/upgrade_rules.dart';
 import 'package:ruach/core/models/progress.dart';

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ruach/core/logic/catalog_ids.dart';
 import 'package:ruach/core/logic/progress_codec.dart';
@@ -148,7 +150,7 @@ void main() {
       final ProgressProvider p = ProgressProvider(ProgressRepository(files));
       await p.load();
       for (int i = 0; i < 5; i++) {
-        p.change((Progress x) => x.copyWith(giftsEarned: x.giftsEarned + 1));
+        unawaited(p.change((Progress x) => x.copyWith(giftsEarned: x.giftsEarned + 1)));
       }
       await p.flush();
       expect(ProgressCodec.decode(files.files[ProgressRepository.fileName]!).progress!.giftsEarned, 5);

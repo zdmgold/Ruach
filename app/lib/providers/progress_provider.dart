@@ -10,12 +10,10 @@ import 'package:ruach/core/ports/device_ports.dart';
 /// game keeps working in memory, [saveError] shows a warning, and the next
 /// change tries again.
 final class ProgressProvider extends ValueNotifier<Progress> {
-  ProgressProvider(this._repository, {LogPort? log})
-      : _log = log,
-        super(Progress.fresh());
+  ProgressProvider(this._repository, {this.log}) : super(Progress.fresh());
 
   final ProgressRepository _repository;
-  final LogPort? _log;
+  final LogPort? log;
 
   Future<void> _tail = Future<void>.value();
   ProgressOrigin _origin = ProgressOrigin.firstRun;
@@ -39,8 +37,8 @@ final class ProgressProvider extends ValueNotifier<Progress> {
     _origin = loaded.origin;
     _noticeDismissed = false;
     value = loaded.progress;
-    if (loaded.needsNotice) _log?.log('progress: ${loaded.origin.name}');
-    if (loaded.readOnly) _log?.log('progress: newer schema, read-only');
+    if (loaded.needsNotice) log?.log('progress: ${loaded.origin.name}');
+    if (loaded.readOnly) log?.log('progress: newer schema, read-only');
     notifyListeners();
   }
 
@@ -71,7 +69,7 @@ final class ProgressProvider extends ValueNotifier<Progress> {
     _tail = _tail.then((_) async {
       final AppError? error = await _repository.save(snapshot);
       saveError.value = error;
-      if (error != null) _log?.log('progress save failed: ${error.detail}');
+      if (error != null) log?.log('progress save failed: ${error.detail}');
     });
     return _tail;
   }

@@ -7,14 +7,14 @@ import 'package:ruach/providers/settings_provider.dart';
 
 /// The app language: the player's choice, or the best match for the device.
 final class LocaleProvider extends ChangeNotifier {
-  LocaleProvider(this._settings, {required String Function() deviceTag})
-      : _deviceTag = deviceTag {
+  LocaleProvider(this._settings, {required this.deviceTag}) {
     _code = _compute();
     _settings.addListener(_onSettings);
   }
 
   final SettingsProvider _settings;
-  final String Function() _deviceTag;
+  /// Returns the device's locale tag, for example `pt-BR`.
+  final String Function() deviceTag;
   late String _code;
 
   /// One of `LocaleRules.supported`.
@@ -43,7 +43,7 @@ final class LocaleProvider extends ChangeNotifier {
 
   String _compute() => LocaleRules.effective(
         chosen: _settings.value.languageCode,
-        deviceTag: _deviceTag(),
+        deviceTag: deviceTag(),
       );
 
   void _onSettings() {
