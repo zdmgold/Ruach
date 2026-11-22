@@ -1,5 +1,10 @@
+import 'package:ruach/core/models/ad_state.dart';
+import 'package:ruach/core/ports/ads_port.dart';
 import 'package:ruach/core/ports/billing_port.dart';
+import 'package:ruach/core/ports/consent_port.dart';
+import 'package:ruach/core/ports/device_ports.dart';
 import 'package:ruach/core/ports/file_store.dart';
+import 'package:ruach/core/ports/flags_port.dart';
 
 /// An in-memory [FileStore]. Set [failWrites] or [failRenames] to simulate
 /// storage errors, or edit [files] to simulate damage.
@@ -75,4 +80,91 @@ final class FakeBilling implements BillingPort {
 
   @override
   Future<String?> priceText() async => r'$2.99';
+}
+
+/// A consent port that answers with whatever [next] holds.
+final class FakeConsent implements ConsentPort {
+  ConsentSnapshot next = const ConsentSnapshot(
+    status: ConsentStatus.unknown,
+    canRequestAds: false,
+    privacyOptionsRequired: false,
+  );
+  bool throws = false;
+
+  Future<ConsentSnapshot> _answer() async {
+    if (throws) throw StateError('no consent service');
+    return next;
+  }
+
+  @override
+  Future<ConsentSnapshot> refresh() => _answer();
+
+  @override
+  Future<ConsentSnapshot> showFormIfRequired() => _answer();
+
+  @override
+  Future<ConsentSnapshot> showPrivacyOptions() => _answer();
+}
+
+final class FakeAds implements AdsPort {
+  final Set<AdFormat> ready = <AdFormat>{};
+  final List<AdFormat> shown = <AdFormat>[];
+  int initCalls = 0;
+  AdShowResult result = AdShowResult.shown;
+
+  @override
+  Future<void> initialize() async => initCalls++;
+
+  @override
+  Future<bool> load(AdFormat format) async {
+    ready.add(format);
+    return true;
+  }
+
+  @override
+  bool isReady(AdFormat format) => ready.contains(format);
+
+  @override
+  Future<AdShowResult> show(AdFormat format) async {
+    shown.add(format);
+    ready.remove(format);
+    return result;
+  }
+
+  @override
+  Future<double> bannerHeight(double width) async => 50;
+}
+
+final class FakeFlags implements FlagsPort {
+  RemoteFlags flags = RemoteFlags.defaults;
+  bool throws = false;
+
+  @override
+  Future<RemoteFlags> fetch() async {
+    if (throws) throw StateError('offline');
+    return flags;
+  }
+}
+
+final class FakeNotifications implements NotificationPort {
+  bool permitted = true;
+  final List<String> calls = <String>[];
+
+  @override
+  Future<bool> requestPermission() async => permitted;
+
+  @override
+  Future<bool> isPermitted() async => permitted;
+
+  @override
+  Future<void> scheduleDaily({
+    required int hour,
+    required int minute,
+    required String title,
+    required String body,
+  }) async =>
+      calls.add('schedule $hour:$minute');
+
+  @override
+  Future<void> cancelDaily() async => calls.add('cancel');
 }

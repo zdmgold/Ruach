@@ -208,3 +208,14 @@ Eleven translations are pinned in `tools/scripture/sources.json` (repository, co
 - Catalog test: every one of the 28 tracks validates, has drivable corners (minimum radius at least 45 m), and is finished by the line-following player within 2.2x par with five AI rivals still moving.
 - 12 fictional rivals (invented names and teams) in `RivalCatalog`; name clearance (open item 5) covers them.
 - Track-intro and upgrade verses are in `VerseMoments` and checked against all 11 languages. Names of tracks are shown from the language files (p6), not the catalog.
+
+## D-033 (p3a) Core providers
+- Settings, theme, locale, progress, garage and entitlement providers are `ValueNotifier`/`ChangeNotifier`s over the ports. Progress saves are queued so writes never overlap; a failed save shows `saveError` and the next change retries. A newer schema stays read-only.
+- Locale: the device language is read through a function, so a change while the app runs is picked up; a language the player chose is never overridden.
+
+## D-034 (p3b) Feature providers
+- `RaceProvider` steps the simulation at a fixed 60 Hz from frame time, at most 8 steps per frame (surplus time is dropped so the game never runs fast afterwards). Stars: position, Time Trial (best lap against par) or Escape Run (metres). `commit()` is idempotent and also stores best lap and best Escape Run distance.
+- `ConsentProvider` joins the consent answer with the Remove Ads purchase into `AdState`; a failing consent service leaves ads off.
+- `AdProvider` rules: nothing before consent, nothing when the remote switch is off, no interstitial in the first session, none within 3 minutes of the last, none after the first Daily attempt of a day. Remove Ads stops banners and interstitials only; rewarded ads stay the player's choice.
+- `DailyProvider`: the first attempt of a day is free; later ones are "extra" (rewarded ad, or free with Remove Ads; the screen decides). Attempts are saved at the start of a race. A lapsed streak reads 0 until the next run. The reminder needs permission first; refused means no change.
+- `VerseProvider` records each verse shown as seen; `FlagsProvider` keeps the last good flags when a fetch fails. `AppScope` hands all providers down the tree.
