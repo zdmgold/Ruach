@@ -67,8 +67,9 @@ void main() {
       expect(race.stage, RaceStage.running);
       race.advance(1 / 60 * 4, DriveInput.idle);
       expect(race.simulation!.phase, RacePhase.countdown);
-      race.advance(4, DriveInput.idle);
-      race.advance(4, DriveInput.idle);
+      for (int i = 0; i < 30; i++) {
+        race.advance(0.2, DriveInput.idle);
+      }
       expect(race.simulation!.phase, RacePhase.racing);
     });
 
@@ -104,7 +105,7 @@ void main() {
         sim.step(DriveInput.idle);
       }
       sim.player.tracker.forceFinish(sim.elapsedSeconds);
-      sim.endRace();
+      sim.step(DriveInput.idle);
       race.advance(0.02, DriveInput.idle);
       expect(race.stage, RaceStage.finished);
       expect(race.result!.stars, 3);

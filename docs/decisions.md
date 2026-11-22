@@ -40,7 +40,8 @@ All rows marked Proposed in blueprint section 1 were confirmed by the owner on 2
 | p1f | Done | Core support models: progress, verse, settings, app error, ad state, tolerant JSON readers |
 | p2a | Done | Scripture tools, curated verses for 11 languages, notices |
 | p2b | Done | Race logic (p2b-1 physics and rules, p2b-2 rival AI) |
-| p2c to p8c | Not started | See blueprint section 10 |
+| p2c to p3b | Done | D-027 to D-034 |
+| p4a to p8c | Not started | See blueprint section 10 |
 
 ## Open items
 
