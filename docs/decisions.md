@@ -40,8 +40,8 @@ All rows marked Proposed in blueprint section 1 were confirmed by the owner on 2
 | p1f | Done | Core support models: progress, verse, settings, app error, ad state, tolerant JSON readers |
 | p2a | Done | Scripture tools, curated verses for 11 languages, notices |
 | p2b | Done | Race logic (p2b-1 physics and rules, p2b-2 rival AI) |
-| p2c to p3b | Done | D-027 to D-034 |
-| p4a to p8c | Not started | See blueprint section 10 |
+| p2c to p4a | Done | D-027 to D-035 |
+| p4b to p8c | Not started | See blueprint section 10 |
 
 ## Open items
 
@@ -220,3 +220,9 @@ Eleven translations are pinned in `tools/scripture/sources.json` (repository, co
 - `AdProvider` rules: nothing before consent, nothing when the remote switch is off, no interstitial in the first session, none within 3 minutes of the last, none after the first Daily attempt of a day. Remove Ads stops banners and interstitials only; rewarded ads stay the player's choice.
 - `DailyProvider`: the first attempt of a day is free; later ones are "extra" (rewarded ad, or free with Remove Ads; the screen decides). Attempts are saved at the start of a race. A lapsed streak reads 0 until the next run. The reminder needs permission first; refused means no change.
 - `VerseProvider` records each verse shown as seen; `FlagsProvider` keeps the last good flags when a fetch fails. `AppScope` hands all providers down the tree.
+
+## D-035 (p4a) Components
+- All tappable components share `Pressable`: no ripple, a 150 ms fade to 70% (instant under Reduce Motion), a hit area of at least 48 square whatever the visible size, and a spoken label that replaces the inner text when given. `PrimaryButton` also scales to 0.97 (the Motion table); `AppRow` tints its background instead of fading.
+- `AppChip` has two tones only (neutral, accent), because those are the pairs the contrast test covers. Add a tone only together with its contrast pair.
+- `NavBar` takes the status-bar inset itself, shows the brand or a back button (a back button must have a spoken label), and the title wraps to two lines instead of clipping at large text sizes.
+- Tests use `isSemantics` (Flutter 3.50 removed `SemanticsFlag`; `containsSemantics` is deprecated).
