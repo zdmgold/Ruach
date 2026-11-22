@@ -201,3 +201,10 @@ Eleven translations are pinned in `tools/scripture/sources.json` (repository, co
 - `AdService` never decides policy; the ad provider (p3b) checks consent, Remove Ads and pacing first. It exposes the loaded `BannerAd` for the ad slot widget.
 - `BillingService`: purchase state is read from the store each launch (restorePurchases and the purchase stream); the last known answer is cached in preferences only for offline launches and is overwritten whenever the store answers. UNVERIFIED on a device: needs the Play and App Store products to exist.
 - `AppConfig.siteBase` is empty until the owner sends the Cloudflare URL; `FlagsService` then returns defaults without a request. `website/flags.json` holds the static flags.
+
+## D-032 (p2g) Catalogs
+- Tracks are recipes (`TrackSpec`: ellipse radii, up to three harmonics, width, surfaces, scenery) that `TrackCatalog` turns into closed centrelines of 48 control points. The outline is star-shaped, so a track can never cross itself. Now variants share the Then geometry, with asphalt, no zones, 10% wider road and `guardrails`/`lamps` scenery (no dust wall).
+- Par lap times come from `ParEstimator` (speed profile limited by grip, braking and acceleration, x1.2 slack) for the Journey default vehicle (`VehicleCatalog.journeyDefault`: light chariot on 1 to 8, road cart on 9 to 12, hatch on Today tracks and Now variants).
+- Catalog test: every one of the 28 tracks validates, has drivable corners (minimum radius at least 45 m), and is finished by the line-following player within 2.2x par with five AI rivals still moving.
+- 12 fictional rivals (invented names and teams) in `RivalCatalog`; name clearance (open item 5) covers them.
+- Track-intro and upgrade verses are in `VerseMoments` and checked against all 11 languages. Names of tracks are shown from the language files (p6), not the catalog.
