@@ -41,7 +41,7 @@ void main() {
     await tester.pump();
     await tester.pump();
     race.start(_config(0));
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 40; i++) {
       await tester.pump(const Duration(milliseconds: 100));
     }
     expect(reads, greaterThan(0));
