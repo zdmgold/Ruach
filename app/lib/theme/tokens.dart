@@ -112,6 +112,44 @@ abstract final class WorldColors {
   static const Color trackAsphalt = Color(0xFF4A433A);
   static const Color trackSand = Color(0xFFD9BE8C);
   static const Color trackStone = Color(0xFFA39683);
+  static const Color trackDirt = Color(0xFFB08A5A);
+  static const Color trackCobble = Color(0xFF8C8272);
+  static const Color trackFord = Color(0xFF6FA3B5);
+  static const Color trackGrass = Color(0xFF8FA66A);
+
+  /// Ground beside the road.
+  static const Color groundGrass = Color(0xFF6F8554);
+  static const Color groundSand = Color(0xFFB8985F);
+
+  /// Road markings.
+  static const Color line = Color(0xFFF4EFE4);
+  static const Color lineDark = Color(0xFF26211A);
+  static const Color guardrail = Color(0xFF9A9A94);
+  static const Color lampHalo = Color(0xFFFFE9A8);
+
+  /// Scenery.
+  static const Color sceneryTree = Color(0xFF3F6B3A);
+  static const Color sceneryTreeEdge = Color(0xFF2C4D29);
+  static const Color sceneryRock = Color(0xFF8A8478);
+  static const Color sceneryWater = Color(0xFF5B93AD);
+
+  /// The player's vehicle, and the palette rival teams draw from.
+  static const Color playerCar = Color(0xFFE08A1E);
+  static const List<Color> rivalCars = <Color>[
+    Color(0xFFB3261E),
+    Color(0xFF1F5FA8),
+    Color(0xFF2E7D4F),
+    Color(0xFF6A3FA0),
+    Color(0xFFC9B21C),
+    Color(0xFF1C8C8C),
+    Color(0xFFD1558A),
+    Color(0xFF5C5C5C),
+  ];
+
+  /// Car body details.
+  static const Color carGlass = Color(0xFF2B3A44);
+  static const Color carWheel = Color(0xFF1A1714);
+  static const Color carWood = Color(0xFF8A5A2B);
 }
 
 /// Spacing scale. Every gap is chosen from this list.
