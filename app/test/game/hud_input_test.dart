@@ -48,7 +48,10 @@ Widget _host(Widget child, {TextDirection dir = TextDirection.ltr, double scale 
         data: MediaQueryData(size: const Size(360, 640), textScaler: TextScaler.linear(scale)),
         child: AppTheme(
           data: AppThemeData.light(),
-          child: SizedBox(width: 360, height: 640, child: child),
+          child: Align(
+            alignment: Alignment.topLeft,
+            child: SizedBox(width: 360, height: 560, child: child),
+          ),
         ),
       ),
     );
@@ -65,6 +68,12 @@ void _start(RaceProvider race, RaceMode mode, {int track = 0}) {
   ));
 }
 
+void _pastCountdown(RaceProvider race) {
+  for (int i = 0; i < 34; i++) {
+    race.advance(0.1, DriveInput.idle);
+  }
+}
+
 void main() {
   group('HudLayer', () {
     testWidgets('shows the countdown, then position, lap and time', (WidgetTester tester) async {
@@ -73,7 +82,7 @@ void main() {
       await tester.pumpWidget(_host(HudLayer(race: race, labels: _labels, onPause: () {})));
       expect(find.text('3'), findsOneWidget);
       expect(find.text('Ruach'), findsOneWidget);
-      race.advance(3.2, DriveInput.idle);
+      _pastCountdown(race);
       await tester.pump();
       expect(find.text('Go'), findsOneWidget);
       expect(find.textContaining('/6'), findsOneWidget);
@@ -98,7 +107,7 @@ void main() {
       final RaceProvider race = _race();
       _start(race, RaceMode.escapeRun);
       await tester.pumpWidget(_host(HudLayer(race: race, labels: _labels, onPause: () {})));
-      race.advance(3.2, DriveInput.idle);
+      _pastCountdown(race);
       await tester.pump();
       expect(find.text('0 m'), findsOneWidget);
     });
@@ -106,7 +115,7 @@ void main() {
     testWidgets('large text is capped so the HUD stays small, and it survives', (WidgetTester tester) async {
       final RaceProvider race = _race();
       _start(race, RaceMode.quickRace);
-      race.advance(3.2, DriveInput.idle);
+      _pastCountdown(race);
       await tester.pumpWidget(_host(HudLayer(race: race, labels: _labels, onPause: () {}), scale: 3));
       expect(tester.takeException(), isNull);
       final Text lap = tester.widget(find.text('L1/3'));
@@ -117,7 +126,7 @@ void main() {
     testWidgets('right-to-left puts the position on the right and does not flip the minimap points', (WidgetTester tester) async {
       final RaceProvider race = _race();
       _start(race, RaceMode.quickRace);
-      race.advance(3.2, DriveInput.idle);
+      _pastCountdown(race);
       await tester.pumpWidget(_host(HudLayer(race: race, labels: _labels, onPause: () {}), dir: TextDirection.rtl));
       expect(tester.getCenter(find.text('L1/3')).dx, greaterThan(180));
       expect(tester.takeException(), isNull);
@@ -212,10 +221,10 @@ void main() {
       final InputController c = InputController(DragSteerStrategy());
       await pumpInput(tester, c, settings: const Settings(controlScheme: ControlScheme.dragSteer));
       expect(find.bySemanticsLabel('Steer left'), findsNothing);
-      final TestGesture g = await tester.startGesture(const Offset(300, 400));
+      final TestGesture g = await tester.startGesture(const Offset(300, 300));
       await g.moveBy(const Offset(10, 0));
       expect(c.dragSteer, greaterThan(0.5));
-      await g.moveTo(const Offset(40, 400));
+      await g.moveTo(const Offset(40, 300));
       expect(c.dragSteer, lessThan(-0.5));
       await g.up();
       expect(c.dragSteer, 0);
