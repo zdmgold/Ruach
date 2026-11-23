@@ -8,6 +8,16 @@ import 'package:ruach/widgets/verse_card.dart';
 /// Shares text through the system share sheet. Supplied by the app shell.
 typedef ShareText = Future<bool> Function(String text);
 
+/// How a verse reference is written in the player's language.
+abstract final class VerseText {
+  static String reference(AppLocalizations l, VerseRef ref) {
+    final String book = bookName(l, ref.book);
+    return ref.isRange
+        ? l.verseRefRange(book, ref.chapter, ref.verse, ref.endVerse)
+        : l.verseRef(book, ref.chapter, ref.verse);
+  }
+}
+
 /// A verse card for a verse that is loaded once. Nothing is shown while it
 /// loads or when there is no verse, so a missing verse never leaves a hole.
 class VerseBlock extends StatefulWidget {
@@ -23,13 +33,6 @@ class VerseBlock extends StatefulWidget {
 class _VerseBlockState extends State<VerseBlock> {
   late final Future<Verse?> _future = widget.load();
 
-  static String reference(AppLocalizations l, VerseRef ref) {
-    final String book = bookName(l, ref.book);
-    return ref.isRange
-        ? l.verseRefRange(book, ref.chapter, ref.verse, ref.endVerse)
-        : l.verseRef(book, ref.chapter, ref.verse);
-  }
-
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l = AppLocalizations.of(context);
@@ -38,7 +41,7 @@ class _VerseBlockState extends State<VerseBlock> {
       builder: (BuildContext context, AsyncSnapshot<Verse?> snapshot) {
         final Verse? verse = snapshot.data;
         if (verse == null) return const SizedBox.shrink();
-        final String ref = reference(l, verse.ref);
+        final String ref = VerseText.reference(l, verse.ref);
         final ShareText? share = widget.onShare;
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s16),

@@ -165,6 +165,11 @@ class HomeScreen extends StatelessWidget {
                 : l.commonLocked,
             onTap: Unlocks.mode(mode, scope.progress.value) ? () => openMode(mode) : null,
           ),
+        AppRow(
+          icon: AppIcons.verse,
+          label: l.libraryTitle,
+          onTap: () => unawaited(navigator.pushNamed(Routes.verseLibrary)),
+        ),
       ],
     );
   }

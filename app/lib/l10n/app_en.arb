@@ -492,5 +492,16 @@
         "type": "String"
       }
     }
-  }
+  },
+  "libraryTitle": "Verse library",
+  "libraryCount": "{count, plural, =1{1 verse collected} other{{count} verses collected}}",
+  "@libraryCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryEmptyTitle": "No verses yet",
+  "libraryEmptyBody": "Race to collect verses. Each one you meet is kept here."
 }

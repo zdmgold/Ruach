@@ -9,6 +9,7 @@ abstract final class Routes {
   static const String home = '/';
   static const String garage = '/garage';
   static const String settings = '/settings';
+  static const String verseLibrary = '/verses';
 
   /// The entry screen of a mode (Journey map, track picker, and so on).
   /// Argument: [ModeArgs].
