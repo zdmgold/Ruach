@@ -13,6 +13,7 @@ import 'package:ruach/core/models/vec2.dart';
 import 'package:ruach/core/models/vehicle.dart';
 import 'package:ruach/l10n/app_localizations.dart';
 import 'package:ruach/l10n/names.dart';
+import 'package:ruach/providers/race_provider.dart';
 import 'package:ruach/screens/routes.dart';
 import 'package:ruach/screens/verse_block.dart';
 import 'package:ruach/theme/app_theme.dart';
@@ -35,9 +36,13 @@ class TrackIntroScreen extends StatefulWidget {
     required this.trackId,
     super.key,
     this.onShare,
+    this.weeklyIndex,
   });
 
   final RaceMode mode;
+
+  /// For the Weekly Circuit: which day's race, 0 to 6.
+  final int? weeklyIndex;
   final String trackId;
   final ShareText? onShare;
 
@@ -52,10 +57,19 @@ class _TrackIntroScreenState extends State<TrackIntroScreen> {
 
   bool get _isDaily => widget.mode == RaceMode.dailyRun;
 
+  bool get _isWeekly => widget.mode == RaceMode.weeklyCircuit && widget.weeklyIndex != null;
+
+  /// The fixed setup for a Daily Run or a Weekly Circuit day, or null.
+  DailyChallenge? _challenge(AppScope scope) {
+    if (_isDaily) return scope.daily.challenge;
+    if (_isWeekly) return scope.daily.week[widget.weeklyIndex!];
+    return null;
+  }
+
   RaceConfig _config(AppScope scope) {
     final Track track = TrackCatalog.byId(widget.trackId)!;
-    if (_isDaily) {
-      final DailyChallenge c = scope.daily.challenge;
+    final DailyChallenge? c = _challenge(scope);
+    if (c != null) {
       return ModeRules.build(
         mode: widget.mode,
         track: track,
@@ -103,7 +117,8 @@ class _TrackIntroScreenState extends State<TrackIntroScreen> {
         Routes.race,
         arguments: RaceArgs(
           config: config,
-          wind: _isDaily ? scope.daily.challenge.wind : Vec2.zero,
+          wind: _challenge(scope)?.wind ?? Vec2.zero,
+          weekly: _isWeekly ? WeeklySlot(scope.daily.weekId, widget.weeklyIndex!) : null,
         ),
       ),
     );
@@ -165,7 +180,7 @@ class _TrackIntroScreenState extends State<TrackIntroScreen> {
               icon: AppIcons.vehicle,
               label: l.introChooseVehicle,
               subtitle: vehicleName(l, vehicle.kind),
-              onTap: _isDaily
+              onTap: _challenge(scope) != null
                   ? null
                   : () => unawaited(Navigator.of(context).pushNamed(Routes.garage)),
             ),

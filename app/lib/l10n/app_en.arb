@@ -459,5 +459,38 @@
         "type": "int"
       }
     }
+  },
+  "weeklyDay": "Day {number}",
+  "@weeklyDay": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "weeklyTotal": "Week total {time}",
+  "@weeklyTotal": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "weeklyOpensLater": "Opens later this week",
+  "weeklyTime": "{time}",
+  "@weeklyTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "trackListBestLap": "Best lap {time}",
+  "@trackListBestLap": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
   }
 }

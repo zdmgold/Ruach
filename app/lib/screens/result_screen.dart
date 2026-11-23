@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:ruach/app_scope.dart';
 import 'package:ruach/core/logic/catalog_ids.dart';
+import 'package:ruach/core/logic/daily_seed.dart';
 import 'package:ruach/core/logic/mode_rules.dart';
 import 'package:ruach/core/models/race_config.dart';
 import 'package:ruach/core/models/race_result.dart';
@@ -41,6 +42,7 @@ class ResultScreen extends StatefulWidget {
 class _ResultScreenState extends State<ResultScreen> {
   bool _started = false;
   bool _saved = false;
+  StreakUpdate? _streak;
 
   @override
   void didChangeDependencies() {
@@ -52,9 +54,16 @@ class _ResultScreenState extends State<ResultScreen> {
 
   Future<void> _save(AppScope scope) async {
     await scope.race.commit();
-    if (!mounted) return;
-    setState(() => _saved = true);
     final RaceResult? result = scope.race.result;
+    StreakUpdate? streak;
+    if (result != null && result.mode == RaceMode.dailyRun && result.player.finished) {
+      streak = await scope.daily.complete(result.playerPosition);
+    }
+    if (!mounted) return;
+    setState(() {
+      _saved = true;
+      _streak = streak;
+    });
     final bool dailyAfterFirst =
         result?.mode == RaceMode.dailyRun && scope.daily.attemptsToday >= 1;
     await scope.ads.maybeShowInterstitial(afterFirstDailyAttempt: dailyAfterFirst);
@@ -71,7 +80,11 @@ class _ResultScreenState extends State<ResultScreen> {
   void _again(RaceResult r) => unawaited(
         Navigator.of(context).pushReplacementNamed(
           Routes.trackIntro,
-          arguments: TrackIntroArgs(mode: r.mode, trackId: r.trackId),
+          arguments: TrackIntroArgs(
+            mode: r.mode,
+            trackId: r.trackId,
+            weeklyIndex: AppScope.of(context).race.weekly?.index,
+          ),
         ),
       );
 
@@ -136,6 +149,7 @@ class _ResultScreenState extends State<ResultScreen> {
         final bool canBoost = _saved &&
             config != null &&
             r.mode != RaceMode.dailyRun &&
+            r.mode != RaceMode.weeklyCircuit &&
             scope.ads.rewardedReady;
         return ScreenFrame(
           bannerHeight: scope.ads.bannersAllowed ? 50 : 0,
@@ -173,6 +187,8 @@ class _ResultScreenState extends State<ResultScreen> {
                       tone: ChipTone.accent,
                     ),
                   if (best != null) AppChip(label: l.resultTime(formatLapTime(best))),
+                  if (_streak != null && _streak!.counted)
+                    AppChip(label: l.streakDays(_streak!.current), tone: ChipTone.accent),
                   if (gifts > 0)
                     GiftBadge(count: gifts, semanticLabel: l.giftCountSemantic(gifts)),
                 ],

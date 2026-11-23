@@ -30,6 +30,19 @@ final class DailyProvider extends ChangeNotifier {
 
   DailyChallenge get challenge => DailySeed.forDate(today);
 
+  /// The seven Weekly Circuit races of this week, Monday first.
+  List<DailyChallenge> get week => DailySeed.weeklyCircuit(today);
+
+  String get weekId => today.weekId;
+
+  /// The saved time of Weekly Circuit race [index] this week, or null.
+  Duration? weeklyTime(int index) {
+    final Progress p = _progress.value;
+    if (p.weeklyCircuitWeek != weekId) return null;
+    final int? ms = p.weeklyCircuitMillis[index.toString()];
+    return ms == null ? null : Duration(milliseconds: ms);
+  }
+
   DailyRunRecord get record =>
       _progress.value.dailyRuns[today.key] ?? const DailyRunRecord();
 

@@ -17,6 +17,15 @@ import 'package:ruach/providers/progress_provider.dart';
 
 enum RaceStage { idle, running, paused, finished }
 
+/// Which race of the Weekly Circuit a race is: the ISO week (for example
+/// `2026-W47`) and the day index 0 to 6, Monday first.
+final class WeeklySlot {
+  const WeeklySlot(this.weekId, this.index);
+
+  final String weekId;
+  final int index;
+}
+
 /// Runs one race at a time: owns the simulation, steps it at a fixed 60 Hz
 /// from the frame time the game loop gives it, applies the mode rule, and on
 /// finish builds the result and records it in the saved game.
@@ -38,6 +47,7 @@ final class RaceProvider extends ChangeNotifier {
   double _escapeMetres = 0;
   bool _committed = false;
   int _giftsGained = 0;
+  WeeklySlot? _weekly;
 
   // Time Trial ghost: the saved best lap to race against, and the lap being
   // recorded now.
@@ -50,6 +60,9 @@ final class RaceProvider extends ChangeNotifier {
 
   /// The saved best lap to show as a ghost car, or null.
   GhostLap? get ghost => _ghost;
+
+  /// The Weekly Circuit race being run, or null for any other race.
+  WeeklySlot? get weekly => _weekly;
 
   RaceSimulation? get simulation => _sim;
   RaceStage get stage => _stage;
@@ -69,7 +82,9 @@ final class RaceProvider extends ChangeNotifier {
     RaceConfig config, {
     Vec2 wind = Vec2.zero,
     double startingBoost = 0,
+    WeeklySlot? weekly,
   }) {
+    _weekly = weekly;
     final CarTuning tuning = UpgradeRules.tuningFor(config.upgrades);
     _sim = RaceSimulation(
       config: config,
@@ -214,6 +229,22 @@ final class RaceProvider extends ChangeNotifier {
             ghosts: <String, String>{...p.ghosts, config.track.id: ghostText},
           );
         }
+      }
+      final WeeklySlot? slot = _weekly;
+      if (slot != null && me.finished) {
+        final Map<String, int> times = p.weeklyCircuitWeek == slot.weekId
+            ? p.weeklyCircuitMillis
+            : const <String, int>{};
+        final String entry = slot.index.toString();
+        final int ms = me.totalTime.inMilliseconds;
+        final int? old = times[entry];
+        next = next.copyWith(
+          weeklyCircuitWeek: slot.weekId,
+          weeklyCircuitMillis: <String, int>{
+            ...times,
+            entry: old == null || ms < old ? ms : old,
+          },
+        );
       }
       if (config.mode == RaceMode.escapeRun && metres.floor() > p.escapeRunBestMetres) {
         next = next.copyWith(escapeRunBestMetres: metres.floor());

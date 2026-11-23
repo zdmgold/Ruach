@@ -89,6 +89,7 @@ class _RaceScreenState extends State<RaceScreen> with WidgetsBindingObserver, Si
       widget.args.config,
       wind: widget.args.wind,
       startingBoost: widget.args.startingBoost,
+      weekly: widget.args.weekly,
     );
   }
 

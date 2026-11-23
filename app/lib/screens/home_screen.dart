@@ -128,7 +128,13 @@ class HomeScreen extends StatelessWidget {
         _card(
           icon: _iconFor(RaceMode.journey),
           label: l.homeJourneyTitle,
-          value: l.homeJourneyValue(scope.progress.value.totalStars, journeyTotal),
+          value: l.homeJourneyValue(
+            TrackIds.journey.fold<int>(
+              0,
+              (int sum, String id) => sum + scope.progress.value.starsOn(id),
+            ),
+            journeyTotal,
+          ),
           onTap: () => openMode(RaceMode.journey),
         ),
         const SizedBox(height: AppSpacing.s8),
