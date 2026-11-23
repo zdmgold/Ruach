@@ -1,0 +1,415 @@
+{
+  "@@locale": "en",
+  "appName": "Ruach",
+  "commonBack": "Back",
+  "commonClose": "Close",
+  "commonSettings": "Settings",
+  "commonLocked": "Locked",
+  "commonContinue": "Continue",
+  "giftCount": "{count, plural, =1{1 Gift} other{{count} Gifts}}",
+  "@giftCount": {
+    "description": "A number of Gifts, the currency earned by racing.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "giftCountSemantic": "{count, plural, =1{1 Gift earned} other{{count} Gifts earned}}",
+  "@giftCountSemantic": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "starsEarned": "{stars} of 3 stars",
+  "@starsEarned": {
+    "placeholders": {
+      "stars": {
+        "type": "int"
+      }
+    }
+  },
+  "homeDailyTitle": "Daily Run",
+  "homeDailyToday": "Today: {track}",
+  "@homeDailyToday": {
+    "placeholders": {
+      "track": {
+        "type": "String"
+      }
+    }
+  },
+  "homeDailyDone": "Done for today. Come back tomorrow.",
+  "streakDays": "{count, plural, =0{No streak yet} =1{1 day streak} other{{count} day streak}}",
+  "@streakDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeJourneyTitle": "Journey",
+  "homeJourneyValue": "{stars} of {total} stars",
+  "@homeJourneyValue": {
+    "placeholders": {
+      "stars": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "homeQuickRaceTitle": "Quick Race",
+  "homeQuickRaceValue": "Pick any unlocked track",
+  "homeGarageTitle": "Garage",
+  "homeGarageValue": "{count, plural, =1{1 Gift to spend} other{{count} Gifts to spend}}",
+  "@homeGarageValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeModesHeader": "More ways to race",
+  "modeJourney": "Journey",
+  "modeQuickRace": "Quick Race",
+  "modeTimeTrial": "Time Trial",
+  "modeDailyRun": "Daily Run",
+  "modeWeeklyCircuit": "Weekly Circuit",
+  "modeEscapeRun": "Escape Run",
+  "modeElimination": "Elimination",
+  "modeJourneyBlurb": "Race the roads of the Bible in order",
+  "modeQuickRaceBlurb": "One race on a track you have unlocked",
+  "modeTimeTrialBlurb": "Chase your best lap against your ghost",
+  "modeDailyRunBlurb": "One new challenge every day",
+  "modeWeeklyCircuitBlurb": "Three tracks, one week",
+  "modeEscapeRunBlurb": "Stay ahead of the wall for as long as you can",
+  "modeEliminationBlurb": "Last place drops out each lap",
+  "eraChariotAge": "Chariot Age",
+  "eraKingdomAndExile": "Kingdom and Exile",
+  "eraGospelRoads": "Gospel Roads",
+  "eraToday": "Today",
+  "variantThen": "Then",
+  "variantNow": "Now",
+  "trackNowVariant": "{track} (Now)",
+  "@trackNowVariant": {
+    "placeholders": {
+      "track": {
+        "type": "String"
+      }
+    }
+  },
+  "trackNileBanks": "Banks of the Nile",
+  "trackRedSeaCrossing": "Red Sea Crossing",
+  "trackSinaiWilderness": "Sinai Wilderness",
+  "trackJordanCrossing": "Jordan Crossing",
+  "trackValleyOfElah": "Valley of Elah",
+  "trackCarmelRidge": "Carmel Ridge",
+  "trackJerusalemAscent": "Jerusalem Ascent",
+  "trackBabylonGates": "Gates of Babylon",
+  "trackGalileeShore": "Galilee Shore",
+  "trackDamascusRoad": "Damascus Road",
+  "trackAntiochWay": "Antioch Way",
+  "trackAppianWay": "Appian Way",
+  "trackDesertPass": "Desert Pass",
+  "trackLakesideDrive": "Lakeside Drive",
+  "trackCoastHighway": "Coast Highway",
+  "trackHighlandSwitchbacks": "Highland Switchbacks",
+  "vehicleLightChariot": "Light Chariot",
+  "vehicleHeavyChariot": "Heavy Chariot",
+  "vehicleRoadCart": "Road Cart",
+  "vehicleHatch": "Hatch",
+  "vehicleRoadster": "Roadster",
+  "vehicleUtility4x4": "Utility 4x4",
+  "upgradeWisdom": "Wisdom",
+  "upgradeWisdomEffect": "Ruach meter fills faster",
+  "upgradeUnderstanding": "Understanding",
+  "upgradeUnderstandingEffect": "More grip in corners",
+  "upgradeCounsel": "Counsel",
+  "upgradeCounselEffect": "Longer racing-line guide",
+  "upgradeMight": "Might",
+  "upgradeMightEffect": "Higher top speed",
+  "upgradeKnowledge": "Knowledge",
+  "upgradeKnowledgeEffect": "Faster recovery after leaving the track or contact",
+  "upgradeFearOfTheLord": "Fear of the LORD",
+  "upgradeFearOfTheLordEffect": "Steadier on rough ground and in contact",
+  "garageTitle": "Garage",
+  "garageVehiclesHeader": "Vehicles",
+  "garageUpgradesHeader": "Gifts of the Spirit",
+  "garageInUse": "In use",
+  "garageUse": "Use",
+  "garageUnlockedAt": "Unlocks with track {number}",
+  "@garageUnlockedAt": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "garageUpgradeFor": "Upgrade for {cost}",
+  "@garageUpgradeFor": {
+    "placeholders": {
+      "cost": {
+        "type": "int"
+      }
+    }
+  },
+  "garageNeeds": "Needs {cost} Gifts",
+  "@garageNeeds": {
+    "placeholders": {
+      "cost": {
+        "type": "int"
+      }
+    }
+  },
+  "garageMaxed": "Maxed",
+  "upgradeLevel": "Level {level} of {max}",
+  "@upgradeLevel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "verseShare": "Share",
+  "verseReadChapter": "Read the chapter",
+  "verseRef": "{book} {chapter}:{verse}",
+  "@verseRef": {
+    "placeholders": {
+      "book": {
+        "type": "String"
+      },
+      "chapter": {
+        "type": "int"
+      },
+      "verse": {
+        "type": "int"
+      }
+    }
+  },
+  "verseRefRange": "{book} {chapter}:{verse}-{endVerse}",
+  "@verseRefRange": {
+    "placeholders": {
+      "book": {
+        "type": "String"
+      },
+      "chapter": {
+        "type": "int"
+      },
+      "verse": {
+        "type": "int"
+      },
+      "endVerse": {
+        "type": "int"
+      }
+    }
+  },
+  "bookGen": "Genesis",
+  "bookExod": "Exodus",
+  "bookNum": "Numbers",
+  "bookDeut": "Deuteronomy",
+  "bookJosh": "Joshua",
+  "bookJudg": "Judges",
+  "bookRuth": "Ruth",
+  "book1Sam": "1 Samuel",
+  "book2Sam": "2 Samuel",
+  "book1Chr": "1 Chronicles",
+  "book2Chr": "2 Chronicles",
+  "bookEzra": "Ezra",
+  "bookNeh": "Nehemiah",
+  "bookJob": "Job",
+  "bookPs": "Psalm",
+  "bookProv": "Proverbs",
+  "bookEccl": "Ecclesiastes",
+  "bookIsa": "Isaiah",
+  "bookJer": "Jeremiah",
+  "bookLam": "Lamentations",
+  "bookHos": "Hosea",
+  "bookAmos": "Amos",
+  "bookMic": "Micah",
+  "bookHab": "Habakkuk",
+  "bookZeph": "Zephaniah",
+  "bookZech": "Zechariah",
+  "bookMatt": "Matthew",
+  "bookMark": "Mark",
+  "bookLuke": "Luke",
+  "bookJohn": "John",
+  "bookActs": "Acts",
+  "bookRom": "Romans",
+  "book1Cor": "1 Corinthians",
+  "book2Cor": "2 Corinthians",
+  "bookGal": "Galatians",
+  "bookEph": "Ephesians",
+  "bookPhil": "Philippians",
+  "bookCol": "Colossians",
+  "book1Thess": "1 Thessalonians",
+  "book2Thess": "2 Thessalonians",
+  "book2Tim": "2 Timothy",
+  "bookHeb": "Hebrews",
+  "bookJas": "James",
+  "book1Pet": "1 Peter",
+  "book2Pet": "2 Peter",
+  "book1John": "1 John",
+  "bookRev": "Revelation",
+  "introStart": "Start race",
+  "introLaps": "{count, plural, =1{1 lap} other{{count} laps}}",
+  "@introLaps": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "introRivals": "{count, plural, =1{1 rival} other{{count} rivals}}",
+  "@introRivals": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "introChooseVehicle": "Vehicle",
+  "introBestLap": "Best lap {time}",
+  "@introBestLap": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "introNoBestLap": "No lap time yet",
+  "hudPosition": "{position}/{field}",
+  "@hudPosition": {
+    "placeholders": {
+      "position": {
+        "type": "int"
+      },
+      "field": {
+        "type": "int"
+      }
+    }
+  },
+  "hudLap": "{lap}/{laps}",
+  "@hudLap": {
+    "placeholders": {
+      "lap": {
+        "type": "int"
+      },
+      "laps": {
+        "type": "int"
+      }
+    }
+  },
+  "hudBoost": "Ruach",
+  "hudBoostValue": "{segments} of {total} segments",
+  "@hudBoostValue": {
+    "placeholders": {
+      "segments": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "hudGo": "Go!",
+  "hudEscapeDistance": "{metres} m",
+  "@hudEscapeDistance": {
+    "placeholders": {
+      "metres": {
+        "type": "int"
+      }
+    }
+  },
+  "hudPause": "Pause",
+  "hudMinimap": "Track map",
+  "hudPositionSemantic": "Position {position} of {field}",
+  "@hudPositionSemantic": {
+    "placeholders": {
+      "position": {
+        "type": "int"
+      },
+      "field": {
+        "type": "int"
+      }
+    }
+  },
+  "hudLapSemantic": "Lap {lap} of {laps}",
+  "@hudLapSemantic": {
+    "placeholders": {
+      "lap": {
+        "type": "int"
+      },
+      "laps": {
+        "type": "int"
+      }
+    }
+  },
+  "hudTimeSemantic": "Time {time}",
+  "@hudTimeSemantic": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "inputSteerLeft": "Steer left",
+  "inputSteerRight": "Steer right",
+  "inputBrake": "Brake",
+  "inputBoost": "Boost",
+  "inputTiltFallback": "No tilt sensor found. Using buttons instead.",
+  "pauseTitle": "Paused",
+  "pauseResume": "Resume",
+  "pauseRestart": "Restart",
+  "pauseQuit": "Quit race",
+  "pauseQuitConfirm": "Quit this race? Your progress in it will be lost.",
+  "resultWon": "You won",
+  "resultPodium": "On the podium",
+  "resultFinished": "Finished",
+  "resultPosition": "Position {position} of {field}",
+  "@resultPosition": {
+    "placeholders": {
+      "position": {
+        "type": "int"
+      },
+      "field": {
+        "type": "int"
+      }
+    }
+  },
+  "resultGiftsEarned": "{count, plural, =1{+1 Gift} other{+{count} Gifts}}",
+  "@resultGiftsEarned": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultRaceAgain": "Race again",
+  "resultNextTrack": "Next track",
+  "resultHome": "Home",
+  "resultNewBest": "New best lap",
+  "resultTime": "Time {time}",
+  "@resultTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "resultBoostStart": "Watch a short video to start with extra boost",
+  "resultStarsLabel": "Stars",
+  "resultEscapeDistance": "You escaped {metres} m",
+  "@resultEscapeDistance": {
+    "placeholders": {
+      "metres": {
+        "type": "int"
+      }
+    }
+  }
+}

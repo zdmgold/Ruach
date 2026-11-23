@@ -20,6 +20,8 @@ dependencies:
   flame: ^1.38.2
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   flutter_local_notifications: ^23.0.3
   flutter_timezone: ^5.1.1
   google_mobile_ads: ^9.2.0
@@ -38,6 +40,9 @@ dev_dependencies:
   flutter_lints: ^6.0.0
 
 flutter:
+  # Generates AppLocalizations from lib/l10n/*.arb (l10n.yaml).
+  generate: true
+
   # No Material icon font. Icons are the Phosphor Bold font (decision D-021).
   uses-material-design: false
 
