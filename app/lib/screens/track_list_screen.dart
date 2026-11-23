@@ -12,7 +12,6 @@ import 'package:ruach/core/models/track.dart';
 import 'package:ruach/l10n/app_localizations.dart';
 import 'package:ruach/l10n/names.dart';
 import 'package:ruach/screens/routes.dart';
-import 'package:ruach/theme/app_theme.dart';
 import 'package:ruach/theme/icons.dart';
 import 'package:ruach/theme/tokens.dart';
 import 'package:ruach/utils/formatters.dart';
