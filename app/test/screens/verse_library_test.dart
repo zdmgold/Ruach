@@ -31,7 +31,7 @@ void main() {
     await tester.pumpWidget(s.app(const VerseLibraryScreen()));
     await tester.pumpAndSettle();
 
-    expect(find.text('1 verse collected'), findsOneWidget);
+    expect(find.text('1 VERSE COLLECTED'), findsOneWidget);
     expect(find.text('The LORD is my shepherd.'), findsOneWidget);
     expect(find.text('Psalm 23:1'), findsOneWidget);
     expect(find.text('Read the chapter'), findsNothing);
