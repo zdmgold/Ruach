@@ -1,4 +1,5 @@
 import 'package:ruach/core/models/race_config.dart';
+import 'package:ruach/core/models/vec2.dart';
 
 /// Route names. The full router (which screen each name builds, and the
 /// transitions) is assembled in the app shell (batch p6a); screens only push
@@ -36,9 +37,16 @@ final class TrackIntroArgs {
 }
 
 final class RaceArgs {
-  const RaceArgs({required this.config, this.startingBoost = 0});
+  const RaceArgs({
+    required this.config,
+    this.wind = Vec2.zero,
+    this.startingBoost = 0,
+  });
 
   final RaceConfig config;
+
+  /// Wind for the Daily Run; zero otherwise.
+  final Vec2 wind;
 
   /// 0 to 1, from the "start with extra boost" reward.
   final double startingBoost;

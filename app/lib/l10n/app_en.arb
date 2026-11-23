@@ -438,5 +438,26 @@
         "type": "String"
       }
     }
+  },
+  "verseShareText": "“{text}” {reference}",
+  "@verseShareText": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      },
+      "reference": {
+        "type": "String"
+      }
+    }
+  },
+  "introExtraAttempt": "Watch a short video for another try",
+  "introExtraUnavailable": "No video is available right now. Try again later.",
+  "introEscapeBest": "Best {metres} m",
+  "@introEscapeBest": {
+    "placeholders": {
+      "metres": {
+        "type": "int"
+      }
+    }
   }
 }
