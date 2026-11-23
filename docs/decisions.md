@@ -43,7 +43,8 @@ All rows marked Proposed in blueprint section 1 were confirmed by the owner on 2
 | p2c to p4c | Done | D-027 to D-037 |
 | p5a | Done | D-038 to D-039 |
 | p5b | Done | D-040 |
-| p5c to p8c | Not started | See blueprint section 10 |
+| p5c | Done | D-041 |
+| p5d to p8c | Not started | See blueprint section 10 |
 
 ## Open items
 
@@ -262,3 +263,8 @@ Eleven translations are pinned in `tools/scripture/sources.json` (repository, co
 - One `ModeScreen(mode)` dispatches: the Weekly Circuit has its own screen, every other mode uses `TrackListScreen`. The Daily Run goes straight to its track intro. Journey lists all tracks in era order with locked ones visible and a Then/Now switch; Quick Race, Time Trial, Escape Run and Elimination list only open tracks (Then and Now together). Time Trial rows show the best lap.
 - Weekly Circuit: seven races, one per day from Monday, from `DailySeed.weeklyCircuit`. Days up to today can be run (missed days later in the week); later days show as closed. Fixed vehicle, laps, seed and wind per day, no upgrades, no rewarded boost. A race carries a `WeeklySlot(weekId, index)`; `RaceProvider.commit` stores the finished time under that day (best of repeats) and clears the saved times when the week changes. The week total shows once all seven are run. There is no online leaderboard.
 - Fixes found while building it: finishing a Daily Run now records completion and the streak (it was never called from the result screen), and the Journey star total on Home counts Journey stars only (it summed Time Trial, Escape and every other star too).
+
+## D-041 (p5c) Verse library
+- The library lists the verses the player has met while racing, in Bible order, each as a verse card with Share. It collects by playing only (no browsing of unseen verses), so it stays a reward rather than a reader. An empty library explains how verses are collected.
+- "Read the chapter" appears only when the shell passes `onReadChapter`, so it is absent at launch and arrives with the Bible reader (p8c) without changing this screen.
+- Home has a Verse library row; `Routes.verseLibrary` is the route. Reference text (`VerseText.reference`) is shared by every screen that shows a verse.
