@@ -9,7 +9,6 @@ import 'package:ruach/core/models/race_result.dart';
 import 'package:ruach/core/models/vec2.dart';
 import 'package:ruach/core/models/verse.dart';
 import 'package:ruach/l10n/app_localizations.dart';
-import 'package:ruach/l10n/names.dart';
 import 'package:ruach/providers/race_provider.dart';
 import 'package:ruach/screens/routes.dart';
 import 'package:ruach/screens/verse_block.dart';
