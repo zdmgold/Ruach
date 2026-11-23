@@ -41,7 +41,8 @@ All rows marked Proposed in blueprint section 1 were confirmed by the owner on 2
 | p2a | Done | Scripture tools, curated verses for 11 languages, notices |
 | p2b | Done | Race logic (p2b-1 physics and rules, p2b-2 rival AI) |
 | p2c to p4c | Done | D-027 to D-037 |
-| p5a to p8c | Not started | See blueprint section 10 |
+| p5a | Done | D-038 to D-039 |
+| p5b to p8c | Not started | See blueprint section 10 |
 
 ## Open items
 
@@ -242,3 +243,16 @@ Eleven translations are pinned in `tools/scripture/sources.json` (repository, co
 - HUD is plain Flutter with every string supplied through `HudLabels`; it caps text scale at 120%. Left column: position, lap, time, boost meter, Escape Run distance. Right column: minimap, pause. Four 80-wide controls do not fit across a 360 phone, so brake and boost stack in a column beside the steering pair. One-handed play stacks pedals above steering on one side.
 - Race controls never mirror in right-to-left; handedness moves them. Steering icons are separate non-mirroring symbols (`steerLeft`, `steerRight`). The brake is a drawn stop square because no suitable glyph codepoint could be confirmed in the bundled font (glyph names in the file are `uniXXXX`).
 - Test lesson: never `await` a `StreamController.close()` inside `testWidgets`; it waits on the real event loop and hangs the run.
+
+## D-038 (p5a) Localisation brought forward
+- Screens may not hold string literals, so the l10n scaffold moved from p6a to p5a: `flutter_localizations` and `intl`, `generate: true`, `l10n.yaml`, `lib/l10n/app_en.arb` (the template), generated `app_localizations*.dart` (gitignored, excluded from analysis). The generated delegate list names the deprecated Material localizations, so the app passes its own list (`AppLocalizations.delegate` plus `GlobalWidgetsLocalizations.delegate`) at p6a.
+- `lib/l10n/names.dart` maps stable ids and enums (tracks, Now variants, vehicles, upgrades, eras, modes, Bible books) to translated names with exhaustive switches. A test checks every catalog id and every book used by a verse has a key.
+- The other ten ARB files arrive at p6b. Keys added later for the remaining screens go into `app_en.arb` as each batch lands.
+
+## D-039 (p5a) Core loop screens
+- Screens take their inputs by constructor and push only names from `screens/routes.dart` (`home`, `garage`, `settings`, `mode`, `trackIntro`, `race`, `result`) with small argument classes. The router that builds them is p6a. Ports the screens need (share, tilt, banner widget) are optional constructor arguments supplied by the shell; the review prompt is deferred to p5d/p6a because `Progress` has no "already asked" flag yet.
+- Flame 1.38 calls `FlameGame.update` inside the game widget's layout, where telling the HUD to rebuild throws. `RaceGame.drivesRace` is therefore false on the race screen, which steps `RaceProvider.advance` from its own `Ticker` (frames capped at 0.1 s). Other tests still let the game drive.
+- Leaving the app mid-race pauses it and clears held controls. Quitting asks first. No ads and no verses during a race; the interstitial gate runs once after the result is saved.
+- Daily Run: the vehicle is fixed by the challenge and no upgrades apply, so every player faces the same run. A second or later attempt in a day asks for a rewarded video unless Remove Ads is owned; with no video available the screen stays put and says so.
+- "Start with extra boost" (result screen, not Daily Run) fills half the Ruach meter and replays the same config; the amount is `ResultScreen.rewardedStartingBoost` and is a tuning value to revisit at Test APK 1.
+- Race again goes back through the track intro rather than straight into a race, so a Daily extra attempt cannot skip its video gate.
