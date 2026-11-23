@@ -140,7 +140,7 @@
   "garageUpgradesHeader": "Gifts of the Spirit",
   "garageInUse": "In use",
   "garageUse": "Use",
-  "garageUnlockedAt": "Unlocks with track {number}",
+  "garageUnlockedAt": "Opens with track {number}",
   "@garageUnlockedAt": {
     "placeholders": {
       "number": {
@@ -409,6 +409,33 @@
     "placeholders": {
       "metres": {
         "type": "int"
+      }
+    }
+  },
+  "garageVehicleInUse": "{name}, in use",
+  "@garageVehicleInUse": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "garageVehicleUse": "Use {name}",
+  "@garageVehicleUse": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "garageBuySemantic": "{name}: {action}",
+  "@garageBuySemantic": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "action": {
+        "type": "String"
       }
     }
   }

@@ -55,9 +55,14 @@ void main() {
         .map((RegExpMatch m) => m.group(1)!)
         .toSet();
     expect(books, isNotEmpty);
+    final Map<String, Object?> arb = jsonDecode(
+      File('lib/l10n/app_en.arb').readAsStringSync(),
+    ) as Map<String, Object?>;
     for (final String b in books) {
-      expect(bookName(l, b), isNot(b == 'Ps' ? 'Ps' : b), reason: b);
+      expect(arb.containsKey('book$b'), isTrue, reason: b);
+      expect(bookName(l, b), isNotEmpty, reason: b);
     }
+    expect(bookName(l, '1Sam'), '1 Samuel');
     expect(bookName(l, 'Ps'), 'Psalm');
   });
 

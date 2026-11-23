@@ -26,6 +26,10 @@ abstract final class Unlocks {
     return progress.isCleared(TrackIds.journey[n - 2]);
   }
 
+  /// The Journey track whose opening also opens the Road Cart and the modern
+  /// vehicles (Galilee Shore).
+  static const int vehicleTrackNumber = 9;
+
   /// Chariots are open from the start. The Road Cart and the modern vehicles
   /// open when Galilee Shore (track 9) opens.
   static bool vehicle(String vehicleId, Progress progress) {
@@ -33,7 +37,7 @@ abstract final class Unlocks {
       return VehicleIds.all.contains(vehicleId);
     }
     if (!VehicleIds.all.contains(vehicleId)) return false;
-    return track(TrackIds.journey[8], progress);
+    return track(TrackIds.journey[vehicleTrackNumber - 1], progress);
   }
 
   /// Mode access (blueprint section 2).
