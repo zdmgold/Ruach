@@ -42,7 +42,8 @@ All rows marked Proposed in blueprint section 1 were confirmed by the owner on 2
 | p2b | Done | Race logic (p2b-1 physics and rules, p2b-2 rival AI) |
 | p2c to p4c | Done | D-027 to D-037 |
 | p5a | Done | D-038 to D-039 |
-| p5b to p8c | Not started | See blueprint section 10 |
+| p5b | Done | D-040 |
+| p5c to p8c | Not started | See blueprint section 10 |
 
 ## Open items
 
@@ -256,3 +257,8 @@ Eleven translations are pinned in `tools/scripture/sources.json` (repository, co
 - Daily Run: the vehicle is fixed by the challenge and no upgrades apply, so every player faces the same run. A second or later attempt in a day asks for a rewarded video unless Remove Ads is owned; with no video available the screen stays put and says so.
 - "Start with extra boost" (result screen, not Daily Run) fills half the Ruach meter and replays the same config; the amount is `ResultScreen.rewardedStartingBoost` and is a tuning value to revisit at Test APK 1.
 - Race again goes back through the track intro rather than straight into a race, so a Daily extra attempt cannot skip its video gate.
+
+## D-040 (p5b) Mode screens
+- One `ModeScreen(mode)` dispatches: the Weekly Circuit has its own screen, every other mode uses `TrackListScreen`. The Daily Run goes straight to its track intro. Journey lists all tracks in era order with locked ones visible and a Then/Now switch; Quick Race, Time Trial, Escape Run and Elimination list only open tracks (Then and Now together). Time Trial rows show the best lap.
+- Weekly Circuit: seven races, one per day from Monday, from `DailySeed.weeklyCircuit`. Days up to today can be run (missed days later in the week); later days show as closed. Fixed vehicle, laps, seed and wind per day, no upgrades, no rewarded boost. A race carries a `WeeklySlot(weekId, index)`; `RaceProvider.commit` stores the finished time under that day (best of repeats) and clears the saved times when the week changes. The week total shows once all seven are run. There is no online leaderboard.
+- Fixes found while building it: finishing a Daily Run now records completion and the streak (it was never called from the result screen), and the Journey star total on Home counts Journey stars only (it summed Time Trial, Escape and every other star too).
