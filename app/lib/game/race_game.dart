@@ -22,6 +22,7 @@ final class RaceGame extends FlameGame {
     required this.race,
     required this.readInput,
     this.reduceMotion = false,
+    this.drivesRace = true,
   });
 
   final RaceProvider race;
@@ -33,6 +34,11 @@ final class RaceGame extends FlameGame {
   /// True when the player asked for Reduce Motion: effects that shake or
   /// flash stay off.
   final bool reduceMotion;
+
+  /// Whether this game steps the race itself. Flame runs `update` inside the
+  /// widget's layout, where the HUD must not be told to rebuild, so the race
+  /// screen turns this off and steps the race from a ticker instead.
+  final bool drivesRace;
 
   late final RaceView view;
 
@@ -47,7 +53,7 @@ final class RaceGame extends FlameGame {
 
   @override
   void update(double dt) {
-    if (race.isRunning) race.advance(dt, readInput(dt));
+    if (drivesRace && race.isRunning) race.advance(dt, readInput(dt));
     super.update(dt);
   }
 }

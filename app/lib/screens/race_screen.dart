@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flame/game.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:ruach/app_scope.dart';
 import 'package:ruach/core/logic/input_strategy.dart';
@@ -36,12 +37,17 @@ class RaceScreen extends StatefulWidget {
   State<RaceScreen> createState() => _RaceScreenState();
 }
 
-class _RaceScreenState extends State<RaceScreen> with WidgetsBindingObserver {
+class _RaceScreenState extends State<RaceScreen> with WidgetsBindingObserver, SingleTickerProviderStateMixin {
   late final InputController _controller;
   RaceGame? _game;
   RaceProvider? _race;
   bool _confirmQuit = false;
   bool _left = false;
+  Ticker? _ticker;
+  Duration _last = Duration.zero;
+
+  /// A long frame (the app was stalled) is stepped as at most this long.
+  static const double _maxFrame = 0.1;
 
   @override
   void initState() {
@@ -62,8 +68,19 @@ class _RaceScreenState extends State<RaceScreen> with WidgetsBindingObserver {
       race: race,
       readInput: _controller.read,
       reduceMotion: MediaQuery.disableAnimationsOf(context),
+      drivesRace: false,
     );
+    _ticker = createTicker(_onTick)..start();
     race.addListener(_onRace);
+  }
+
+  void _onTick(Duration elapsed) {
+    final double dt = ((elapsed - _last).inMicroseconds / Duration.microsecondsPerSecond)
+        .clamp(0.0, _maxFrame)
+        .toDouble();
+    _last = elapsed;
+    final RaceProvider? race = _race;
+    if (race != null && race.isRunning) race.advance(dt, _controller.read(dt));
   }
 
   void _begin(RaceProvider race) {
@@ -94,6 +111,7 @@ class _RaceScreenState extends State<RaceScreen> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _race?.removeListener(_onRace);
+    _ticker?.dispose();
     super.dispose();
   }
 
