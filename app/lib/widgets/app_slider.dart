@@ -6,13 +6,13 @@ import 'package:ruach/theme/tokens.dart';
 
 /// A horizontal slider from [min] to [max], optionally in [divisions] equal
 /// steps. Dragging or tapping the track sets the value; the platform's
-/// increase and decrease actions step it. [valueLabel] is the spoken value.
+/// increase and decrease actions step it. [labelOf] is the spoken value.
 class AppSlider extends StatelessWidget {
   const AppSlider({
     required this.value,
     required this.onChanged,
     required this.semanticLabel,
-    required this.valueLabel,
+    required this.labelOf,
     super.key,
     this.min = 0,
     this.max = 1,
@@ -25,7 +25,9 @@ class AppSlider extends StatelessWidget {
   final double max;
   final int? divisions;
   final String semanticLabel;
-  final String valueLabel;
+  /// The spoken (and shown) text for a value, for example `40%` or `07:15`.
+  /// Also used for the values the increase and decrease actions lead to.
+  final String Function(double value) labelOf;
 
   static const double trackHeight = 6;
   static const double knob = 24;
@@ -48,12 +50,12 @@ class AppSlider extends StatelessWidget {
     change(_snap(min + f * (max - min)));
   }
 
-  void _step(int direction) {
-    final ValueChanged<double>? change = onChanged;
-    if (change == null) return;
+  double _stepped(int direction) {
     final double step = divisions == null ? (max - min) / 10 : (max - min) / divisions!;
-    change(_snap(value + direction * step));
+    return _snap(value + direction * step);
   }
+
+  void _step(int direction) => onChanged?.call(_stepped(direction));
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +65,9 @@ class AppSlider extends StatelessWidget {
     return Semantics(
       slider: true,
       label: semanticLabel,
-      value: valueLabel,
+      value: labelOf(value),
+      increasedValue: labelOf(_stepped(1)),
+      decreasedValue: labelOf(_stepped(-1)),
       onIncrease: enabled ? () => _step(1) : null,
       onDecrease: enabled ? () => _step(-1) : null,
       child: ExcludeSemantics(

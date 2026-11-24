@@ -92,7 +92,7 @@ class _TiltCalibrationScreenState extends State<TiltCalibrationScreen> {
                       max: Settings.maxTiltSensitivity,
                       divisions: 35,
                       semanticLabel: l.tiltSensitivity,
-                      valueLabel: l.settingsPercent((s.tiltSensitivity * 100).round()),
+                      labelOf: (double v) => l.settingsPercent((v * 100).round()),
                       onChanged: (double v) =>
                           unawaited(scope.settings.update((Settings x) => x.copyWith(tiltSensitivity: v))),
                     ),

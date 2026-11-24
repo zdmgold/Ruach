@@ -48,7 +48,7 @@ void main() {
           divisions: 4,
           onChanged: (double v) => value = v,
           semanticLabel: 'Volume',
-          valueLabel: '0%',
+          labelOf: (double v) => '$v',
         ),
       ),
     );
@@ -70,7 +70,7 @@ void main() {
           value: value,
           onChanged: (double v) => value = v,
           semanticLabel: 'Volume',
-          valueLabel: '50%',
+          labelOf: (double v) => '$v',
         ),
         dir: TextDirection.rtl,
       ),

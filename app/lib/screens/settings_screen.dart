@@ -220,7 +220,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               max: 24 * 60 - _reminderStepMinutes.toDouble(),
               divisions: (24 * 60) ~/ _reminderStepMinutes - 1,
               semanticLabel: l.settingsReminderTime,
-              valueLabel: formatClock(s.reminderHour, s.reminderMinute),
+              labelOf: (double v) => formatClock(v.round() ~/ 60, v.round() % 60),
               onChanged: (double v) => unawaited(_setReminderTime(scope, l, v.round())),
             ),
             value: formatClock(s.reminderHour, s.reminderMinute),
@@ -308,7 +308,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       AppSlider(
         value: value,
         semanticLabel: label,
-        valueLabel: l.settingsPercent(percent),
+        labelOf: (double v) => l.settingsPercent((v * 100).round()),
         divisions: 20,
         onChanged: onChanged,
       ),
