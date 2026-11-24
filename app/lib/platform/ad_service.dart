@@ -177,13 +177,13 @@ final class AdService implements AdsPort {
     return done.future;
   }
 
+  /// The banner is the standard 320 by 50 size, so every menu screen reserves
+  /// the same 50 logical pixels (decision D-043); [width] is not used.
   @override
   Future<double> bannerHeight(double width) async {
     if (!_initialized) return 0;
     try {
-      final gma.AnchoredAdaptiveBannerAdSize? size =
-          await gma.AdSize.getLargeAnchoredAdaptiveBannerAdSize(width.truncate());
-      if (size == null) return 0;
+      const gma.AdSize size = gma.AdSize.banner;
       final Completer<bool> done = Completer<bool>();
       await _banner?.dispose();
       _bannerLoaded = false;

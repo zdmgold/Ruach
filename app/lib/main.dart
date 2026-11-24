@@ -1,17 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
-import 'package:ruach/theme/tokens.dart';
+import 'package:ruach/app.dart';
+import 'package:ruach/app_services.dart';
+import 'package:ruach/boot.dart';
 
-void main() {
-  runApp(const RuachApp());
-}
-
-/// Placeholder root. It shows a flat dark surface only. Batch p6a replaces it
-/// with the real boot sequence (services, consent, providers, routes).
-class RuachApp extends StatelessWidget {
-  const RuachApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ColoredBox(color: AppColors.dark.bgPrimary);
+Future<void> main() async {
+  final AppServices services = await bootServices();
+  runApp(RuachApp(services: services));
+  final Future<void> Function()? start = services.onStart;
+  if (start != null) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => unawaited(start()));
   }
 }

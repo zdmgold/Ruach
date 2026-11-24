@@ -168,3 +168,44 @@ final class FakeNotifications implements NotificationPort {
   @override
   Future<void> cancelDaily() async => calls.add('cancel');
 }
+
+final class FakeShare implements SharePort {
+  final List<String> shared = <String>[];
+
+  @override
+  Future<bool> shareText(String text) async {
+    shared.add(text);
+    return true;
+  }
+}
+
+final class FakeUrl implements UrlPort {
+  final List<Uri> opened = <Uri>[];
+
+  @override
+  Future<bool> open(Uri uri) async {
+    opened.add(uri);
+    return true;
+  }
+}
+
+final class FakeTilt implements TiltPort {
+  @override
+  Future<bool> isAvailable() async => true;
+
+  @override
+  Stream<double> get roll => const Stream<double>.empty();
+}
+
+final class FakeLog implements LogPort {
+  final List<String> lines = <String>[];
+
+  @override
+  void log(String message) => lines.add(message);
+
+  @override
+  Future<String> readAll() async => lines.join('\n');
+
+  @override
+  Future<void> clear() async => lines.clear();
+}
