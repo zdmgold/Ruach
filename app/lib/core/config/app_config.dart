@@ -13,6 +13,9 @@ abstract final class AppConfig {
   /// safe defaults apply.
   static const String siteBase = '';
 
+  /// The privacy policy page, or empty until [siteBase] is set.
+  static String get privacyUrl => siteBase.isEmpty ? '' : '$siteBase/privacy.html';
+
   /// The static flags file on the site, or empty when [siteBase] is empty.
   static String get flagsUrl => siteBase.isEmpty ? '' : '$siteBase/flags.json';
 

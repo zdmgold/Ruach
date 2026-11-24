@@ -10,6 +10,11 @@ abstract final class Routes {
   static const String garage = '/garage';
   static const String settings = '/settings';
   static const String verseLibrary = '/verses';
+  static const String language = '/settings/language';
+  static const String tiltCalibration = '/settings/tilt';
+  static const String licenses = '/settings/licenses';
+  static const String upgrade = '/upgrade';
+  static const String onboarding = '/onboarding';
 
   /// The entry screen of a mode (Journey map, track picker, and so on).
   /// Argument: [ModeArgs].

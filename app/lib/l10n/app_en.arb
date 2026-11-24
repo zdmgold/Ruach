@@ -503,5 +503,105 @@
     }
   },
   "libraryEmptyTitle": "No verses yet",
-  "libraryEmptyBody": "Race to collect verses. Each one you meet is kept here."
+  "libraryEmptyBody": "Race to collect verses. Each one you meet is kept here.",
+  "settingsTitle": "Settings",
+  "settingsLanguage": "Language",
+  "settingsLanguageSystem": "Device language",
+  "settingsTheme": "Theme",
+  "themeSystem": "System",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "settingsControls": "Controls",
+  "controlButtons": "Buttons",
+  "controlDrag": "Drag",
+  "controlTilt": "Tilt",
+  "settingsHandedness": "Hand",
+  "handRight": "Right",
+  "handLeft": "Left",
+  "settingsOneHanded": "One-handed layout",
+  "settingsTiltSetup": "Tilt setup",
+  "settingsSoundHeader": "Sound and feel",
+  "settingsSoundEffects": "Sound effects",
+  "settingsMusic": "Music",
+  "settingsHaptics": "Vibration",
+  "settingsEffectsVolume": "Effects volume",
+  "settingsMusicVolume": "Music volume",
+  "settingsReminders": "Daily reminder",
+  "settingsReminderTime": "Reminder time",
+  "reminderTitle": "Daily Run",
+  "reminderBody": "Today's Daily Run is ready.",
+  "settingsReminderDenied": "Notifications are off for Ruach. Turn them on in your device settings to get a reminder.",
+  "settingsPrivacyChoices": "Privacy choices",
+  "settingsRemoveAds": "Remove ads",
+  "settingsAdsRemoved": "Ads removed",
+  "settingsRestore": "Restore purchase",
+  "settingsRestoreDone": "Purchase restored.",
+  "settingsRestoreNone": "No earlier purchase was found.",
+  "settingsAbout": "About",
+  "settingsSupport": "Help and feedback",
+  "settingsLicenses": "Licenses",
+  "settingsPrivacyPolicy": "Privacy policy",
+  "upgradeTitle": "Remove ads",
+  "upgradeLead": "Remove banners and the breaks between races with a one-time purchase.",
+  "upgradeKeeps": "Ads you choose to watch, like Start with extra boost, stay available. Nothing in the game is ever sold or locked behind an ad.",
+  "upgradeBuy": "Remove ads",
+  "upgradeOwned": "Ads are removed. Thank you.",
+  "upgradeCancelled": "Purchase cancelled.",
+  "upgradeFailed": "The purchase did not complete. Please try again.",
+  "tiltTitle": "Tilt setup",
+  "tiltLead": "Hold your phone the way you play, then tap Set level.",
+  "tiltSetLevel": "Set level",
+  "tiltSensitivity": "Sensitivity",
+  "tiltLive": "Live test",
+  "tiltUnavailable": "No tilt sensor was found. Buttons are used instead.",
+  "onboardWelcome": "Welcome to Ruach",
+  "onboardLead": "Race the roads of the Bible. Choose how you want to steer; you can change it any time in Settings.",
+  "onboardButtonsBlurb": "On-screen buttons. The easiest way to start.",
+  "onboardDragBlurb": "Slide a finger to steer.",
+  "onboardTiltBlurb": "Tilt your phone to steer.",
+  "onboardStart": "Start first race",
+  "onboardSkip": "Skip for now",
+  "licensesTitle": "Licenses",
+  "licensesScripture": "Scripture",
+  "licensesSoftware": "Software and fonts",
+  "licenseBarlow": "Barlow font",
+  "licensePhosphor": "Phosphor icons",
+  "licensesLoadFailed": "These notices could not be loaded.",
+  "errorTitle": "Something went wrong",
+  "errorMessage": "Ruach ran into a problem. You can try again, or email a report so it can be fixed.",
+  "errorRetry": "Try again",
+  "errorReport": "Email report",
+  "settingsTimeValue": "{time}",
+  "@settingsTimeValue": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsPercent": "{percent}%",
+  "@settingsPercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "tiltReading": "Steering {percent} percent",
+  "@tiltReading": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "upgradeBuyPrice": "Remove ads for {price}",
+  "@upgradeBuyPrice": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "upgradePending": "Your purchase is pending. Ads will be removed when it completes."
 }

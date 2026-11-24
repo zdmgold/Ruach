@@ -117,17 +117,21 @@ final class TiltStrategy implements DriveInputStrategy {
   static const double deadZone = 0.03;
   static const double follow = 12;
 
+  /// The steering a tilt of [tiltRadians] asks for, before smoothing: -1 to 1.
+  /// The calibration screen draws this so the player sees what the race will do.
+  static double steerFor(double tiltRadians, double calibration, double sensitivity) {
+    final double tilt = tiltRadians - calibration;
+    if (tilt.abs() <= deadZone) return 0;
+    return clampDouble(tilt.sign * (tilt.abs() - deadZone) / fullLockTilt * sensitivity, -1, 1);
+  }
+
   final double calibration;
   final double sensitivity;
   double _steer = 0;
 
   @override
   DriveInput read(ControlSnapshot s, double dt) {
-    final double tilt = s.tiltRadians - calibration;
-    double target = 0;
-    if (tilt.abs() > deadZone) {
-      target = clampDouble(tilt.sign * (tilt.abs() - deadZone) / fullLockTilt * sensitivity, -1, 1);
-    }
+    final double target = steerFor(s.tiltRadians, calibration, sensitivity);
     _steer = _approach(_steer, target, follow, dt);
     return DriveInput.clamped(
       steer: _steer,

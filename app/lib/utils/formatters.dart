@@ -30,4 +30,7 @@ String formatLap(int lap, int totalLaps) => '$lap/$totalLaps';
 /// A whole-number count such as Gifts or stars, with no grouping: `42`.
 String formatCount(int value) => value.toString();
 
+/// A clock time as `07:05`, the same in every language.
+String formatClock(int hour, int minute) => '${_two(hour)}:${_two(minute)}';
+
 String _two(int value) => value.toString().padLeft(2, '0');
