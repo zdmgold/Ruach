@@ -291,4 +291,5 @@ Eleven translations are pinned in `tools/scripture/sources.json` (repository, co
 - Audio and haptics are not wired to screens yet; that happens with the sound assets at p7a. The review prompt is still deferred.
 - `build_and_deploy.yml` builds the unsigned debug APK on manual start only; release signing is added at p7b.
 - Still to verify on the first APK: notifications (desugaring is enabled), billing, the consent form and the test banner.
+- First debug build failed: flutter_local_notifications and androidx.core 1.19 need compileSdk 37, so it is set to 37 (targetSdk and minSdk unchanged).
 

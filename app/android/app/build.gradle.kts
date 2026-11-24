@@ -21,7 +21,7 @@ if (hasReleaseKey) {
 
 android {
     namespace = "com.zdmgold.ruach"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 37  // plugins (notifications, androidx.core 1.19) need 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
