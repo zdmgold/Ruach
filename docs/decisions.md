@@ -293,3 +293,27 @@ Eleven translations are pinned in `tools/scripture/sources.json` (repository, co
 - Still to verify on the first APK: notifications (desugaring is enabled), billing, the consent form and the test banner.
 - First debug build failed: flutter_local_notifications and androidx.core 1.19 need compileSdk 37, so it is set to 37 (targetSdk and minSdk unchanged).
 
+## D-044 Audit of main against the blueprint (2026-11-24, after p6a)
+Method: every manifest path checked against `origin/main`, then every capability, monetization and screen row checked against the code that calls it.
+
+**Matches the manifest.** All files of p1a to p6a exist. Differences in shape only: `docs/decisions.md` (blueprint says decision.md); URL opening lives in `share_service.dart`; the seven mode screens are `mode_screen`, `track_list_screen` and `weekly_screen`; ports are split across several files; extras (pressable, screen_frame, app_switch, app_slider, app_segmented, language and onboarding helpers, app_route, ad_banner, asset_verse_source).
+
+**Built but not reachable or not wired (no later batch plans them):**
+1. Verse moments `milestone`, `daily`, `welcome-back` and `upgrade` are never shown; only track-intro, win, podium and encouragement are. Era-complete and upgrade-maxed detection does not exist.
+2. No Daily Run screen (attempts left, streak, reminder toggle, verse of the day); the Home card goes straight to the track intro and the reminder is only in Settings.
+3. Time Trial has no ghost toggle.
+4. Audio and haptics: services exist, nothing calls them. p7a only makes the sound files. The sound, music and haptics switches in Settings do nothing yet.
+5. Rating prompt: service exists, never called, and Progress has no "already asked" flag.
+6. Remove Ads is reachable only from Settings; the blueprint also wants the banner's own affordance.
+7. Vehicle choice is only in the Garage, not on the track intro or Quick Race.
+8. The race HUD does not cap text scaling.
+9. Errors thrown while building a widget do not reach the fallback screen.
+10. iOS tracking prompt is not requested in code; it depends on the UMP message set up in AdMob.
+11. Banner is a fixed 320 by 50 (D-043), not adaptive. Pursuit tracks outside Escape Run draw no dust wall.
+
+**Process gaps found:** the debug build workflow was planned for p7b but Test APK 1 needs it at p6a (added); the first run failed on compileSdk (fixed, D-043).
+
+**Proposed fix:** a batch p6a-2 before p6b covering items 1 to 9 so the translations are written once against the final English keys. Not started until confirmed.
+
+**Unchanged external items:** the list above (Cloudflare URL, name clearance, reviewers, signing, Apple, AdMob IDs, licence, app-ads.txt, privacy review). Nothing has been verified on a device yet.
+
