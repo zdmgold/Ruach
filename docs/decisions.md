@@ -45,7 +45,8 @@ All rows marked Proposed in blueprint section 1 were confirmed by the owner on 2
 | p5b | Done | D-040 |
 | p5c | Done | D-041 |
 | p5d | Done | D-042 |
-| p6a to p8c | Not started | See blueprint section 10 |
+| p6a | Done | D-043 |
+| p6b to p8c | Not started | See blueprint section 10 |
 
 ## Open items
 
@@ -279,4 +280,15 @@ Eleven translations are pinned in `tools/scripture/sources.json` (repository, co
 - Screens take shell callbacks (open URL, tilt stream, report) as optional arguments; the shell supplies them at p6a.
 - Onboarding: Start goes to the first Journey track, Skip goes Home; both record `onboardingDone` and the chosen control. Tilt is disabled with a note when there is no sensor.
 - `TiltStrategy.steerFor` is the single place tilt becomes steering, shared by the race and the calibration gauge.
+
+## D-043 (p6a) App shell
+- Boot order (`boot.dart`): portrait lock, storage, log, error handler, settings, progress, garage, providers, then the app runs. Purchase state, consent, the remote flags and the tilt-sensor check run after the first frame (`AppServices.onStart`), so start never waits for the network.
+- `RuachApp` (`app.dart`) holds the scope, theme, language, the named routes and the fatal-error fallback (Retry returns Home; Email report opens a mail with the end of the local log). A new player starts at onboarding. An unknown route lands on Home.
+- Page transition: fade plus a 20 px slide, 350 ms in and 280 ms out; instant with Reduce Motion.
+- The app is portrait only.
+- Banner: the standard 320 by 50 size, so every menu screen reserves 50 px; this replaces the adaptive size in the blueprint until a later polish pass. One banner exists; only the screen on top draws it, and nothing is drawn until an ad has loaded.
+- Ports for share, URL, tilt and log reach screens as callbacks from the shell, not through AppScope.
+- Audio and haptics are not wired to screens yet; that happens with the sound assets at p7a. The review prompt is still deferred.
+- `build_and_deploy.yml` builds the unsigned debug APK on manual start only; release signing is added at p7b.
+- Still to verify on the first APK: notifications (desugaring is enabled), billing, the consent form and the test banner.
 

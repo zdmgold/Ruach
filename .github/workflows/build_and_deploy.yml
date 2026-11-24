@@ -1,0 +1,50 @@
+name: build_and_deploy
+
+# Manual only. Never runs on a push. For now it builds the unsigned debug APK
+# (Test APK 1 and 2); the signed release build is added at batch p7b.
+on:
+  workflow_dispatch:
+    inputs:
+      build:
+        description: 'What to build'
+        type: choice
+        options:
+          - debug
+        default: debug
+
+permissions:
+  contents: read
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.50.0'
+          channel: stable
+          cache: true
+
+      - name: Build the debug APK
+        working-directory: app
+        run: |
+          flutter pub get
+          flutter build apk --debug
+
+      - name: Upload the APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruach-debug-apk
+          path: app/build/app/outputs/flutter-apk/app-debug.apk
+          retention-days: 14
