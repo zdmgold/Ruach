@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:ruach/core/models/ad_state.dart';
 import 'package:ruach/core/models/settings.dart';
 import 'package:ruach/core/ports/consent_port.dart';
 import 'package:ruach/screens/routes.dart';
