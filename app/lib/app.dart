@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:ruach/app_services.dart';
 import 'package:ruach/core/config/app_config.dart';
 import 'package:ruach/l10n/app_localizations.dart';
