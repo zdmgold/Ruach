@@ -47,13 +47,15 @@ void main() {
     expect(s.settings.value.controlScheme, ControlScheme.tilt);
     expect(find.text('Tilt setup'), findsOneWidget);
 
-    await tester.tap(find.text('Tilt setup'));
-    await tester.pumpAndSettle();
-    expect(s.pushed.last.$1, Routes.tiltCalibration);
-
     await tester.tap(find.text('Buttons'));
     await tester.pump();
     expect(find.text('Tilt setup'), findsNothing);
+
+    await tester.tap(find.text('Tilt'));
+    await tester.pump();
+    await tester.tap(find.text('Tilt setup'));
+    await tester.pumpAndSettle();
+    expect(s.pushed.last.$1, Routes.tiltCalibration);
   });
 
   testWidgets('theme, hand and the one-handed layout are saved', (WidgetTester tester) async {

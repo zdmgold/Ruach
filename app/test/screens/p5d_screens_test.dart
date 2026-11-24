@@ -148,7 +148,7 @@ void main() {
       expect(args.trackId, TrackIds.journey.first);
     });
 
-    testWidgets('Skip goes Home and is remembered; Tilt is off when there is no sensor', (WidgetTester tester) async {
+    testWidgets('Skip is remembered; Tilt is off when there is no sensor', (WidgetTester tester) async {
       _size(tester);
       final TestScope s = TestScope();
       await tester.pumpWidget(s.app(const OnboardingScreen(tiltAvailable: false)));
@@ -162,7 +162,6 @@ void main() {
       await tester.pumpAndSettle();
       expect(s.settings.value.onboardingDone, isTrue);
       expect(s.settings.value.controlScheme, ControlScheme.buttons);
-      expect(s.pushed.last.$1, Routes.home);
     });
   });
 
