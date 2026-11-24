@@ -44,7 +44,8 @@ All rows marked Proposed in blueprint section 1 were confirmed by the owner on 2
 | p5a | Done | D-038 to D-039 |
 | p5b | Done | D-040 |
 | p5c | Done | D-041 |
-| p5d to p8c | Not started | See blueprint section 10 |
+| p5d | Done | D-042 |
+| p6a to p8c | Not started | See blueprint section 10 |
 
 ## Open items
 
@@ -268,3 +269,14 @@ Eleven translations are pinned in `tools/scripture/sources.json` (repository, co
 - The library lists the verses the player has met while racing, in Bible order, each as a verse card with Share. It collects by playing only (no browsing of unseen verses), so it stays a reward rather than a reader. An empty library explains how verses are collected.
 - "Read the chapter" appears only when the shell passes `onReadChapter`, so it is absent at launch and arrives with the Bible reader (p8c) without changing this screen.
 - Home has a Verse library row; `Routes.verseLibrary` is the route. Reference text (`VerseText.reference`) is shared by every screen that shows a verse.
+
+## D-042 (p5d) Settings and supporting screens
+- New design-system controls: `AppSwitch`, `AppSlider` (RTL-aware; announces the values its increase and decrease actions lead to) and `AppSegmented`, all without Material.
+- Settings rows appear only when they can act: Tilt setup only while Tilt is the chosen control, volume sliders only while their switch is on, Privacy choices only when consent says they are required, Privacy policy only when `AppConfig.privacyUrl` is set.
+- The reminder time moves in 15-minute steps.
+- The upgrade (Remove Ads) screen is reachable only from Settings and shows the store's price text.
+- Licenses combine `LicenseRegistry`, the bundled font and icon notices, and per-language scripture notices from `assets/notices`.
+- Screens take shell callbacks (open URL, tilt stream, report) as optional arguments; the shell supplies them at p6a.
+- Onboarding: Start goes to the first Journey track, Skip goes Home; both record `onboardingDone` and the chosen control. Tilt is disabled with a note when there is no sensor.
+- `TiltStrategy.steerFor` is the single place tilt becomes steering, shared by the race and the calibration gauge.
+
