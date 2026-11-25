@@ -61,7 +61,7 @@ void main() {
       expect(find.text('Escape Run'), findsOneWidget);
     });
 
-    testWidgets('the daily card opens that day\'s track in Daily Run mode', (WidgetTester tester) async {
+    testWidgets('the daily card opens the Daily Run screen', (WidgetTester tester) async {
       await _size(tester);
       final TestScope s = TestScope();
       await tester.pumpWidget(s.app(const HomeScreen()));
@@ -70,10 +70,7 @@ void main() {
       await tester.tap(find.text('Daily Run'));
       await tester.pumpAndSettle();
 
-      expect(s.pushed.last.$1, Routes.trackIntro);
-      final TrackIntroArgs args = s.pushed.last.$2! as TrackIntroArgs;
-      expect(args.mode, RaceMode.dailyRun);
-      expect(args.trackId, s.daily.challenge.trackId);
+      expect(s.pushed.last.$1, Routes.dailyRun);
     });
 
     testWidgets('a locked mode does nothing; clearing track 1 opens Quick Race', (WidgetTester tester) async {

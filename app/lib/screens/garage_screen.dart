@@ -5,10 +5,13 @@ import 'package:ruach/app_scope.dart';
 import 'package:ruach/core/catalog/vehicles.dart';
 import 'package:ruach/core/logic/mode_rules.dart';
 import 'package:ruach/core/models/upgrade.dart';
+import 'package:ruach/core/models/verse.dart';
 import 'package:ruach/core/models/vehicle.dart';
 import 'package:ruach/l10n/app_localizations.dart';
 import 'package:ruach/l10n/names.dart';
 import 'package:ruach/providers/garage_provider.dart';
+import 'package:ruach/screens/milestone_block.dart';
+import 'package:ruach/screens/verse_block.dart';
 import 'package:ruach/theme/icons.dart';
 import 'package:ruach/theme/tokens.dart';
 import 'package:ruach/widgets/app_chip.dart';
@@ -21,15 +24,32 @@ import 'package:ruach/widgets/upgrade_tile.dart';
 
 /// Vehicles and the six Gifts of the Spirit. Gifts are earned by racing and
 /// spent here; nothing in this screen is for sale (blueprint section 2).
-class GarageScreen extends StatelessWidget {
-  const GarageScreen({super.key, this.banner});
+class GarageScreen extends StatefulWidget {
+  const GarageScreen({super.key, this.banner, this.onShare});
 
   final Widget? banner;
+  final ShareText? onShare;
 
   /// The six upgrades are named for Isaiah 11:2.
   static const String _upgradeBook = 'Isa';
   static const int _upgradeChapter = 11;
   static const int _upgradeVerse = 2;
+
+  @override
+  State<GarageScreen> createState() => _GarageScreenState();
+}
+
+class _GarageScreenState extends State<GarageScreen> {
+  Map<UpgradeKind, Future<Verse?>>? _verses;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final AppScope scope = AppScope.of(context);
+    _verses ??= <UpgradeKind, Future<Verse?>>{
+      for (final UpgradeKind kind in UpgradeKind.values) kind: scope.verses.upgradeVerse(kind),
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,14 +64,14 @@ class GarageScreen extends StatelessWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final GarageProvider garage = scope.garage;
     final String reference = l.verseRef(
-      bookName(l, _upgradeBook),
-      _upgradeChapter,
-      _upgradeVerse,
+      bookName(l, GarageScreen._upgradeBook),
+      GarageScreen._upgradeChapter,
+      GarageScreen._upgradeVerse,
     );
     final bool bannerOn = scope.ads.bannersAllowed;
     return ScreenFrame(
       bannerHeight: bannerOn ? 50 : 0,
-      banner: bannerOn ? banner : null,
+      banner: bannerOn ? widget.banner : null,
       navBar: NavBar(
         title: l.garageTitle,
         onBack: () => Navigator.of(context).maybePop(),
@@ -61,6 +81,7 @@ class GarageScreen extends StatelessWidget {
         ],
       ),
       children: <Widget>[
+        MilestoneSlot(onShare: widget.onShare),
         SectionHeader(l.garageVehiclesHeader),
         for (final Vehicle v in VehicleCatalog.all)
           _vehicleRow(l, garage, v),
@@ -115,10 +136,32 @@ class GarageScreen extends StatelessWidget {
     final String buyLabel = cost == null
         ? l.garageMaxed
         : (canBuy ? l.garageUpgradeFor(cost) : l.garageNeeds(cost));
+    return FutureBuilder<Verse?>(
+      future: _verses?[kind],
+      builder: (BuildContext context, AsyncSnapshot<Verse?> snapshot) {
+        final Verse? verse = snapshot.data;
+        return _tile(l, garage, kind, name, level, canBuy, buyLabel,
+            verse == null ? reference : VerseText.reference(l, verse.ref), verse?.text);
+      },
+    );
+  }
+
+  Widget _tile(
+    AppLocalizations l,
+    GarageProvider garage,
+    UpgradeKind kind,
+    String name,
+    int level,
+    bool canBuy,
+    String buyLabel,
+    String reference,
+    String? verseText,
+  ) {
     return UpgradeTile(
       name: name,
       effectLine: upgradeEffect(l, kind),
       verseReference: reference,
+      verseText: verseText,
       level: level,
       maxLevel: UpgradeLevels.maxLevel,
       levelLabel: l.upgradeLevel(level, UpgradeLevels.maxLevel),

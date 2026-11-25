@@ -5,12 +5,14 @@ import 'package:ruach/app_scope.dart';
 import 'package:ruach/core/logic/catalog_ids.dart';
 import 'package:ruach/core/logic/daily_seed.dart';
 import 'package:ruach/core/logic/mode_rules.dart';
+import 'package:ruach/core/logic/review_rule.dart';
 import 'package:ruach/core/models/race_config.dart';
 import 'package:ruach/core/models/race_result.dart';
 import 'package:ruach/core/models/vec2.dart';
 import 'package:ruach/core/models/verse.dart';
 import 'package:ruach/l10n/app_localizations.dart';
 import 'package:ruach/providers/race_provider.dart';
+import 'package:ruach/screens/milestone_block.dart';
 import 'package:ruach/screens/routes.dart';
 import 'package:ruach/screens/verse_block.dart';
 import 'package:ruach/theme/app_theme.dart';
@@ -28,9 +30,16 @@ import 'package:ruach/widgets/star_badge.dart';
 /// After a race: stars, Gifts, a verse, and the ways to go on. The result is
 /// saved once when the screen opens; an interstitial may follow the save.
 class ResultScreen extends StatefulWidget {
-  const ResultScreen({super.key, this.onShare});
+  const ResultScreen({super.key, this.onShare, this.onRequestReview});
 
   final ShareText? onShare;
+
+  /// Asks the store for a rating (supplied by the shell). Called at most once,
+  /// after a podium finish (see `ReviewRule`).
+  final Future<void> Function()? onRequestReview;
+
+  /// A short pause so the result is on screen before any rating prompt.
+  static const Duration reviewDelay = Duration(milliseconds: 1500);
 
   /// How much of the Ruach meter the "start with extra boost" reward fills.
   static const double rewardedStartingBoost = 0.5;
@@ -64,6 +73,16 @@ class _ResultScreenState extends State<ResultScreen> {
       _saved = true;
       _streak = streak;
     });
+    final bool askReview = result != null &&
+        widget.onRequestReview != null &&
+        ReviewRule.shouldAsk(scope.progress.value, result);
+    if (askReview) {
+      // A rating prompt and an ad never come together.
+      await scope.progress.markReviewAsked();
+      await Future<void>.delayed(ResultScreen.reviewDelay);
+      if (mounted) await widget.onRequestReview!();
+      return;
+    }
     final bool dailyAfterFirst =
         result?.mode == RaceMode.dailyRun && scope.daily.attemptsToday >= 1;
     await scope.ads.maybeShowInterstitial(afterFirstDailyAttempt: dailyAfterFirst);
@@ -199,6 +218,7 @@ class _ResultScreenState extends State<ResultScreen> {
               load: () => scope.verses.pick(_moment(r), seed: r.seed),
               onShare: widget.onShare,
             ),
+            MilestoneSlot(enabled: _saved, onShare: widget.onShare),
             const SizedBox(height: AppSpacing.s24),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s16),

@@ -7,6 +7,7 @@ import 'package:ruach/core/config/app_config.dart';
 import 'package:ruach/l10n/app_localizations.dart';
 import 'package:ruach/screens/app_route.dart';
 import 'package:ruach/screens/error_screen.dart';
+import 'package:ruach/screens/daily_run_screen.dart';
 import 'package:ruach/screens/garage_screen.dart';
 import 'package:ruach/screens/home_screen.dart';
 import 'package:ruach/screens/language_screen.dart';
@@ -137,8 +138,10 @@ class _RuachAppState extends State<RuachApp> with WidgetsBindingObserver {
     switch (settings.name) {
       case Routes.onboarding:
         return _tilt((bool tilt) => OnboardingScreen(tiltAvailable: tilt));
+      case Routes.dailyRun:
+        return DailyRunScreen(onShare: _s.ports.share.shareText);
       case Routes.garage:
-        return _menu((Widget? b) => GarageScreen(banner: b));
+        return _menu((Widget? b) => GarageScreen(banner: b, onShare: _s.ports.share.shareText));
       case Routes.settings:
         return _menu((Widget? b) => SettingsScreen(onOpenUrl: _s.ports.url.open, banner: b));
       case Routes.language:
@@ -173,9 +176,12 @@ class _RuachAppState extends State<RuachApp> with WidgetsBindingObserver {
           );
         }
       case Routes.result:
-        return ResultScreen(onShare: _s.ports.share.shareText);
+        return ResultScreen(
+          onShare: _s.ports.share.shareText,
+          onRequestReview: _s.ports.review.requestReview,
+        );
     }
     // Home, and any name or arguments that do not fit, land on Home.
-    return _menu((Widget? b) => HomeScreen(banner: b));
+    return _menu((Widget? b) => HomeScreen(banner: b, onShare: _s.ports.share.shareText));
   }
 }

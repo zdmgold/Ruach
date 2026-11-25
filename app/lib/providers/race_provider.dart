@@ -30,13 +30,16 @@ final class WeeklySlot {
 /// from the frame time the game loop gives it, applies the mode rule, and on
 /// finish builds the result and records it in the saved game.
 final class RaceProvider extends ChangeNotifier {
-  RaceProvider(this._progress);
+  RaceProvider(this._progress, {bool Function()? ghostEnabled}) : _ghostEnabled = ghostEnabled;
 
   /// The most steps one call to [advance] runs, so a long pause between
   /// frames cannot freeze the game catching up.
   static const int maxStepsPerAdvance = 8;
 
   final ProgressProvider _progress;
+
+  /// Whether the Time Trial ghost car is shown (a setting); true when unset.
+  final bool Function()? _ghostEnabled;
 
   RaceSimulation? _sim;
   EliminationRule? _elimination;
@@ -107,7 +110,8 @@ final class RaceProvider extends ChangeNotifier {
     _bestGhostMillis = null;
     _bestGhostText = null;
     final String? saved = config.mode == RaceMode.timeTrial ? _progress.value.ghosts[config.track.id] : null;
-    _ghost = saved == null ? null : GhostCodec.decode(saved);
+    final bool showGhost = _ghostEnabled?.call() ?? true;
+    _ghost = saved == null || !showGhost ? null : GhostCodec.decode(saved);
     notifyListeners();
   }
 
@@ -248,6 +252,9 @@ final class RaceProvider extends ChangeNotifier {
       }
       if (config.mode == RaceMode.escapeRun && metres.floor() > p.escapeRunBestMetres) {
         next = next.copyWith(escapeRunBestMetres: metres.floor());
+      }
+      if (me.finished || config.mode == RaceMode.escapeRun) {
+        next = next.copyWith(racesFinished: p.racesFinished + 1);
       }
       return next;
     });

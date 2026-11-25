@@ -14,6 +14,7 @@ class UpgradeTile extends StatelessWidget {
     required this.levelLabel,
     super.key,
     this.maxLevel = 5,
+    this.verseText,
     this.buyLabel,
     this.onBuy,
     this.buySemanticLabel,
@@ -24,6 +25,9 @@ class UpgradeTile extends StatelessWidget {
   /// For example "Top speed +10%".
   final String effectLine;
   final String verseReference;
+
+  /// The verse itself, shown above its reference when loaded.
+  final String? verseText;
   final int level;
   final int maxLevel;
 
@@ -71,6 +75,13 @@ class UpgradeTile extends StatelessWidget {
                       effectLine,
                       style: theme.type.footnote.copyWith(color: theme.colors.textPrimary),
                     ),
+                    if (verseText != null) ...<Widget>[
+                      const SizedBox(height: AppSpacing.s8),
+                      Text(
+                        verseText!,
+                        style: theme.type.footnote.copyWith(color: theme.colors.textSecondary),
+                      ),
+                    ],
                     const SizedBox(height: AppSpacing.s2),
                     Text(verseReference, style: theme.type.caption),
                   ],

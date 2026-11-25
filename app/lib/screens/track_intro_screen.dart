@@ -25,7 +25,9 @@ import 'package:ruach/widgets/app_row.dart';
 import 'package:ruach/widgets/nav_bar.dart';
 import 'package:ruach/widgets/primary_button.dart';
 import 'package:ruach/widgets/screen_frame.dart';
+import 'package:ruach/widgets/section_header.dart';
 import 'package:ruach/widgets/star_badge.dart';
+import 'package:ruach/widgets/vehicle_picker.dart';
 
 /// Before a race: the track, its verse, the vehicle and the start button.
 /// The Daily Run's second and later attempts of a day are "extra": they ask
@@ -176,14 +178,26 @@ class _TrackIntroScreenState extends State<TrackIntroScreen> {
               onShare: widget.onShare,
             ),
             const SizedBox(height: AppSpacing.s16),
-            AppRow(
-              icon: AppIcons.vehicle,
-              label: l.introChooseVehicle,
-              subtitle: vehicleName(l, vehicle.kind),
-              onTap: _challenge(scope) != null
-                  ? null
-                  : () => unawaited(Navigator.of(context).pushNamed(Routes.garage)),
-            ),
+            if (_challenge(scope) != null)
+              AppRow(
+                icon: AppIcons.vehicle,
+                label: l.introChooseVehicle,
+                subtitle: vehicleName(l, vehicle.kind),
+              )
+            else ...<Widget>[
+              SectionHeader(l.introChooseVehicle),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s16),
+                child: VehiclePicker(
+                  choices: <VehicleChoice>[
+                    for (final Vehicle v in scope.garage.owned)
+                      VehicleChoice(id: v.id, label: vehicleName(l, v.kind)),
+                  ],
+                  selectedId: vehicle.id,
+                  onSelected: (String id) => unawaited(scope.garage.select(id)),
+                ),
+              ),
+            ],
             if (_videoUnavailable)
               Padding(
                 padding: const EdgeInsets.all(AppSpacing.s16),

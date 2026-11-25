@@ -29,7 +29,15 @@ final class StubVerses implements VerseDataSource {
           <String, Object?>{
             'ref': 'Ps.23.1',
             'text': 'The LORD is my shepherd.',
-            'moments': <String>['win', 'podium', 'encouragement', 'daily', 'track-intro'],
+            'moments': <String>[
+              'win',
+              'podium',
+              'encouragement',
+              'daily',
+              'track-intro',
+              'milestone',
+              'welcome-back',
+            ],
           },
         ],
       };

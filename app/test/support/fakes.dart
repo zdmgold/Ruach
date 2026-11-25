@@ -209,3 +209,10 @@ final class FakeLog implements LogPort {
   @override
   Future<void> clear() async => lines.clear();
 }
+
+final class FakeReview implements ReviewPort {
+  int requests = 0;
+
+  @override
+  Future<void> requestReview() async => requests++;
+}

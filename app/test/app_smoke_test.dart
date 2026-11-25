@@ -26,6 +26,7 @@ AppServices _services(TestScope s, {FakeUrl? url, FakeLog? log}) => AppServices(
         url: url ?? FakeUrl(),
         tilt: FakeTilt(),
         log: log ?? FakeLog(),
+        review: FakeReview(),
       ),
       errors: AppErrorHandler((Object e, StackTrace? st, {required bool fatal}) {}),
     );

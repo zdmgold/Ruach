@@ -23,6 +23,9 @@ abstract final class Routes {
   /// A track's introduction before a race. Argument: [TrackIntroArgs].
   static const String trackIntro = '/track-intro';
 
+  /// Today's Daily Run: setup, attempts, streak, reminder and verse.
+  static const String dailyRun = '/daily';
+
   /// The race itself. Argument: [RaceArgs].
   static const String race = '/race';
 

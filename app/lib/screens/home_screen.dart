@@ -7,7 +7,9 @@ import 'package:ruach/core/logic/mode_rules.dart';
 import 'package:ruach/core/models/race_config.dart';
 import 'package:ruach/l10n/app_localizations.dart';
 import 'package:ruach/l10n/names.dart';
+import 'package:ruach/screens/milestone_block.dart';
 import 'package:ruach/screens/routes.dart';
+import 'package:ruach/screens/verse_block.dart';
 import 'package:ruach/theme/app_icon.dart';
 import 'package:ruach/theme/app_theme.dart';
 import 'package:ruach/theme/icons.dart';
@@ -25,7 +27,9 @@ import 'package:ruach/widgets/section_header.dart';
 /// Garage, and the other modes. Locked modes are shown, not hidden, so the
 /// player can see what is coming.
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key, this.banner});
+  const HomeScreen({super.key, this.banner, this.onShare});
+
+  final ShareText? onShare;
 
   /// The banner ad widget, supplied by the app shell. Shown only while the
   /// ad rules allow a banner.
@@ -96,6 +100,7 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       children: <Widget>[
+        WelcomeBackSlot(onShare: onShare),
         const SizedBox(height: AppSpacing.s16),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s16),
@@ -103,15 +108,7 @@ class HomeScreen extends StatelessWidget {
             icon: _iconFor(RaceMode.dailyRun),
             label: l.homeDailyTitle,
             value: l.homeDailyToday(dailyTrack),
-            onTap: () => unawaited(
-              navigator.pushNamed(
-                Routes.trackIntro,
-                arguments: TrackIntroArgs(
-                  mode: RaceMode.dailyRun,
-                  trackId: scope.daily.challenge.trackId,
-                ),
-              ),
-            ),
+            onTap: () => unawaited(navigator.pushNamed(Routes.dailyRun)),
             child: Padding(
               padding: const EdgeInsets.only(top: AppSpacing.s8),
               child: Align(

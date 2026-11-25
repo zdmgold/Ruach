@@ -68,6 +68,10 @@ final class Progress {
     Set<String> seenVerseIds = const <String>{},
     Set<String> bookmarks = const <String>{},
     Map<String, int> highlights = const <String, int>{},
+    Set<String> milestonesSeen = const <String>{},
+    this.welcomeBackShownOn,
+    this.reviewAsked = false,
+    this.racesFinished = 0,
   })  : stars = Map<String, int>.unmodifiable(stars),
         ownedVehicleIds = Set<String>.unmodifiable(ownedVehicleIds),
         earnedLiveryIds = Set<String>.unmodifiable(earnedLiveryIds),
@@ -77,7 +81,8 @@ final class Progress {
         weeklyCircuitMillis = Map<String, int>.unmodifiable(weeklyCircuitMillis),
         seenVerseIds = Set<String>.unmodifiable(seenVerseIds),
         bookmarks = Set<String>.unmodifiable(bookmarks),
-        highlights = Map<String, int>.unmodifiable(highlights);
+        highlights = Map<String, int>.unmodifiable(highlights),
+        milestonesSeen = Set<String>.unmodifiable(milestonesSeen);
 
   /// A new player's progress.
   factory Progress.fresh() => Progress();
@@ -119,6 +124,10 @@ final class Progress {
       seenVerseIds: readStringSet(m['seenVerseIds']),
       bookmarks: readStringSet(m['bookmarks']),
       highlights: readIntMap(m['highlights']),
+      milestonesSeen: readStringSet(m['milestonesSeen']),
+      welcomeBackShownOn: readStringOrNull(m['welcomeBackShownOn']),
+      reviewAsked: readBool(m['reviewAsked'], false),
+      racesFinished: _nonNegative(readInt(m['racesFinished'], 0)),
     );
   }
 
@@ -173,6 +182,18 @@ final class Progress {
   final Set<String> bookmarks;
   final Map<String, int> highlights;
 
+  /// Milestone ids already celebrated (see `MilestoneRules`); each shows once.
+  final Set<String> milestonesSeen;
+
+  /// The day (`yyyy-MM-dd`) the welcome-back verse was last shown.
+  final String? welcomeBackShownOn;
+
+  /// True once the store review prompt has been requested.
+  final bool reviewAsked;
+
+  /// Races the player has finished, all modes.
+  final int racesFinished;
+
   /// Gifts available to spend.
   int get gifts => giftsEarned - giftsSpent;
 
@@ -202,6 +223,10 @@ final class Progress {
     Set<String>? seenVerseIds,
     Set<String>? bookmarks,
     Map<String, int>? highlights,
+    Set<String>? milestonesSeen,
+    String? welcomeBackShownOn,
+    bool? reviewAsked,
+    int? racesFinished,
   }) =>
       Progress(
         schemaVersion: schemaVersion,
@@ -223,6 +248,10 @@ final class Progress {
         seenVerseIds: seenVerseIds ?? this.seenVerseIds,
         bookmarks: bookmarks ?? this.bookmarks,
         highlights: highlights ?? this.highlights,
+        milestonesSeen: milestonesSeen ?? this.milestonesSeen,
+        welcomeBackShownOn: welcomeBackShownOn ?? this.welcomeBackShownOn,
+        reviewAsked: reviewAsked ?? this.reviewAsked,
+        racesFinished: racesFinished ?? this.racesFinished,
       );
 
   /// The saved form. Keys and set members are sorted, so the same progress
@@ -253,6 +282,10 @@ final class Progress {
         'seenVerseIds': seenVerseIds.toList()..sort(),
         'bookmarks': bookmarks.toList()..sort(),
         'highlights': sortedMap<int>(highlights),
+        'milestonesSeen': milestonesSeen.toList()..sort(),
+        'welcomeBackShownOn': welcomeBackShownOn,
+        'reviewAsked': reviewAsked,
+        'racesFinished': racesFinished,
       };
 }
 

@@ -603,5 +603,53 @@
       }
     }
   },
-  "upgradePending": "Your purchase is pending. Ads will be removed when it completes."
+  "upgradePending": "Your purchase is pending. Ads will be removed when it completes.",
+  "milestoneEra": "{era} complete",
+  "@milestoneEra": {
+    "placeholders": {
+      "era": {
+        "type": "String"
+      }
+    }
+  },
+  "milestoneMaxed": "{upgrade} at its highest level",
+  "@milestoneMaxed": {
+    "placeholders": {
+      "upgrade": {
+        "type": "String"
+      }
+    }
+  },
+  "milestoneFirstGift": "Your first Gift is spent",
+  "welcomeBackTitle": "Welcome back",
+  "welcomeBackNote": "It is good to see you. Pick up wherever you like.",
+  "dailySetupHeader": "Today's setup",
+  "dailyLapsWind": "{laps} laps, {wind}",
+  "@dailyLapsWind": {
+    "placeholders": {
+      "laps": {
+        "type": "int"
+      },
+      "wind": {
+        "type": "String"
+      }
+    }
+  },
+  "dailyWindCalm": "calm air",
+  "dailyWindLight": "light wind",
+  "dailyWindStrong": "strong wind",
+  "dailyAttempts": "{count, plural, =0{No tries yet today} =1{1 try today} other{{count} tries today}}",
+  "@dailyAttempts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dailyExtraNote": "The first try each day is free. Another try is your choice: watch a short video, or just play if you removed ads.",
+  "dailyDoneToday": "Completed today",
+  "dailyVerseHeader": "Verse of the day",
+  "dailyStart": "Start today's run",
+  "dailyTryAgain": "Try again",
+  "ghostShow": "Show my best-lap ghost"
 }

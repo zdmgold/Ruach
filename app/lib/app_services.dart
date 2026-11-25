@@ -22,12 +22,14 @@ final class ShellPorts {
     required this.url,
     required this.tilt,
     required this.log,
+    required this.review,
   });
 
   final SharePort share;
   final UrlPort url;
   final TiltPort tilt;
   final LogPort log;
+  final ReviewPort review;
 }
 
 /// Supplies the banner widget to menu screens: [banner] is null until an ad is

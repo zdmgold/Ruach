@@ -16,6 +16,7 @@ import 'package:ruach/platform/consent_service.dart';
 import 'package:ruach/platform/flags_service.dart';
 import 'package:ruach/platform/log_service.dart';
 import 'package:ruach/platform/notification_service.dart';
+import 'package:ruach/platform/review_service.dart';
 import 'package:ruach/platform/share_service.dart';
 import 'package:ruach/platform/storage_service.dart';
 import 'package:ruach/platform/tilt_service.dart';
@@ -88,13 +89,19 @@ Future<AppServices> bootServices() async {
     progress: progress,
     garage: garage,
     entitlement: entitlement,
-    race: RaceProvider(progress),
+    race: RaceProvider(progress, ghostEnabled: () => settings.value.ghostEnabled),
     consent: consent,
     ads: ads,
     daily: daily,
     verses: verses,
     flags: flags,
-    ports: ShellPorts(share: ShareService(), url: UrlService(), tilt: tilt, log: log),
+    ports: ShellPorts(
+      share: ShareService(),
+      url: UrlService(),
+      tilt: tilt,
+      log: log,
+      review: ReviewService(),
+    ),
     errors: errors,
     banner: AdBannerHost(adService, ads),
     onStart: () async {

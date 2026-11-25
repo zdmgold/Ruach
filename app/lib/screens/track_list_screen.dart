@@ -8,6 +8,7 @@ import 'package:ruach/core/logic/mode_rules.dart';
 import 'package:ruach/core/logic/star_rules.dart';
 import 'package:ruach/core/models/progress.dart';
 import 'package:ruach/core/models/race_config.dart';
+import 'package:ruach/core/models/settings.dart';
 import 'package:ruach/core/models/track.dart';
 import 'package:ruach/l10n/app_localizations.dart';
 import 'package:ruach/l10n/names.dart';
@@ -17,6 +18,7 @@ import 'package:ruach/theme/tokens.dart';
 import 'package:ruach/utils/formatters.dart';
 import 'package:ruach/widgets/app_chip.dart';
 import 'package:ruach/widgets/app_row.dart';
+import 'package:ruach/widgets/app_switch.dart';
 import 'package:ruach/widgets/nav_bar.dart';
 import 'package:ruach/widgets/pressable.dart';
 import 'package:ruach/widgets/screen_frame.dart';
@@ -57,7 +59,7 @@ class _TrackListScreenState extends State<TrackListScreen> {
     final AppScope scope = AppScope.of(context);
     final AppLocalizations l = AppLocalizations.of(context);
     return ListenableBuilder(
-      listenable: Listenable.merge(<Listenable>[scope.progress, scope.ads]),
+      listenable: Listenable.merge(<Listenable>[scope.progress, scope.ads, scope.settings]),
       builder: (BuildContext context, Widget? _) {
         final Progress progress = scope.progress.value;
         final List<String> ids = _ids().where((String id) {
@@ -66,6 +68,20 @@ class _TrackListScreenState extends State<TrackListScreen> {
         final bool bannerOn = scope.ads.bannersAllowed;
         final List<Widget> children = <Widget>[];
         if (_isJourney) children.add(_toggle(l));
+        if (widget.mode == RaceMode.timeTrial) {
+          children.add(
+            AppRow(
+              label: l.ghostShow,
+              trailing: AppSwitch(
+                value: scope.settings.value.ghostEnabled,
+                semanticLabel: l.ghostShow,
+                onChanged: (bool v) => unawaited(
+                  scope.settings.update((Settings x) => x.copyWith(ghostEnabled: v)),
+                ),
+              ),
+            ),
+          );
+        }
         Era? era;
         for (final String id in ids) {
           final Track track = TrackCatalog.byId(id)!;

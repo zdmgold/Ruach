@@ -1,6 +1,7 @@
 import 'package:ruach/core/catalog/verse_moments.dart';
 import 'package:ruach/core/logic/verse_repository.dart';
 import 'package:ruach/core/models/progress.dart';
+import 'package:ruach/core/models/upgrade.dart';
 import 'package:ruach/core/models/verse.dart';
 import 'package:ruach/providers/locale_provider.dart';
 import 'package:ruach/providers/progress_provider.dart';
@@ -32,6 +33,13 @@ final class VerseProvider {
     final VerseRef? ref = VerseMoments.trackIntro(trackId);
     if (ref == null) return null;
     final Verse? v = await _repository.forRef(_locale.code, ref);
+    if (v != null) await markSeen(v);
+    return v;
+  }
+
+  /// The verse that explains an upgrade's name, recorded as seen.
+  Future<Verse?> upgradeVerse(UpgradeKind kind) async {
+    final Verse? v = await _repository.forRef(_locale.code, VerseMoments.upgrade(kind));
     if (v != null) await markSeen(v);
     return v;
   }

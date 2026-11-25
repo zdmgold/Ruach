@@ -55,6 +55,14 @@ final class ProgressProvider extends ValueNotifier<Progress> {
 
   /// Records [stars] for [key] (see `StarRules.starKey`). Returns the Gifts
   /// earned, which is only the improvement over the best so far.
+  /// Remembers that these milestones have been celebrated.
+  Future<void> markMilestonesSeen(Iterable<String> ids) => change(
+        (Progress p) => p.copyWith(milestonesSeen: <String>{...p.milestonesSeen, ...ids}),
+      );
+
+  /// Remembers that the rating prompt was requested.
+  Future<void> markReviewAsked() => change((Progress p) => p.copyWith(reviewAsked: true));
+
   Future<int> awardStars(String key, int stars) async {
     final int before = value.giftsEarned;
     await change((Progress p) => StarRules.award(p, key, stars));

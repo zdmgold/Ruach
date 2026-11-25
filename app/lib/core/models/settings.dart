@@ -31,6 +31,7 @@ final class Settings {
     this.reminderHour = 18,
     this.reminderMinute = 0,
     this.onboardingDone = false,
+    this.ghostEnabled = true,
   });
 
   /// Reads settings from decoded JSON. Anything missing or invalid becomes the
@@ -56,6 +57,7 @@ final class Settings {
       reminderHour: readInt(m['reminderHour'], d.reminderHour).clamp(0, 23).toInt(),
       reminderMinute: readInt(m['reminderMinute'], d.reminderMinute).clamp(0, 59).toInt(),
       onboardingDone: readBool(m['onboardingDone'], d.onboardingDone),
+      ghostEnabled: readBool(m['ghostEnabled'], d.ghostEnabled),
     );
   }
 
@@ -99,6 +101,9 @@ final class Settings {
 
   final bool onboardingDone;
 
+  /// Show the Time Trial ghost car.
+  final bool ghostEnabled;
+
   Settings copyWith({
     ControlScheme? controlScheme,
     Handedness? handedness,
@@ -118,6 +123,7 @@ final class Settings {
     int? reminderHour,
     int? reminderMinute,
     bool? onboardingDone,
+    bool? ghostEnabled,
   }) =>
       Settings(
         controlScheme: controlScheme ?? this.controlScheme,
@@ -137,6 +143,7 @@ final class Settings {
         reminderHour: (reminderHour ?? this.reminderHour).clamp(0, 23).toInt(),
         reminderMinute: (reminderMinute ?? this.reminderMinute).clamp(0, 59).toInt(),
         onboardingDone: onboardingDone ?? this.onboardingDone,
+        ghostEnabled: ghostEnabled ?? this.ghostEnabled,
       );
 
   Map<String, Object?> toJson() => <String, Object?>{
@@ -157,6 +164,7 @@ final class Settings {
         'reminderHour': reminderHour,
         'reminderMinute': reminderMinute,
         'onboardingDone': onboardingDone,
+        'ghostEnabled': ghostEnabled,
       };
 
   @override

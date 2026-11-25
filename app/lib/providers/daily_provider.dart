@@ -62,6 +62,16 @@ final class DailyProvider extends ChangeNotifier {
   /// True when a welcome-back verse should show: days were missed.
   bool get welcomeBackDue => DailyStreak.welcomeBackDue(lastCompleted, today);
 
+  /// True when the welcome-back verse should show now: days were missed and it
+  /// has not been shown yet today.
+  bool get welcomeBackPending =>
+      welcomeBackDue && _progress.value.welcomeBackShownOn != today.key;
+
+  Future<void> markWelcomeBackShown() {
+    final String key = today.key;
+    return _progress.change((Progress p) => p.copyWith(welcomeBackShownOn: key));
+  }
+
   // A streak that has already lapsed reads as 0 until the next run.
   int _effectiveStreak() {
     final CivilDate? last = lastCompleted;

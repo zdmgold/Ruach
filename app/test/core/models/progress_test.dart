@@ -92,4 +92,24 @@ void main() {
     final Progress p = Progress.fromJson(<String, Object?>{'schemaVersion': 99});
     expect(p.schemaVersion, 99);
   });
+
+  test('milestones, welcome-back day, review flag and race count round-trip; old saves default them', () {
+    final Progress p = Progress(
+      milestonesSeen: <String>{'era:today', 'first-gift-spent'},
+      welcomeBackShownOn: '2026-11-25',
+      reviewAsked: true,
+      racesFinished: 7,
+    );
+    final Progress back = Progress.fromJson(jsonDecode(_encode(p)) as Map<String, Object?>);
+    expect(back.milestonesSeen, <String>{'era:today', 'first-gift-spent'});
+    expect(back.welcomeBackShownOn, '2026-11-25');
+    expect(back.reviewAsked, isTrue);
+    expect(back.racesFinished, 7);
+
+    final Progress old = Progress.fromJson(<String, Object?>{'schemaVersion': Progress.currentSchemaVersion});
+    expect(old.milestonesSeen, isEmpty);
+    expect(old.welcomeBackShownOn, isNull);
+    expect(old.reviewAsked, isFalse);
+    expect(old.racesFinished, 0);
+  });
 }
