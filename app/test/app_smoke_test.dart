@@ -69,7 +69,7 @@ void main() {
     expect(find.text('Journey'), findsOneWidget);
   });
 
-  testWidgets('the Daily Run card opens the track introduction through the router', (WidgetTester tester) async {
+  testWidgets('the Daily Run card opens the Daily Run screen, and Start reaches the track introduction', (WidgetTester tester) async {
     _phone(tester);
     final TestScope s = TestScope();
     await s.settings.update((Settings v) => v.copyWith(onboardingDone: true));
@@ -77,6 +77,10 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Daily Run'));
+    await tester.pumpAndSettle();
+    expect(find.text("Start today's run"), findsOneWidget);
+
+    await tester.tap(find.text("Start today's run"));
     await tester.pumpAndSettle();
     expect(find.text('Start race'), findsOneWidget);
   });
