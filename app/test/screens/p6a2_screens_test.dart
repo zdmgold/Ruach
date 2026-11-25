@@ -6,6 +6,7 @@ import 'package:ruach/core/catalog/vehicles.dart';
 import 'package:ruach/core/logic/catalog_ids.dart';
 import 'package:ruach/core/logic/milestone_rules.dart';
 import 'package:ruach/core/logic/mode_rules.dart';
+import 'package:ruach/core/logic/race_rules.dart';
 import 'package:ruach/core/models/drive_input.dart';
 import 'package:ruach/core/models/progress.dart';
 import 'package:ruach/core/models/race_config.dart';

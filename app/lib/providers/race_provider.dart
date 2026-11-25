@@ -30,7 +30,7 @@ final class WeeklySlot {
 /// from the frame time the game loop gives it, applies the mode rule, and on
 /// finish builds the result and records it in the saved game.
 final class RaceProvider extends ChangeNotifier {
-  RaceProvider(this._progress, {bool Function()? ghostEnabled}) : _ghostEnabled = ghostEnabled;
+  RaceProvider(this._progress, {this._ghostEnabled});
 
   /// The most steps one call to [advance] runs, so a long pause between
   /// frames cannot freeze the game catching up.
