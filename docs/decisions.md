@@ -46,6 +46,8 @@ All rows marked Proposed in blueprint section 1 were confirmed by the owner on 2
 | p5c | Done | D-041 |
 | p5d | Done | D-042 |
 | p6a | Done | D-043 |
+| p6a-2a | Done | D-045 |
+| p6a-2b | Not started | D-044 items 4, 6, 8, 9, 11 |
 | p6b to p8c | Not started | See blueprint section 10 |
 
 ## Open items
@@ -317,3 +319,15 @@ Method: every manifest path checked against `origin/main`, then every capability
 
 **Unchanged external items:** the list above (Cloudflare URL, name clearance, reviewers, signing, Apple, AdMob IDs, licence, app-ads.txt, privacy review). Nothing has been verified on a device yet.
 - Test APKs are built for 64-bit ARM only (`--target-platform android-arm64`) to cut the download; the 32-bit and emulator builds are left out. The release build at p7b is a separate, smaller build.
+
+## D-045 (p6a-2a) Verse moments, Daily Run screen and related gaps
+- Decisions taken on your "go": milestone cards show once and stay in the Verse library; the pursuit wall is visual only (p6a-2b); the banner stays 320 by 50 (so item 11a is dropped).
+- Milestones (`Milestones`): an era is complete when its four tracks each have a star; an upgrade at level 5; the first Gift spent. Each id is stored in `milestonesSeen`. `MilestoneSlot` shows the next one on the Result screen (after the race is saved) and the Garage, marks it seen as it appears, and keeps it on screen until the screen closes.
+- Welcome-back: `WelcomeBackSlot` on Home after at least one missed day, once per day (`welcomeBackShownOn`).
+- Upgrade verses: each Garage tile shows its own verse text and reference (`VerseMoments.upgrade`); the fixed Isaiah 11:2 reference is the fallback while it loads or if it is missing.
+- New Daily Run screen (`/daily`): today's track, vehicle, laps and wind, tries used, streak, the extra-try note, Start, verse of the day and the reminder switch (same setting as Settings). Home's Daily card opens it; Start goes to the track intro.
+- Time Trial: a persisted "Show my best-lap ghost" setting, switchable on the Time Trial list; recording a new best ghost is unaffected.
+- Rating prompt: `ReviewRule` asks once, after a podium finish (top three), after at least three finished races. The prompt replaces that race's interstitial; a prompt and an ad never come together. `Progress` stores `reviewAsked` and `racesFinished`.
+- Vehicle choice: free races get an inline picker of owned vehicles (with a check on the chosen one); the Daily and Weekly setups stay fixed.
+- Progress gained four optional fields with tolerant reading, so old saves load and no schema bump was needed.
+
