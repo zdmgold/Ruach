@@ -316,4 +316,4 @@ Method: every manifest path checked against `origin/main`, then every capability
 **Proposed fix:** a batch p6a-2 before p6b covering items 1 to 9 so the translations are written once against the final English keys. Not started until confirmed.
 
 **Unchanged external items:** the list above (Cloudflare URL, name clearance, reviewers, signing, Apple, AdMob IDs, licence, app-ads.txt, privacy review). Nothing has been verified on a device yet.
-
+- Test APKs are built for 64-bit ARM only (`--target-platform android-arm64`) to cut the download; the 32-bit and emulator builds are left out. The release build at p7b is a separate, smaller build.
