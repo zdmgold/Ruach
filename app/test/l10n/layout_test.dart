@@ -54,7 +54,11 @@ void main() {
         for (final (String route, Object? args) in screens) {
           navigator.pushNamed(route, arguments: args).ignore();
           await tester.pumpAndSettle();
-          expect(tester.takeException(), isNull, reason: '$route in $code at ${scale}x');
+          final Object? error = tester.takeException();
+          if (error != null) {
+            final String detail = error is FlutterError ? error.toStringDeep() : '$error';
+            fail('$route ${args ?? ''} in $code at ${scale}x: $detail');
+          }
           navigator.pop();
           await tester.pumpAndSettle();
         }
