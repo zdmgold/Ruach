@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
-import 'package:ruach/widgets/pressable.dart';
 import 'package:ruach/theme/app_theme.dart';
 import 'package:ruach/theme/tokens.dart';
+import 'package:ruach/widgets/pressable.dart';
 
 /// Holds the banner at the bottom of a menu screen. When there is no ad
 /// (loading, failed, removed, switched off) or the keyboard is open, the gap,

@@ -8,9 +8,7 @@ import 'package:ruach/providers/settings_provider.dart';
 /// Plays sounds and haptics, honouring the Sound, Music, Volume and Haptics
 /// settings. With no audio files or no vibration motor it stays silent.
 final class FeedbackProvider {
-  FeedbackProvider(this._settings, {AudioPort? audio, HapticsPort? haptics})
-      : _audio = audio,
-        _haptics = haptics {
+  FeedbackProvider(this._settings, {this._audio, this._haptics}) {
     _settings.addListener(_apply);
     _apply();
   }
