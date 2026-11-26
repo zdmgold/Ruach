@@ -13,6 +13,8 @@ class ScreenFrame extends StatelessWidget {
     super.key,
     this.banner,
     this.bannerHeight = 0,
+    this.removeAdsLabel,
+    this.onRemoveAds,
   });
 
   final NavBar navBar;
@@ -21,6 +23,10 @@ class ScreenFrame extends StatelessWidget {
   /// The banner ad, or null for none. The slot collapses when it is null.
   final Widget? banner;
   final double bannerHeight;
+
+  /// A "Remove ads" link shown under the banner when there is one.
+  final String? removeAdsLabel;
+  final VoidCallback? onRemoveAds;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +47,12 @@ class ScreenFrame extends StatelessWidget {
               ),
             ),
           ),
-          AdSlot(height: bannerHeight, ad: banner),
+          AdSlot(
+            height: bannerHeight,
+            ad: banner,
+            removeAdsLabel: removeAdsLabel,
+            onRemoveAds: onRemoveAds,
+          ),
         ],
       ),
     );

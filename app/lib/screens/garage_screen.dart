@@ -11,6 +11,7 @@ import 'package:ruach/l10n/app_localizations.dart';
 import 'package:ruach/l10n/names.dart';
 import 'package:ruach/providers/garage_provider.dart';
 import 'package:ruach/screens/milestone_block.dart';
+import 'package:ruach/screens/routes.dart';
 import 'package:ruach/screens/verse_block.dart';
 import 'package:ruach/theme/icons.dart';
 import 'package:ruach/theme/tokens.dart';
@@ -72,6 +73,8 @@ class _GarageScreenState extends State<GarageScreen> {
     return ScreenFrame(
       bannerHeight: bannerOn ? 50 : 0,
       banner: bannerOn ? widget.banner : null,
+      removeAdsLabel: l.settingsRemoveAds,
+      onRemoveAds: () => unawaited(Navigator.of(context).pushNamed(Routes.upgrade)),
       navBar: NavBar(
         title: l.garageTitle,
         onBack: () => Navigator.of(context).maybePop(),

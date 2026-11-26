@@ -11,9 +11,11 @@ import 'package:ruach/core/logic/verse_repository.dart';
 import 'package:ruach/platform/ad_banner.dart';
 import 'package:ruach/platform/ad_service.dart';
 import 'package:ruach/platform/asset_verse_source.dart';
+import 'package:ruach/platform/audio_service.dart';
 import 'package:ruach/platform/billing_service.dart';
 import 'package:ruach/platform/consent_service.dart';
 import 'package:ruach/platform/flags_service.dart';
+import 'package:ruach/platform/haptics_service.dart';
 import 'package:ruach/platform/log_service.dart';
 import 'package:ruach/platform/notification_service.dart';
 import 'package:ruach/platform/review_service.dart';
@@ -24,6 +26,7 @@ import 'package:ruach/providers/ad_provider.dart';
 import 'package:ruach/providers/consent_provider.dart';
 import 'package:ruach/providers/daily_provider.dart';
 import 'package:ruach/providers/entitlement_provider.dart';
+import 'package:ruach/providers/feedback_provider.dart';
 import 'package:ruach/providers/flags_provider.dart';
 import 'package:ruach/providers/garage_provider.dart';
 import 'package:ruach/providers/locale_provider.dart';
@@ -104,6 +107,11 @@ Future<AppServices> bootServices() async {
     ),
     errors: errors,
     banner: AdBannerHost(adService, ads),
+    feedback: FeedbackProvider(
+      settings,
+      audio: AudioService(onError: log.log),
+      haptics: HapticsService(),
+    ),
     onStart: () async {
       unawaited(flags.load());
       unawaited(tilt.isAvailable().then((bool ok) => services.tiltAvailable.value = ok));

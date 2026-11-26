@@ -54,4 +54,17 @@ void main() {
     expect(seen, <String>['recoverable: layout failed']);
     expect(handler.fatal.value, isNull);
   });
+
+  test('a widget that fails to build takes the app to the fallback', () {
+    final FlutterExceptionHandler? original = FlutterError.onError;
+    addTearDown(() => FlutterError.onError = original);
+
+    handler.install();
+    FlutterError.onError!(
+      FlutterErrorDetails(exception: 'build failed', library: 'widgets library'),
+    );
+
+    expect(seen, <String>['fatal: build failed']);
+    expect(handler.fatal.value, isNotNull);
+  });
 }

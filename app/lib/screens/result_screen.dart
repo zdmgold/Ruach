@@ -10,7 +10,9 @@ import 'package:ruach/core/models/race_config.dart';
 import 'package:ruach/core/models/race_result.dart';
 import 'package:ruach/core/models/vec2.dart';
 import 'package:ruach/core/models/verse.dart';
+import 'package:ruach/core/ports/device_ports.dart';
 import 'package:ruach/l10n/app_localizations.dart';
+import 'package:ruach/providers/feedback_provider.dart';
 import 'package:ruach/providers/race_provider.dart';
 import 'package:ruach/screens/milestone_block.dart';
 import 'package:ruach/screens/routes.dart';
@@ -30,7 +32,16 @@ import 'package:ruach/widgets/star_badge.dart';
 /// After a race: stars, Gifts, a verse, and the ways to go on. The result is
 /// saved once when the screen opens; an interstitial may follow the save.
 class ResultScreen extends StatefulWidget {
-  const ResultScreen({super.key, this.onShare, this.onRequestReview});
+  const ResultScreen({super.key, this.onShare, this.onRequestReview, this.feedback});
+
+  /// Sounds and haptics for the reveal; none when null.
+  final FeedbackProvider? feedback;
+
+  /// Time between one star appearing and the next.
+  static const Duration starStep = Duration(milliseconds: 300);
+
+  /// Time between Gift count-up ticks.
+  static const Duration giftStep = Duration(milliseconds: 60);
 
   final ShareText? onShare;
 
@@ -52,6 +63,50 @@ class _ResultScreenState extends State<ResultScreen> {
   bool _started = false;
   bool _saved = false;
   StreakUpdate? _streak;
+  Timer? _reveal;
+  int _starsShown = 0;
+  int _giftsShown = 0;
+
+  @override
+  void dispose() {
+    _reveal?.cancel();
+    super.dispose();
+  }
+
+  /// Shows the stars one by one, then counts the Gifts up. With Reduce Motion
+  /// everything is shown at once. Spoken labels always carry the final values.
+  void _startReveal(RaceResult r, int gifts, bool instant) {
+    if (instant) {
+      setState(() {
+        _starsShown = r.stars;
+        _giftsShown = gifts;
+      });
+      return;
+    }
+    final FeedbackProvider? feedback = widget.feedback;
+    final int stride = gifts > 15 ? (gifts / 15).ceil() : 1;
+    _reveal = Timer.periodic(ResultScreen.starStep, (Timer t) {
+      if (!mounted) return;
+      if (_starsShown < r.stars) {
+        setState(() => _starsShown += 1);
+        feedback?.sound(SoundEffect.star);
+        feedback?.haptic(HapticKind.light);
+        return;
+      }
+      t.cancel();
+      if (gifts <= 0) return;
+      feedback?.sound(SoundEffect.gift);
+      _reveal = Timer.periodic(ResultScreen.giftStep, (Timer g) {
+        if (!mounted) return;
+        setState(() {
+          _giftsShown = (_giftsShown + stride).clamp(0, gifts).toInt();
+          if (_giftsShown >= gifts) {
+                g.cancel();
+          }
+        });
+      });
+    });
+  }
 
   @override
   void didChangeDependencies() {
@@ -73,6 +128,13 @@ class _ResultScreenState extends State<ResultScreen> {
       _saved = true;
       _streak = streak;
     });
+    if (result != null) {
+      _startReveal(
+        result,
+        scope.race.giftsGained,
+        MediaQuery.disableAnimationsOf(context),
+      );
+    }
     final bool askReview = result != null &&
         widget.onRequestReview != null &&
         ReviewRule.shouldAsk(scope.progress.value, result);
@@ -185,7 +247,7 @@ class _ResultScreenState extends State<ResultScreen> {
             const SizedBox(height: AppSpacing.s16),
             Center(
               child: StarBadge(
-                stars: r.stars,
+                stars: _starsShown,
                 semanticLabel: l.starsEarned(r.stars),
                 size: AppIconSizes.hero,
               ),
@@ -205,11 +267,16 @@ class _ResultScreenState extends State<ResultScreen> {
                       label: l.resultPosition(r.playerPosition, r.standings.length),
                       tone: ChipTone.accent,
                     ),
-                  if (best != null) AppChip(label: l.resultTime(formatLapTime(best))),
+                  if (best != null)
+                    AppChip(
+                      label: l.resultTime(formatLapTime(best)),
+                      tone: race.newBestLap ? ChipTone.accent : ChipTone.neutral,
+                    ),
+                  if (race.newBestLap) AppChip(label: l.resultNewBest, tone: ChipTone.accent),
                   if (_streak != null && _streak!.counted)
                     AppChip(label: l.streakDays(_streak!.current), tone: ChipTone.accent),
                   if (gifts > 0)
-                    GiftBadge(count: gifts, semanticLabel: l.giftCountSemantic(gifts)),
+                    GiftBadge(count: _giftsShown, semanticLabel: l.giftCountSemantic(gifts)),
                 ],
               ),
             ),

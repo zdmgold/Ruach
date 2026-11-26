@@ -166,12 +166,18 @@ final class EffectsLayer extends Component {
 /// The abstract dust wall of an Escape Run, rising behind the player. It is a
 /// band of haze with a ragged edge: no figures, no combat. It stays on under
 /// Reduce Motion (it is game information) but stops rippling.
+///
+/// On a pursuit track in any other mode it is scenery only: a fainter haze a
+/// fixed distance back that never touches the race.
 final class PursuitWall extends Component {
   PursuitWall({required this.race, required this.reduceMotion});
 
   final RaceProvider race;
   final bool reduceMotion;
   double _time = 0;
+
+  /// How far behind the player the scenery haze sits, in metres.
+  static const double sceneryGap = 90;
 
   @override
   void update(double dt) {
@@ -183,10 +189,11 @@ final class PursuitWall extends Component {
   void render(Canvas canvas) {
     final RaceSimulation? sim = race.simulation;
     final EscapeRun? escape = race.escape;
-    if (sim == null || escape == null) return;
+    if (sim == null || (escape == null && !sim.config.track.pursuit)) return;
     final RaceCar player = sim.player;
     final Vec2 along = player.projection.tangent;
-    final double gap = escape.gap.clamp(0, 400).toDouble();
+    final double gap = escape == null ? sceneryGap : escape.gap.clamp(0, 400).toDouble();
+    final double strength = escape == null ? 0.5 : 1;
     canvas.save();
     canvas.translate(player.state.position.x, player.state.position.y);
     canvas.rotate(along.angle);
@@ -200,10 +207,10 @@ final class PursuitWall extends Component {
     }
     haze.lineTo(-gap - 400, 90);
     haze.close();
-    canvas.drawPath(haze, Paint()..color = WorldColors.trackSand.withValues(alpha: 0.55));
+    canvas.drawPath(haze, Paint()..color = WorldColors.trackSand.withValues(alpha: 0.55 * strength));
     canvas.drawPath(
       haze.shift(const Offset(-14, 0)),
-      Paint()..color = WorldColors.trackDirt.withValues(alpha: 0.5),
+      Paint()..color = WorldColors.trackDirt.withValues(alpha: 0.5 * strength),
     );
     canvas.restore();
   }

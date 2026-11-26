@@ -50,6 +50,7 @@ final class RaceProvider extends ChangeNotifier {
   double _escapeMetres = 0;
   bool _committed = false;
   int _giftsGained = 0;
+  bool _newBestLap = false;
   WeeklySlot? _weekly;
 
   // Time Trial ghost: the saved best lap to race against, and the lap being
@@ -78,6 +79,9 @@ final class RaceProvider extends ChangeNotifier {
   /// Gifts gained by the last committed result.
   int get giftsGained => _giftsGained;
 
+  /// True when the saved race beat an earlier best lap on the track.
+  bool get newBestLap => _newBestLap;
+
   bool get isRunning => _stage == RaceStage.running;
 
   /// Begins [config]. Any race in progress is dropped.
@@ -104,6 +108,7 @@ final class RaceProvider extends ChangeNotifier {
     _escapeMetres = 0;
     _committed = false;
     _giftsGained = 0;
+    _newBestLap = false;
     _recorder.startLap();
     _lapStartTick = 0;
     _lapsSeen = 0;
@@ -218,6 +223,7 @@ final class RaceProvider extends ChangeNotifier {
       if (lap != null && config.mode != RaceMode.escapeRun) {
         final int ms = lap.inMilliseconds;
         final int? old = p.bestLapMillis[config.track.id];
+        if (old != null && ms < old) _newBestLap = true;
         if (old == null || ms < old) {
           next = next.copyWith(
             bestLapMillis: <String, int>{...p.bestLapMillis, config.track.id: ms},

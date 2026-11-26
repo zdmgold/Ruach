@@ -5,11 +5,14 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:ruach/app_scope.dart';
 import 'package:ruach/core/logic/input_strategy.dart';
+import 'package:ruach/core/logic/race_cues.dart';
+import 'package:ruach/core/logic/race_rules.dart';
 import 'package:ruach/core/models/settings.dart';
 import 'package:ruach/game/hud_layer.dart';
 import 'package:ruach/game/input_layer.dart';
 import 'package:ruach/game/race_game.dart';
 import 'package:ruach/l10n/app_localizations.dart';
+import 'package:ruach/providers/feedback_provider.dart';
 import 'package:ruach/providers/race_provider.dart';
 import 'package:ruach/screens/routes.dart';
 import 'package:ruach/theme/app_theme.dart';
@@ -25,7 +28,11 @@ class RaceScreen extends StatefulWidget {
     super.key,
     this.tilt,
     this.tiltAvailable = true,
+    this.feedback,
   });
+
+  /// Race sounds and haptics; none when null.
+  final FeedbackProvider? feedback;
 
   final RaceArgs args;
 
@@ -45,6 +52,7 @@ class _RaceScreenState extends State<RaceScreen> with WidgetsBindingObserver, Si
   bool _left = false;
   Ticker? _ticker;
   Duration _last = Duration.zero;
+  RaceCueDetector _cues = RaceCueDetector();
 
   /// A long frame (the app was stalled) is stepped as at most this long.
   static const double _maxFrame = 0.1;
@@ -80,11 +88,22 @@ class _RaceScreenState extends State<RaceScreen> with WidgetsBindingObserver, Si
         .toDouble();
     _last = elapsed;
     final RaceProvider? race = _race;
-    if (race != null && race.isRunning) race.advance(dt, _controller.read(dt));
+    if (race != null && race.isRunning) {
+      race.advance(dt, _controller.read(dt));
+      final FeedbackProvider? feedback = widget.feedback;
+      final RaceSimulation? sim = race.simulation;
+      if (feedback != null && sim != null) {
+        for (final RaceCue cue in _cues.poll(sim)) {
+          feedback.cue(cue);
+        }
+      }
+    }
   }
 
   void _begin(RaceProvider race) {
     _controller.reset();
+    _cues = RaceCueDetector();
+    widget.feedback?.startMusic();
     race.start(
       widget.args.config,
       wind: widget.args.wind,
@@ -105,6 +124,9 @@ class _RaceScreenState extends State<RaceScreen> with WidgetsBindingObserver, Si
     if (state != AppLifecycleState.resumed) {
       _controller.reset();
       _race?.pause();
+      widget.feedback?.pause();
+    } else {
+      widget.feedback?.resume();
     }
   }
 
@@ -113,6 +135,7 @@ class _RaceScreenState extends State<RaceScreen> with WidgetsBindingObserver, Si
     WidgetsBinding.instance.removeObserver(this);
     _race?.removeListener(_onRace);
     _ticker?.dispose();
+    widget.feedback?.stopMusic();
     super.dispose();
   }
 

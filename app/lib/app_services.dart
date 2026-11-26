@@ -5,6 +5,7 @@ import 'package:ruach/providers/ad_provider.dart';
 import 'package:ruach/providers/consent_provider.dart';
 import 'package:ruach/providers/daily_provider.dart';
 import 'package:ruach/providers/entitlement_provider.dart';
+import 'package:ruach/providers/feedback_provider.dart';
 import 'package:ruach/providers/flags_provider.dart';
 import 'package:ruach/providers/garage_provider.dart';
 import 'package:ruach/providers/locale_provider.dart';
@@ -59,6 +60,7 @@ final class AppServices {
     required this.ports,
     required this.errors,
     this.banner,
+    this.feedback,
     this.onStart,
   });
 
@@ -77,6 +79,9 @@ final class AppServices {
   final ShellPorts ports;
   final AppErrorHandler errors;
   final BannerHost? banner;
+
+  /// Sounds and haptics; null in tests that do not need them.
+  final FeedbackProvider? feedback;
 
   /// Work that runs after the first frame (purchase state, consent, flags).
   final Future<void> Function()? onStart;

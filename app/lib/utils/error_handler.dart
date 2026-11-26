@@ -22,10 +22,9 @@ class FatalError {
 
 /// The global error handler (blueprint section 4, error taxonomy).
 ///
-/// - Errors thrown while building or laying out a widget are reported as not
-///   fatal: the broken widget is replaced and the rest of the app carries on.
-/// - Errors that escape every other handler (uncaught asynchronous errors)
-///   are reported as fatal and published on [fatal], so the app root can show
+/// - Errors thrown while building a widget (the widgets library) and errors
+///   that escape every other handler (uncaught asynchronous errors) are
+///   reported as fatal and published on [fatal], so the app root can show
 ///   the full-screen fallback with a Retry button and an email-the-log link.
 ///
 /// Nothing here shows UI itself; the app root listens to [fatal].
@@ -44,7 +43,9 @@ class AppErrorHandler {
       if (kDebugMode) {
         FlutterError.presentError(details);
       }
-      report(details.exception, details.stack);
+      // A widget that fails to build leaves a blank spot with no way out, so
+      // it takes the player to the fallback view (Retry returns to Home).
+      report(details.exception, details.stack, fatal: details.library == 'widgets library');
     };
     PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
       report(error, stack, fatal: true);

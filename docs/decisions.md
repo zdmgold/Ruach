@@ -47,7 +47,7 @@ All rows marked Proposed in blueprint section 1 were confirmed by the owner on 2
 | p5d | Done | D-042 |
 | p6a | Done | D-043 |
 | p6a-2a | Done | D-045 |
-| p6a-2b | Not started | D-044 items 4, 6, 8, 9, 11 |
+| p6a-2b | Done | D-046 |
 | p6b to p8c | Not started | See blueprint section 10 |
 
 ## Open items
@@ -331,3 +331,12 @@ Method: every manifest path checked against `origin/main`, then every capability
 - Vehicle choice: free races get an inline picker of owned vehicles (with a check on the chosen one); the Daily and Weekly setups stay fixed.
 - Progress gained four optional fields with tolerant reading, so old saves load and no schema bump was needed.
 
+
+## D-046 (p6a-2b) Sound and haptics wiring, Remove ads link, error fallback, win celebration
+- Race cues: pure `RaceCueDetector` (countdown tick, go, boost, contact, lap, finish by outcome) is polled by the race screen after each advance; `FeedbackProvider` plays the sound and touch, honouring Sound, Music, Volume and Haptics, and pauses with the app. Calls stay silent until the audio files arrive at p7a.
+- Result screen: stars appear one by one (300 ms steps, star sound and light touch), then Gifts count up; instant with Reduce Motion; spoken labels carry the final values throughout. A lap that beats the saved best shows a "New best lap" chip.
+- "Remove ads" link sits under the banner on Home, Weekly, track lists and Garage, only while a banner shows. Settings already shows "Ads removed" once owned.
+- HUD text scale was already capped at 1.2, so item 8 needed no change.
+- A widget build error is now fatal: the fallback view appears (Retry returns to Home) instead of a blank spot.
+- Pursuit tracks outside Escape Run draw a fainter dust wall 90 m behind the player; scenery only.
+- Not verified on a device: sound, haptics and the reveal pacing (needs a test build).

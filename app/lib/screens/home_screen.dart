@@ -84,6 +84,8 @@ class HomeScreen extends StatelessWidget {
     return ScreenFrame(
       bannerHeight: scope.ads.bannersAllowed ? bannerHeight : 0,
       banner: scope.ads.bannersAllowed ? banner : null,
+      removeAdsLabel: l.settingsRemoveAds,
+      onRemoveAds: () => unawaited(Navigator.of(context).pushNamed(Routes.upgrade)),
       navBar: NavBar(
         title: l.appName,
         actions: <Widget>[

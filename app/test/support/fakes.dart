@@ -216,3 +216,38 @@ final class FakeReview implements ReviewPort {
   @override
   Future<void> requestReview() async => requests++;
 }
+
+final class FakeAudio implements AudioPort {
+  final List<SoundEffect> played = <SoundEffect>[];
+  final List<({double effects, double music})> volumes = <({double effects, double music})>[];
+  int musicStarts = 0;
+  int musicStops = 0;
+  int pauses = 0;
+  int resumes = 0;
+
+  @override
+  Future<void> play(SoundEffect effect) async => played.add(effect);
+
+  @override
+  Future<void> startMusic() async => musicStarts++;
+
+  @override
+  Future<void> stopMusic() async => musicStops++;
+
+  @override
+  Future<void> setVolumes({required double effects, required double music}) async =>
+      volumes.add((effects: effects, music: music));
+
+  @override
+  Future<void> pause() async => pauses++;
+
+  @override
+  Future<void> resume() async => resumes++;
+}
+
+final class FakeHaptics implements HapticsPort {
+  final List<HapticKind> played = <HapticKind>[];
+
+  @override
+  Future<void> play(HapticKind kind) async => played.add(kind);
+}

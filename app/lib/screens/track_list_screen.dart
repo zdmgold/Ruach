@@ -94,6 +94,8 @@ class _TrackListScreenState extends State<TrackListScreen> {
         return ScreenFrame(
           bannerHeight: bannerOn ? 50 : 0,
           banner: bannerOn ? widget.banner : null,
+          removeAdsLabel: l.settingsRemoveAds,
+          onRemoveAds: () => unawaited(Navigator.of(context).pushNamed(Routes.upgrade)),
           navBar: NavBar(
             title: modeName(l, widget.mode),
             onBack: () => Navigator.of(context).maybePop(),

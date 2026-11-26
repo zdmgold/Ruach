@@ -172,13 +172,19 @@ class _RuachAppState extends State<RuachApp> with WidgetsBindingObserver {
       case Routes.race:
         if (args is RaceArgs) {
           return _tilt(
-            (bool tilt) => RaceScreen(args: args, tilt: _s.ports.tilt.roll, tiltAvailable: tilt),
+            (bool tilt) => RaceScreen(
+              args: args,
+              tilt: _s.ports.tilt.roll,
+              tiltAvailable: tilt,
+              feedback: _s.feedback,
+            ),
           );
         }
       case Routes.result:
         return ResultScreen(
           onShare: _s.ports.share.shareText,
           onRequestReview: _s.ports.review.requestReview,
+          feedback: _s.feedback,
         );
     }
     // Home, and any name or arguments that do not fit, land on Home.
