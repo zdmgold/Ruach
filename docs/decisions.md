@@ -49,7 +49,8 @@ All rows marked Proposed in blueprint section 1 were confirmed by the owner on 2
 | p6a-2a | Done | D-045 |
 | p6a-2b | Done | D-046 |
 | p6b | Done | D-047 |
-| p6c to p8c | Not started | See blueprint section 10 |
+| p6c | Done (Test APK 2 on request) | D-048 |
+| p7a to p8c | Not started | See blueprint section 10 |
 
 ## Open items
 
@@ -347,3 +348,9 @@ Method: every manifest path checked against `origin/main`, then every capability
 - Terms follow each language's bundled Bible text (names, divine name: Jehová, l'Eternel, יהוה, etc.). `Ruach` stays in Latin letters in every language.
 - iOS: `NSUserTrackingUsageDescription` translations are in `ios/Runner/<lang>.lproj/InfoPlist.strings`. They still have to be registered as a localized resource in the Xcode project; that is done with the iOS build at p7b.
 - `test/l10n/translations_test.dart` loads every language and checks plural forms. No native review has happened (see Unreviewed languages).
+
+## D-048 (p6c) Layout gate, integration test, emulator workflow
+- `test/l10n/layout_test.dart` (runs on every push): for each of the 11 languages at 1x and 2x text on a 360x640 phone, Home plus ten other screens must build with no overflow or error, and Arabic and Hebrew must lay out right to left. This replaces the blueprint's golden screenshots in en, de, ar, hi and ja: pixel baselines cannot be made here (no Flutter SDK) and would fail until they exist. Screens are checked structurally instead; the visual check of key screens is the emulator run and your phone.
+- `integration_test/app_flow_test.dart`: real services and test ad IDs; first launch, Skip, Home, Settings, Daily Run, start of a race, with frame timings printed (median, 95th percentile, frames over 16 ms).
+- `.github/workflows/emulator.yml`: manual only; 3 GB, 720x1640 Android 14 emulator; keeps the test log, logcat and a final screenshot as an artifact. Not run yet. An emulator without a GPU runs slower than the Redmi A5, so its timings are a trend, not a pass or fail.
+- Not done from the blueprint list: integration flows for purchase with a fake, consent and pack download (the real billing and consent plugins need a store account or test device; the reader and packs are phase 8). Those are checked by hand on a phone with the checklist in the Test APK 2 notes.

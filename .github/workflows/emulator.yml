@@ -1,0 +1,70 @@
+name: emulator
+
+# Manual only. Never runs on a push. Runs the integration tests on an Android
+# emulator that matches the cheapest target device (3 GB, 720x1640) and keeps
+# the log, frame timings and screenshots as an artifact.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  emulator:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.50.0'
+          channel: stable
+          cache: true
+
+      - name: Enable hardware acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Get packages
+        working-directory: app
+        run: flutter pub get
+
+      - name: Run the integration tests on the emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          ram-size: 3072M
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          working-directory: app
+          script: |
+            adb shell wm size 720x1640
+            mkdir -p ../emulator-out
+            adb logcat -c
+            flutter test integration_test --no-pub 2>&1 | tee ../emulator-out/test.log || echo FAILED > ../emulator-out/failed
+            adb exec-out screencap -p > ../emulator-out/final.png || true
+            adb logcat -d > ../emulator-out/logcat.txt || true
+
+      - name: Upload the results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: emulator-results
+          path: emulator-out
+          retention-days: 14
+
+      - name: Fail if the tests failed
+        run: test ! -f emulator-out/failed
