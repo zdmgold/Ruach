@@ -343,7 +343,7 @@ Method: every manifest path checked against `origin/main`, then every capability
 - Not verified on a device: sound, haptics and the reveal pacing (needs a test build).
 
 ## D-047 (p6b) Ten translations
-- `app_<code>.arb` for es, fr, de, pt_BR, ar, hi, ja, ko, zh_Hans, he, each with all 281 keys and the English placeholders. Metadata entries stay only in `app_en.arb`. Plurals keep the English `=0/=1/other` shape and add the CLDR categories where a language needs them.
+- `app_<code>.arb` for es, fr, de, pt (Brazilian Portuguese), ar, hi, ja, ko, zh (Simplified Chinese), he; Flutter requires the plain `pt` and `zh` files, and the app still maps its `pt_BR` and `zh_Hans` codes onto them, each with all 281 keys and the English placeholders. Metadata entries stay only in `app_en.arb`. Plurals keep the English `=0/=1/other` shape and add the CLDR categories where a language needs them.
 - Terms follow each language's bundled Bible text (names, divine name: Jehová, l'Eternel, יהוה, etc.). `Ruach` stays in Latin letters in every language.
 - iOS: `NSUserTrackingUsageDescription` translations are in `ios/Runner/<lang>.lproj/InfoPlist.strings`. They still have to be registered as a localized resource in the Xcode project; that is done with the iOS build at p7b.
 - `test/l10n/translations_test.dart` loads every language and checks plural forms. No native review has happened (see Unreviewed languages).
