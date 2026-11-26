@@ -38,13 +38,18 @@ void main() {
         addTearDown(tester.view.reset);
         addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
 
+        final List<String> problems = <String>[];
+        final FlutterExceptionHandler? previous = FlutterError.onError;
+        FlutterError.onError = (FlutterErrorDetails d) => problems.add(d.toString());
+        addTearDown(() => FlutterError.onError = previous);
+
         final TestScope s = TestScope();
         await s.settings.update(
           (Settings v) => v.copyWith(onboardingDone: true, languageCode: code),
         );
         await tester.pumpWidget(RuachApp(services: testServices(s)));
         await tester.pumpAndSettle();
-        expect(tester.takeException(), isNull, reason: 'home');
+        expect(problems, isEmpty, reason: 'home');
 
         final TextDirection want =
             LocaleRules.isRtl(code) ? TextDirection.rtl : TextDirection.ltr;
@@ -54,10 +59,8 @@ void main() {
         for (final (String route, Object? args) in screens) {
           navigator.pushNamed(route, arguments: args).ignore();
           await tester.pumpAndSettle();
-          final Object? error = tester.takeException();
-          if (error != null) {
-            final String detail = error is FlutterError ? error.toStringDeep() : '$error';
-            fail('$route ${args ?? ''} in $code at ${scale}x: $detail');
+          if (problems.isNotEmpty) {
+            fail('$route in $code at ${scale}x: ${problems.first}');
           }
           navigator.pop();
           await tester.pumpAndSettle();
