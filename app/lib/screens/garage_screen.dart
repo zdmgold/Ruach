@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:ruach/app_scope.dart';
 import 'package:ruach/core/catalog/vehicles.dart';
-import 'package:ruach/core/logic/mode_rules.dart';
 import 'package:ruach/core/models/upgrade.dart';
 import 'package:ruach/core/models/vehicle.dart';
 import 'package:ruach/core/models/verse.dart';
@@ -104,16 +103,8 @@ class _GarageScreenState extends State<GarageScreen> {
   }
 
   Widget _vehicleRow(AppLocalizations l, GarageProvider garage, Vehicle v) {
-    final bool owned = garage.owned.any((Vehicle o) => o.id == v.id);
     final bool inUse = garage.selected.id == v.id;
     final String name = vehicleName(l, v.kind);
-    if (!owned) {
-      return AppRow(
-        icon: AppIcons.locked,
-        label: name,
-        subtitle: l.garageUnlockedAt(Unlocks.vehicleTrackNumber),
-      );
-    }
     return AppRow(
       icon: AppIcons.vehicle,
       label: name,
