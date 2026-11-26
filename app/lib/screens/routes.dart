@@ -26,6 +26,10 @@ abstract final class Routes {
   /// Today's Daily Run: setup, attempts, streak, reminder and verse.
   static const String dailyRun = '/daily';
 
+  /// Straight into a race with the saved vehicle: no introduction screen.
+  /// Optional argument: [PlayArgs]; without it, the next Journey track.
+  static const String play = '/play';
+
   /// The race itself. Argument: [RaceArgs].
   static const String race = '/race';
 
@@ -37,6 +41,13 @@ final class ModeArgs {
   const ModeArgs(this.mode);
 
   final RaceMode mode;
+}
+
+final class PlayArgs {
+  const PlayArgs({required this.mode, required this.trackId});
+
+  final RaceMode mode;
+  final String trackId;
 }
 
 final class TrackIntroArgs {

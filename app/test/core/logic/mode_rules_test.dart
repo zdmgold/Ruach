@@ -9,9 +9,7 @@ import 'package:ruach/core/models/rival.dart';
 
 import 'test_support.dart';
 
-Progress _cleared(int upTo) => Progress(
-      stars: <String, int>{for (int i = 0; i < upTo; i++) TrackIds.journey[i]: 1},
-    );
+final Progress fresh = Progress();
 
 RaceConfig _build(RaceMode mode, {int seed = 3}) => ModeRules.build(
       mode: mode,
@@ -23,56 +21,21 @@ RaceConfig _build(RaceMode mode, {int seed = 3}) => ModeRules.build(
 
 void main() {
   group('Unlocks', () {
-    test('a new player has track 1 only', () {
-      final Progress p = Progress.fresh();
-      expect(Unlocks.track('nile_banks', p), isTrue);
-      expect(Unlocks.track('red_sea_crossing', p), isFalse);
-      expect(Unlocks.track('nile_banks_now', p), isFalse);
-      expect(Unlocks.track('nonsense', p), isFalse);
+    test('everything is open for a new player', () {
+      for (final String id in TrackIds.all) {
+        expect(Unlocks.track(id, fresh), isTrue, reason: id);
+      }
+      for (final String id in VehicleIds.all) {
+        expect(Unlocks.vehicle(id, fresh), isTrue, reason: id);
+      }
+      for (final RaceMode mode in RaceMode.values) {
+        expect(Unlocks.mode(mode, fresh), isTrue, reason: mode.name);
+      }
     });
 
-    test('tracks open one after another', () {
-      expect(Unlocks.track('red_sea_crossing', _cleared(1)), isTrue);
-      expect(Unlocks.track('sinai_wilderness', _cleared(1)), isFalse);
-      expect(Unlocks.track('highland_switchbacks', _cleared(15)), isTrue);
-    });
-
-    test('a Now variant opens after its Then track is cleared', () {
-      expect(Unlocks.track('nile_banks_now', _cleared(1)), isTrue);
-      expect(Unlocks.track('red_sea_crossing_now', _cleared(1)), isFalse);
-    });
-
-    test('vehicles', () {
-      final Progress fresh = Progress.fresh();
-      expect(Unlocks.vehicle(VehicleIds.lightChariot, fresh), isTrue);
-      expect(Unlocks.vehicle(VehicleIds.heavyChariot, fresh), isTrue);
-      expect(Unlocks.vehicle(VehicleIds.hatch, fresh), isFalse);
-      expect(Unlocks.vehicle(VehicleIds.roadCart, _cleared(8)), isTrue);
-      expect(Unlocks.vehicle(VehicleIds.roadster, _cleared(7)), isFalse);
-      expect(Unlocks.vehicle('mystery', _cleared(16)), isFalse);
-    });
-
-    test('modes', () {
-      final Progress fresh = Progress.fresh();
-      expect(Unlocks.mode(RaceMode.journey, fresh), isTrue);
-      expect(Unlocks.mode(RaceMode.dailyRun, fresh), isTrue);
-      expect(Unlocks.mode(RaceMode.quickRace, fresh), isFalse);
-      expect(Unlocks.mode(RaceMode.quickRace, _cleared(1)), isTrue);
-      expect(Unlocks.mode(RaceMode.timeTrial, _cleared(1)), isTrue);
-      expect(Unlocks.mode(RaceMode.escapeRun, _cleared(1)), isFalse);
-      expect(Unlocks.mode(RaceMode.escapeRun, _cleared(2)), isTrue);
-      expect(Unlocks.mode(RaceMode.elimination, _cleared(4)), isFalse);
-      expect(Unlocks.mode(RaceMode.elimination, _cleared(5)), isTrue);
-      expect(Unlocks.mode(RaceMode.weeklyCircuit, fresh), isFalse);
-      expect(
-        Unlocks.mode(
-          RaceMode.weeklyCircuit,
-          Progress(dailyRuns: <String, DailyRunRecord>{
-            '2026-11-20': const DailyRunRecord(attempts: 1, completed: true, bestPosition: 2),
-          }),
-        ),
-        isTrue,
-      );
+    test('names that are not in the game stay closed', () {
+      expect(Unlocks.track('nonsense', fresh), isFalse);
+      expect(Unlocks.vehicle('mystery', fresh), isFalse);
     });
   });
 

@@ -156,23 +156,35 @@ class _ResultScreenState extends State<ResultScreen> {
     return VerseMoment.encouragement;
   }
 
-  void _home() => Navigator.of(context).popUntil((Route<void> r) => r.isFirst);
-
-  void _again(RaceResult r) => unawaited(
-        Navigator.of(context).pushReplacementNamed(
-          Routes.trackIntro,
-          arguments: TrackIntroArgs(
-            mode: r.mode,
-            trackId: r.trackId,
-            weeklyIndex: AppScope.of(context).race.weekly?.index,
-          ),
-        ),
+  void _home() => unawaited(
+        Navigator.of(context).pushNamedAndRemoveUntil(Routes.home, (Route<void> _) => false),
       );
+
+  /// Daily and Weekly races have a fixed setup, so they go back through
+  /// their own screen; every other race starts at once.
+  void _again(RaceResult r) {
+    final bool fixed = r.mode == RaceMode.dailyRun || r.mode == RaceMode.weeklyCircuit;
+    unawaited(
+      fixed
+          ? Navigator.of(context).pushReplacementNamed(
+              Routes.trackIntro,
+              arguments: TrackIntroArgs(
+                mode: r.mode,
+                trackId: r.trackId,
+                weeklyIndex: AppScope.of(context).race.weekly?.index,
+              ),
+            )
+          : Navigator.of(context).pushReplacementNamed(
+              Routes.play,
+              arguments: PlayArgs(mode: r.mode, trackId: r.trackId),
+            ),
+    );
+  }
 
   void _next(String trackId) => unawaited(
         Navigator.of(context).pushReplacementNamed(
-          Routes.trackIntro,
-          arguments: TrackIntroArgs(mode: RaceMode.journey, trackId: trackId),
+          Routes.play,
+          arguments: PlayArgs(mode: RaceMode.journey, trackId: trackId),
         ),
       );
 

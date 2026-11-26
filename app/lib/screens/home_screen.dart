@@ -19,6 +19,7 @@ import 'package:ruach/widgets/app_chip.dart';
 import 'package:ruach/widgets/app_row.dart';
 import 'package:ruach/widgets/gift_badge.dart';
 import 'package:ruach/widgets/nav_bar.dart';
+import 'package:ruach/widgets/primary_button.dart';
 import 'package:ruach/widgets/pressable.dart';
 import 'package:ruach/widgets/screen_frame.dart';
 import 'package:ruach/widgets/section_header.dart';
@@ -102,6 +103,17 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       children: <Widget>[
+        const SizedBox(height: AppSpacing.s16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s16),
+          child: PrimaryButton(
+            label: l.homePlay,
+            icon: AppIcons.play,
+            onPressed: () => unawaited(
+              navigator.pushNamedAndRemoveUntil(Routes.play, (Route<void> _) => false),
+            ),
+          ),
+        ),
         WelcomeBackSlot(onShare: onShare),
         const SizedBox(height: AppSpacing.s16),
         Padding(

@@ -148,7 +148,7 @@ final class TiltStrategy implements DriveInputStrategy {
 abstract final class InputStrategies {
   /// The strategy for the player's saved settings.
   static DriveInputStrategy create(Settings settings) => switch (settings.controlScheme) {
-        ControlScheme.buttons => ButtonsStrategy(),
+        ControlScheme.halves || ControlScheme.buttons => ButtonsStrategy(),
         ControlScheme.dragSteer => DragSteerStrategy(),
         ControlScheme.tilt => TiltStrategy(
             calibration: settings.tiltCalibration,

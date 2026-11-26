@@ -6,7 +6,7 @@ import 'package:ruach/core/models/settings.dart';
 void main() {
   test('defaults match the blueprint', () {
     const Settings s = Settings();
-    expect(s.controlScheme, ControlScheme.buttons);
+    expect(s.controlScheme, ControlScheme.halves);
     expect(s.themeChoice, ThemeChoice.system);
     expect(s.languageCode, isNull);
     expect(s.remindersEnabled, isFalse);
@@ -16,6 +16,7 @@ void main() {
   test('round-trips through JSON text', () {
     final Settings s = const Settings().copyWith(
       controlScheme: ControlScheme.tilt,
+      controlSchemeChosen: true,
       handedness: Handedness.left,
       tiltSensitivity: 1.5,
       themeChoice: ThemeChoice.dark,
@@ -29,6 +30,15 @@ void main() {
     final Settings back = Settings.fromJson(jsonDecode(jsonEncode(s.toJson())));
     expect(back, s);
     expect(back.hashCode, s.hashCode);
+  });
+
+  test('an old saved scheme is ignored until the player picks one', () {
+    final Settings old = Settings.fromJson(<String, Object?>{'controlScheme': 'buttons'});
+    expect(old.controlScheme, ControlScheme.halves);
+    final Settings picked = Settings.fromJson(
+      <String, Object?>{'controlScheme': 'buttons', 'controlSchemeChosen': true},
+    );
+    expect(picked.controlScheme, ControlScheme.buttons);
   });
 
   test('values are forced into range', () {
@@ -45,7 +55,7 @@ void main() {
     expect(s.musicVolume, 1);
     expect(s.reminderHour, 23);
     expect(s.reminderMinute, 0);
-    expect(s.controlScheme, ControlScheme.buttons);
+    expect(s.controlScheme, ControlScheme.halves);
   });
 
   test('damaged input gives defaults', () {

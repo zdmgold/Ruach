@@ -3,7 +3,14 @@ import 'dart:ui' as ui;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:ruach/app_services.dart';
+import 'package:ruach/core/catalog/rivals.dart';
+import 'package:ruach/core/catalog/tracks.dart';
 import 'package:ruach/core/config/app_config.dart';
+import 'package:ruach/core/logic/catalog_ids.dart';
+import 'package:ruach/core/logic/mode_rules.dart';
+import 'package:ruach/core/logic/quick_start.dart';
+import 'package:ruach/core/models/race_config.dart';
+import 'package:ruach/core/models/track.dart';
 import 'package:ruach/l10n/app_localizations.dart';
 import 'package:ruach/screens/app_route.dart';
 import 'package:ruach/screens/daily_run_screen.dart';
@@ -29,9 +36,12 @@ import 'package:ruach/utils/error_handler.dart';
 /// The app root: the scope, the theme and language, the named routes, and the
 /// full-screen fallback when something unexpected goes wrong.
 class RuachApp extends StatefulWidget {
-  const RuachApp({required this.services, super.key});
+  const RuachApp({required this.services, super.key, this.initialRoute = Routes.play});
 
   final AppServices services;
+
+  /// Where the app opens: straight into a race. Tests start elsewhere.
+  final String initialRoute;
 
   @override
   State<RuachApp> createState() => _RuachAppState();
@@ -69,7 +79,7 @@ class _RuachAppState extends State<RuachApp> with WidgetsBindingObserver {
             GlobalWidgetsLocalizations.delegate,
           ],
           supportedLocales: AppLocalizations.supportedLocales,
-          initialRoute: _s.settings.value.onboardingDone ? Routes.home : Routes.onboarding,
+          initialRoute: widget.initialRoute,
           onGenerateRoute: _route,
           builder: _frame,
         ),
@@ -133,6 +143,33 @@ class _RuachAppState extends State<RuachApp> with WidgetsBindingObserver {
     );
   }
 
+  Widget _race(RaceArgs args) => _tilt(
+        (bool tilt) => RaceScreen(
+          args: args,
+          tilt: _s.ports.tilt.roll,
+          tiltAvailable: tilt,
+          feedback: _s.feedback,
+        ),
+      );
+
+  /// The race to start now: the asked-for track, or the next Journey track,
+  /// with the saved vehicle and upgrades.
+  RaceArgs _playArgs(PlayArgs? play) {
+    final RaceMode mode = play?.mode ?? RaceMode.journey;
+    final String trackId = play?.trackId ?? QuickStart.nextTrack(_s.progress.value);
+    final Track track = TrackCatalog.byId(trackId) ?? TrackCatalog.byId(TrackIds.journey.first)!;
+    return RaceArgs(
+      config: ModeRules.build(
+        mode: mode,
+        track: track,
+        vehicle: _s.garage.selected,
+        roster: RivalCatalog.all,
+        seed: DateTime.now().millisecondsSinceEpoch & 0x7fffffff,
+        upgrades: _s.garage.levels,
+      ),
+    );
+  }
+
   Widget _page(RouteSettings settings) {
     final Object? args = settings.arguments;
     switch (settings.name) {
@@ -169,16 +206,11 @@ class _RuachAppState extends State<RuachApp> with WidgetsBindingObserver {
             onShare: _s.ports.share.shareText,
           );
         }
+      case Routes.play:
+        return _race(_playArgs(args is PlayArgs ? args : null));
       case Routes.race:
         if (args is RaceArgs) {
-          return _tilt(
-            (bool tilt) => RaceScreen(
-              args: args,
-              tilt: _s.ports.tilt.roll,
-              tiltAvailable: tilt,
-              feedback: _s.feedback,
-            ),
-          );
+          return _race(args);
         }
       case Routes.result:
         return ResultScreen(

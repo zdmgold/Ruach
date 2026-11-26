@@ -50,6 +50,7 @@
     }
   },
   "homeJourneyTitle": "Journey",
+  "homePlay": "Play",
   "homeJourneyValue": "{stars} of {total} stars",
   "@homeJourneyValue": {
     "placeholders": {
@@ -515,6 +516,7 @@
   "controlButtons": "Buttons",
   "controlDrag": "Drag",
   "controlTilt": "Tilt",
+  "controlHalves": "Sides",
   "settingsHandedness": "Hand",
   "handRight": "Right",
   "handLeft": "Left",

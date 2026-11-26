@@ -82,6 +82,10 @@ class InputLayer extends StatefulWidget {
   /// Smallest size of a race control, in logical pixels.
   static const double buttonSize = 80;
 
+  /// The boost button in the touch-the-sides scheme: bigger, since it is the
+  /// only button.
+  static const double boostSize = 104;
+
   /// Space between race controls.
   static const double gap = 24;
 
@@ -99,6 +103,9 @@ class InputLayer extends StatefulWidget {
 
 class _InputLayerState extends State<InputLayer> {
   StreamSubscription<double>? _tiltSub;
+  final Map<int, double> _pointers = <int, double>{};
+  bool _leftDown = false;
+  bool _rightDown = false;
 
   ControlScheme get _scheme =>
       widget.settings.controlScheme == ControlScheme.tilt && !widget.tiltAvailable
@@ -131,8 +138,82 @@ class _InputLayerState extends State<InputLayer> {
     super.dispose();
   }
 
+  /// Touch-the-sides steering: a finger on the left half turns left, on the
+  /// right half turns right, both at once goes straight. The car speeds up on
+  /// its own; the only button is the big boost.
+  Widget _halves(BuildContext context) {
+    final InputController c = widget.controller;
+    final double bottom = (MediaQuery.maybePaddingOf(context)?.bottom ?? 0) + AppSpacing.s24;
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints box) {
+          void update() {
+            final double mid = box.maxWidth / 2;
+            final bool left = _pointers.values.any((double x) => x < mid);
+            final bool right = _pointers.values.any((double x) => x >= mid);
+            c.left = left;
+            c.right = right;
+            if (left != _leftDown || right != _rightDown) {
+              setState(() {
+                _leftDown = left;
+                _rightDown = right;
+              });
+            }
+          }
+
+          return Stack(
+            children: <Widget>[
+              Positioned.fill(
+                child: Listener(
+                  behavior: HitTestBehavior.opaque,
+                  onPointerDown: (PointerDownEvent e) {
+                    _pointers[e.pointer] = e.localPosition.dx;
+                    update();
+                  },
+                  onPointerMove: (PointerMoveEvent e) {
+                    _pointers[e.pointer] = e.localPosition.dx;
+                    update();
+                  },
+                  onPointerUp: (PointerUpEvent e) {
+                    _pointers.remove(e.pointer);
+                    update();
+                  },
+                  onPointerCancel: (PointerCancelEvent e) {
+                    _pointers.remove(e.pointer);
+                    update();
+                  },
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(child: _SideHint(icon: AppIcons.steerLeft, pressed: _leftDown)),
+                      Expanded(child: _SideHint(icon: AppIcons.steerRight, pressed: _rightDown)),
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: bottom,
+                child: Center(
+                  child: _RaceButton(
+                    label: widget.labels.boost,
+                    onChanged: (bool v) => c.boost = v,
+                    icon: AppIcons.boost,
+                    size: InputLayer.boostSize,
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_scheme == ControlScheme.halves) return _halves(context);
     final Settings s = widget.settings;
     final InputController c = widget.controller;
     final InputLabels l = widget.labels;
@@ -235,7 +316,15 @@ class _InputLayerState extends State<InputLayer> {
 /// A big round control that reacts the instant a finger lands (not when it
 /// lifts) and releases when the finger leaves or the touch is cancelled.
 class _RaceButton extends StatefulWidget {
-  const _RaceButton({required this.label, required this.onChanged, this.icon, this.child});
+  const _RaceButton({
+    required this.label,
+    required this.onChanged,
+    this.icon,
+    this.child,
+    this.size = InputLayer.buttonSize,
+  });
+
+  final double size;
 
   final String label;
   final ValueChanged<bool> onChanged;
@@ -281,8 +370,8 @@ class _RaceButtonState extends State<_RaceButton> {
             border: Border.all(color: theme.colors.border, width: AppStroke.hairline),
           ),
           child: SizedBox(
-            width: InputLayer.buttonSize,
-            height: InputLayer.buttonSize,
+            width: widget.size,
+            height: widget.size,
             child: Center(
               child: widget.child == null
                   ? AppIcon(widget.icon!, size: AppIconSizes.hero, color: ink)
@@ -305,6 +394,30 @@ class _StopGlyph extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(6)),
       child: const SizedBox(width: 26, height: 26),
+    );
+  }
+}
+
+/// A big soft arrow on one half of the screen so it is clear where to touch;
+/// the half lights up while a finger is on it.
+class _SideHint extends StatelessWidget {
+  const _SideHint({required this.icon, required this.pressed});
+
+  final IconData icon;
+  final bool pressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: pressed ? const Color(0x24FFFFFF) : const Color(0x00000000),
+      child: Align(
+        alignment: const Alignment(0, 0.55),
+        child: AppIcon(
+          icon,
+          size: 72,
+          color: pressed ? const Color(0xCCFFFFFF) : const Color(0x66FFFFFF),
+        ),
+      ),
     );
   }
 }

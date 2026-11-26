@@ -2,7 +2,7 @@ import 'package:ruach/core/models/json_read.dart';
 
 /// How the player steers (blueprint section 2). Every scheme produces the same
 /// `DriveInput`.
-enum ControlScheme { buttons, dragSteer, tilt }
+enum ControlScheme { halves, buttons, dragSteer, tilt }
 
 /// Which side of the screen the main controls sit on.
 enum Handedness { right, left }
@@ -14,7 +14,8 @@ enum ThemeChoice { system, light, dark }
 /// value with [copyWith].
 final class Settings {
   const Settings({
-    this.controlScheme = ControlScheme.buttons,
+    this.controlScheme = ControlScheme.halves,
+    this.controlSchemeChosen = false,
     this.handedness = Handedness.right,
     this.oneHandedLayout = false,
     this.tiltSensitivity = 1,
@@ -40,7 +41,12 @@ final class Settings {
     const Settings d = Settings();
     final Map<String, Object?> m = asJsonMap(json);
     return Settings(
-      controlScheme: enumByName(ControlScheme.values, m['controlScheme'], d.controlScheme),
+      // Until the player picks a scheme themselves, the touch-the-sides
+      // default applies, whatever an earlier version saved.
+      controlScheme: readBool(m['controlSchemeChosen'], false)
+          ? enumByName(ControlScheme.values, m['controlScheme'], d.controlScheme)
+          : d.controlScheme,
+      controlSchemeChosen: readBool(m['controlSchemeChosen'], false),
       handedness: enumByName(Handedness.values, m['handedness'], d.handedness),
       oneHandedLayout: readBool(m['oneHandedLayout'], d.oneHandedLayout),
       tiltSensitivity: _clamp(readDouble(m['tiltSensitivity'], d.tiltSensitivity), minTiltSensitivity, maxTiltSensitivity),
@@ -65,6 +71,9 @@ final class Settings {
   static const double maxTiltSensitivity = 2;
 
   final ControlScheme controlScheme;
+
+  /// True once the player has picked a scheme in Settings.
+  final bool controlSchemeChosen;
   final Handedness handedness;
 
   /// Moves every control into thumb reach of one hand.
@@ -106,6 +115,7 @@ final class Settings {
 
   Settings copyWith({
     ControlScheme? controlScheme,
+    bool? controlSchemeChosen,
     Handedness? handedness,
     bool? oneHandedLayout,
     double? tiltSensitivity,
@@ -127,6 +137,7 @@ final class Settings {
   }) =>
       Settings(
         controlScheme: controlScheme ?? this.controlScheme,
+        controlSchemeChosen: controlSchemeChosen ?? this.controlSchemeChosen,
         handedness: handedness ?? this.handedness,
         oneHandedLayout: oneHandedLayout ?? this.oneHandedLayout,
         tiltSensitivity: _clamp(tiltSensitivity ?? this.tiltSensitivity, minTiltSensitivity, maxTiltSensitivity),
@@ -148,6 +159,7 @@ final class Settings {
 
   Map<String, Object?> toJson() => <String, Object?>{
         'controlScheme': controlScheme.name,
+        'controlSchemeChosen': controlSchemeChosen,
         'handedness': handedness.name,
         'oneHandedLayout': oneHandedLayout,
         'tiltSensitivity': tiltSensitivity,

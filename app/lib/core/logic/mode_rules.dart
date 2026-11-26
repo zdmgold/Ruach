@@ -11,46 +11,18 @@ import 'package:ruach/core/models/track.dart';
 import 'package:ruach/core/models/upgrade.dart';
 import 'package:ruach/core/models/vehicle.dart';
 
-/// What is open to the player, decided only from their [Progress].
+/// What is open to the player. Everything is open from the first launch:
+/// nothing in a game for all ages should sit behind a lock. Stars and Gifts
+/// still track progress and pay for upgrades.
 abstract final class Unlocks {
-  /// Track and Now-variant access. Journey is sequential: track n opens when
-  /// track n - 1 has a star (tracks 13 to 16 open after Appian Way, the same
-  /// rule). A Now variant opens once its Then track is cleared.
-  static bool track(String trackId, Progress progress) {
-    final int n = TrackIds.numberOf(trackId);
-    if (n == 0) return false;
-    if (TrackIds.isNowVariant(trackId)) {
-      return n <= 12 && progress.isCleared(TrackIds.baseOf(trackId));
-    }
-    if (n == 1) return true;
-    return progress.isCleared(TrackIds.journey[n - 2]);
-  }
+  /// Every track and every Now variant.
+  static bool track(String trackId, Progress progress) => TrackIds.numberOf(trackId) != 0;
 
-  /// The Journey track whose opening also opens the Road Cart and the modern
-  /// vehicles (Galilee Shore).
-  static const int vehicleTrackNumber = 9;
+  /// Every vehicle.
+  static bool vehicle(String vehicleId, Progress progress) => VehicleIds.all.contains(vehicleId);
 
-  /// Chariots are open from the start. The Road Cart and the modern vehicles
-  /// open when Galilee Shore (track 9) opens.
-  static bool vehicle(String vehicleId, Progress progress) {
-    if (vehicleId == VehicleIds.lightChariot || vehicleId == VehicleIds.heavyChariot) {
-      return VehicleIds.all.contains(vehicleId);
-    }
-    if (!VehicleIds.all.contains(vehicleId)) return false;
-    return track(TrackIds.journey[vehicleTrackNumber - 1], progress);
-  }
-
-  /// Mode access (blueprint section 2).
-  static bool mode(RaceMode mode, Progress progress) => switch (mode) {
-        RaceMode.journey => true,
-        RaceMode.dailyRun => true,
-        RaceMode.quickRace => progress.isCleared(TrackIds.journey[0]),
-        RaceMode.timeTrial => progress.isCleared(TrackIds.journey[0]),
-        RaceMode.weeklyCircuit =>
-          progress.dailyRuns.values.any((DailyRunRecord r) => r.completed),
-        RaceMode.escapeRun => progress.isCleared(TrackIds.journey[1]),
-        RaceMode.elimination => progress.isCleared(TrackIds.journey[4]),
-      };
+  /// Every mode.
+  static bool mode(RaceMode mode, Progress progress) => true;
 }
 
 /// Builds the [RaceConfig] for each mode.

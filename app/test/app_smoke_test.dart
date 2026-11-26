@@ -2,7 +2,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ruach/app.dart';
 import 'package:ruach/app_services.dart';
+import 'package:ruach/core/logic/catalog_ids.dart';
 import 'package:ruach/core/models/settings.dart';
+import 'package:ruach/screens/race_screen.dart';
+import 'package:ruach/screens/routes.dart';
 import 'package:ruach/utils/error_handler.dart';
 
 import 'support/fakes.dart';
@@ -38,25 +41,23 @@ void _phone(WidgetTester tester) {
 }
 
 void main() {
-  testWidgets('a new player starts at onboarding and Skip leads Home', (WidgetTester tester) async {
+  testWidgets('the app opens straight into a race', (WidgetTester tester) async {
     _phone(tester);
     final TestScope s = TestScope();
     await tester.pumpWidget(RuachApp(services: _services(s)));
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
-    expect(find.text('Skip for now'), findsOneWidget);
-    await tester.tap(find.text('Skip for now'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Daily Run'), findsOneWidget);
-    expect(s.settings.value.onboardingDone, isTrue);
+    expect(find.byType(RaceScreen), findsOneWidget);
+    expect(s.race.simulation, isNotNull);
+    expect(s.race.simulation!.config.track.id, TrackIds.journey.first);
+    expect(find.text('Start race'), findsNothing);
   });
 
   testWidgets('a returning player opens Home; Settings opens and goes back', (WidgetTester tester) async {
     _phone(tester);
     final TestScope s = TestScope();
     await s.settings.update((Settings v) => v.copyWith(onboardingDone: true));
-    await tester.pumpWidget(RuachApp(services: _services(s)));
+    await tester.pumpWidget(RuachApp(services: _services(s), initialRoute: Routes.home));
     await tester.pumpAndSettle();
     expect(find.text('Journey'), findsOneWidget);
 
@@ -73,7 +74,7 @@ void main() {
     _phone(tester);
     final TestScope s = TestScope();
     await s.settings.update((Settings v) => v.copyWith(onboardingDone: true));
-    await tester.pumpWidget(RuachApp(services: _services(s)));
+    await tester.pumpWidget(RuachApp(services: _services(s), initialRoute: Routes.home));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Daily Run'));
@@ -92,7 +93,7 @@ void main() {
     final FakeLog log = FakeLog()..log('boom');
     await s.settings.update((Settings v) => v.copyWith(onboardingDone: true));
     final AppServices services = _services(s, url: url, log: log);
-    await tester.pumpWidget(RuachApp(services: services));
+    await tester.pumpWidget(RuachApp(services: services, initialRoute: Routes.home));
     await tester.pumpAndSettle();
 
     services.errors.report(StateError('x'), StackTrace.current, fatal: true);

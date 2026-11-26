@@ -155,7 +155,7 @@ class _RaceScreenState extends State<RaceScreen> with WidgetsBindingObserver, Si
   void _quit() {
     _left = true;
     _race?.abandon();
-    unawaited(Navigator.of(context).maybePop());
+    unawaited(Navigator.of(context).pushNamedAndRemoveUntil(Routes.home, (Route<void> _) => false));
   }
 
   @override

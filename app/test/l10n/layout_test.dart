@@ -42,7 +42,7 @@ void main() {
         await s.settings.update(
           (Settings v) => v.copyWith(onboardingDone: true, languageCode: code),
         );
-        await tester.pumpWidget(RuachApp(services: testServices(s)));
+        await tester.pumpWidget(RuachApp(services: testServices(s), initialRoute: Routes.home));
         await tester.pumpAndSettle();
 
         final TextDirection want =

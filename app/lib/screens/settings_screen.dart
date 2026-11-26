@@ -141,8 +141,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
         _pad(
           AppSegmented<ControlScheme>(
             selected: s.controlScheme,
-            onChanged: (ControlScheme c) => update((Settings v) => v.copyWith(controlScheme: c)),
+            onChanged: (ControlScheme c) => update(
+              (Settings v) => v.copyWith(controlScheme: c, controlSchemeChosen: true),
+            ),
             options: <SegmentOption<ControlScheme>>[
+              SegmentOption<ControlScheme>(value: ControlScheme.halves, label: l.controlHalves),
               SegmentOption<ControlScheme>(value: ControlScheme.buttons, label: l.controlButtons),
               SegmentOption<ControlScheme>(value: ControlScheme.dragSteer, label: l.controlDrag),
               SegmentOption<ControlScheme>(value: ControlScheme.tilt, label: l.controlTilt),

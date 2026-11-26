@@ -145,8 +145,8 @@ class _TrackListScreenState extends State<TrackListScreen> {
       trailing: stars > 0 ? StarBadge(stars: stars, semanticLabel: l.starsEarned(stars)) : null,
       onTap: () => unawaited(
         Navigator.of(context).pushNamed(
-          Routes.trackIntro,
-          arguments: TrackIntroArgs(mode: widget.mode, trackId: id),
+          Routes.play,
+          arguments: PlayArgs(mode: widget.mode, trackId: id),
         ),
       ),
     );
