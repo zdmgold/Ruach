@@ -30,6 +30,9 @@ class AppRow extends StatelessWidget {
   final VoidCallback? onTap;
   final String? semanticLabel;
 
+  /// The most of the row's width the trailing widget may take.
+  static const double trailingShare = 0.45;
+
   Widget _body(BuildContext context, bool pressed) {
     final AppThemeData theme = AppTheme.of(context);
     final Widget? end = trailing ??
@@ -49,7 +52,8 @@ class AppRow extends StatelessWidget {
             horizontal: AppSpacing.s16,
             vertical: AppSpacing.s8,
           ),
-          child: Row(
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints box) => Row(
             children: <Widget>[
               if (icon != null) ...<Widget>[
                 AppIcon(icon!, color: theme.colors.accent),
@@ -67,9 +71,15 @@ class AppRow extends StatelessWidget {
               ),
               if (end != null) ...<Widget>[
                 const SizedBox(width: AppSpacing.s16),
-                end,
+                // A long trailing label (a chip in a long language or at large
+                // text) wraps within this share instead of overflowing.
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: box.maxWidth * trailingShare),
+                  child: end,
+                ),
               ],
             ],
+            ),
           ),
         ),
       ),
