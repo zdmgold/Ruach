@@ -120,9 +120,9 @@ class _TrackListScreenState extends State<TrackListScreen> {
       padding: const EdgeInsets.fromLTRB(AppSpacing.s16, AppSpacing.s16, AppSpacing.s16, 0),
       child: Row(
         children: <Widget>[
-          chip(l.variantThen, !_now, false),
+          Flexible(child: chip(l.variantThen, !_now, false)),
           const SizedBox(width: AppSpacing.s8),
-          chip(l.variantNow, _now, true),
+          Flexible(child: chip(l.variantNow, _now, true)),
         ],
       ),
     );
