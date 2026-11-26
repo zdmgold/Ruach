@@ -48,7 +48,8 @@ All rows marked Proposed in blueprint section 1 were confirmed by the owner on 2
 | p6a | Done | D-043 |
 | p6a-2a | Done | D-045 |
 | p6a-2b | Done | D-046 |
-| p6b to p8c | Not started | See blueprint section 10 |
+| p6b | Done | D-047 |
+| p6c to p8c | Not started | See blueprint section 10 |
 
 ## Open items
 
@@ -87,7 +88,7 @@ Only values confirmed from Google's documentation are used. From the Flutter AdM
 
 ## Unreviewed languages
 
-None translated yet. Non-English languages arrive at p6b and are listed here as unreviewed until a native speaker confirms them.
+All ten non-English languages (es, fr, de, pt-BR, ar, hi, ja, ko, zh-Hans, he) are written by Claude and unreviewed by a native speaker (no reviewers are available yet). Do not describe them as reviewed in the store listing. Points to check first: Arabic and Hebrew plural forms and left/right wording in RTL, Hebrew `handLeft`/`handRight` in a one-handed RTL layout, Spanish `Don/Dones` and `Travesía`, French `Dons`, Hindi register, Japanese `ギフト`, place-name spellings that were not in the bundled verses (Spanish Valle de Ela, mar Bermejo, Vía Apia).
 
 ### D-007: no Material package
 Flutter 3.50 moved the Material widgets into a separate package, `material_ui`, and the generated template depended on it. Ruach draws its own components on the widgets layer (blueprint section 6), so the dependency, `cupertino_icons` and the Material icon font (`uses-material-design: false`) were removed. Code imports `package:flutter/widgets.dart`.
@@ -340,3 +341,9 @@ Method: every manifest path checked against `origin/main`, then every capability
 - A widget build error is now fatal: the fallback view appears (Retry returns to Home) instead of a blank spot.
 - Pursuit tracks outside Escape Run draw a fainter dust wall 90 m behind the player; scenery only.
 - Not verified on a device: sound, haptics and the reveal pacing (needs a test build).
+
+## D-047 (p6b) Ten translations
+- `app_<code>.arb` for es, fr, de, pt_BR, ar, hi, ja, ko, zh_Hans, he, each with all 281 keys and the English placeholders. Metadata entries stay only in `app_en.arb`. Plurals keep the English `=0/=1/other` shape and add the CLDR categories where a language needs them.
+- Terms follow each language's bundled Bible text (names, divine name: Jehová, l'Eternel, יהוה, etc.). `Ruach` stays in Latin letters in every language.
+- iOS: `NSUserTrackingUsageDescription` translations are in `ios/Runner/<lang>.lproj/InfoPlist.strings`. They still have to be registered as a localized resource in the Xcode project; that is done with the iOS build at p7b.
+- `test/l10n/translations_test.dart` loads every language and checks plural forms. No native review has happened (see Unreviewed languages).
