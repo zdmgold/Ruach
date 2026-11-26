@@ -44,7 +44,7 @@ void _size(WidgetTester tester) {
 
 void main() {
   group('Journey list', () {
-    testWidgets('shows every track, later ones locked, and a Then/Now switch', (WidgetTester tester) async {
+    testWidgets('shows every track open, and a Then/Now switch', (WidgetTester tester) async {
       _size(tester);
       final TestScope s = TestScope();
       await tester.pumpWidget(s.app(const ModeScreen(mode: RaceMode.journey)));
@@ -52,7 +52,7 @@ void main() {
 
       expect(find.text('Banks of the Nile'), findsOneWidget);
       expect(find.text('Red Sea Crossing'), findsOneWidget);
-      expect(find.text('Locked'), findsWidgets);
+      expect(find.text('Locked'), findsNothing);
 
       await tester.tap(find.text('Now'));
       await tester.pump();
@@ -60,7 +60,7 @@ void main() {
       expect(find.text('Banks of the Nile'), findsNothing);
     });
 
-    testWidgets('an open track starts its intro in Journey mode', (WidgetTester tester) async {
+    testWidgets('a track starts a Journey race at once', (WidgetTester tester) async {
       _size(tester);
       final TestScope s = TestScope();
       await tester.pumpWidget(s.app(const ModeScreen(mode: RaceMode.journey)));
@@ -68,14 +68,15 @@ void main() {
 
       await tester.tap(find.text('Banks of the Nile'));
       await tester.pumpAndSettle();
-      final TrackIntroArgs args = s.pushed.last.$2! as TrackIntroArgs;
+      expect(s.pushed.last.$1, Routes.play);
+      final PlayArgs args = s.pushed.last.$2! as PlayArgs;
       expect(args.mode, RaceMode.journey);
       expect(args.trackId, TrackIds.journey[0]);
     });
   });
 
   group('Track picker', () {
-    testWidgets('lists only open tracks, including a Now variant once its Then track is cleared', (WidgetTester tester) async {
+    testWidgets('lists every track, including the Now variants', (WidgetTester tester) async {
       _size(tester);
       final TestScope s = TestScope();
       await s.progress.awardStars(TrackIds.journey[0], 1);
@@ -85,7 +86,7 @@ void main() {
       expect(find.text('Banks of the Nile'), findsOneWidget);
       expect(find.text('Red Sea Crossing'), findsOneWidget);
       expect(find.text('Banks of the Nile (Now)'), findsOneWidget);
-      expect(find.text('Sinai Wilderness'), findsNothing);
+      expect(find.text('Sinai Wilderness'), findsOneWidget);
       expect(find.text('Locked'), findsNothing);
     });
 

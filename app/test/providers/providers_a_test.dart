@@ -22,7 +22,7 @@ void main() {
     test('changes are saved and loaded again', () async {
       final FakeKeyValueStore store = FakeKeyValueStore();
       final SettingsProvider a = SettingsProvider(store);
-      await a.update((Settings s) => s.copyWith(controlScheme: ControlScheme.tilt, soundEnabled: false));
+      await a.update((Settings s) => s.copyWith(controlScheme: ControlScheme.tilt, controlSchemeChosen: true, soundEnabled: false));
       final SettingsProvider b = SettingsProvider(store);
       await b.load();
       expect(b.value.controlScheme, ControlScheme.tilt);
@@ -190,19 +190,22 @@ void main() {
       expect(heard, greaterThan(0));
     });
 
-    test('only unlocked vehicles can be chosen, and the choice is saved', () async {
+    test('every vehicle can be chosen, and the choice is saved', () async {
       final (_, GarageProvider g, FakeKeyValueStore kv) = await make(Progress());
-      expect(g.owned.map((v) => v.id).toList(), <String>[VehicleIds.lightChariot, VehicleIds.heavyChariot]);
-      expect(await g.select(VehicleIds.hatch), isFalse);
-      expect(await g.select('nonsense'), isFalse);
+      expect(g.owned.map((v) => v.id).toList(), VehicleIds.all);
+      expect(await g.select(VehicleIds.hatch), isTrue);
       expect(await g.select(VehicleIds.heavyChariot), isTrue);
+      expect(await g.select('nonsense'), isFalse);
       expect(g.selected.id, VehicleIds.heavyChariot);
       expect(kv.values[GarageProvider.selectedKey], VehicleIds.heavyChariot);
     });
 
-    test('a saved choice loads; one that is no longer unlocked falls back', () async {
+    test('a saved choice loads; one that no longer exists falls back', () async {
       final (_, GarageProvider g, FakeKeyValueStore kv) = await make(Progress());
       kv.values[GarageProvider.selectedKey] = VehicleIds.hatch;
+      await g.load();
+      expect(g.selected.id, VehicleIds.hatch);
+      kv.values[GarageProvider.selectedKey] = 'gone';
       await g.load();
       expect(g.selected.id, VehicleIds.lightChariot);
     });

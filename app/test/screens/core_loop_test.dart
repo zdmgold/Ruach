@@ -47,7 +47,7 @@ Future<void> _size(WidgetTester tester) async {
 
 void main() {
   group('HomeScreen', () {
-    testWidgets('shows the daily run, journey and garage, with later modes locked', (WidgetTester tester) async {
+    testWidgets('shows Play, the daily run, journey and garage, with every mode open', (WidgetTester tester) async {
       await _size(tester);
       final TestScope s = TestScope();
       await tester.pumpWidget(s.app(const HomeScreen()));
@@ -56,7 +56,8 @@ void main() {
       expect(find.text('Daily Run'), findsOneWidget);
       expect(find.text('No streak yet'), findsOneWidget);
       expect(find.text('0 of 48 stars'), findsOneWidget);
-      expect(find.text('Locked'), findsWidgets);
+      expect(find.text('Play'), findsOneWidget);
+      expect(find.text('Locked'), findsNothing);
       expect(find.text('Time Trial'), findsOneWidget);
       expect(find.text('Escape Run'), findsOneWidget);
     });
@@ -73,21 +74,26 @@ void main() {
       expect(s.pushed.last.$1, Routes.dailyRun);
     });
 
-    testWidgets('a locked mode does nothing; clearing track 1 opens Quick Race', (WidgetTester tester) async {
+    testWidgets('Play goes straight to a race', (WidgetTester tester) async {
+      await _size(tester);
+      final TestScope s = TestScope();
+      await tester.pumpWidget(s.app(const HomeScreen()));
+      await tester.pump();
+
+      await tester.tap(find.text('Play'));
+      await tester.pumpAndSettle();
+      expect(s.pushed.last.$1, Routes.play);
+    });
+
+    testWidgets('every mode is open from the start', (WidgetTester tester) async {
       await _size(tester);
       final TestScope s = TestScope();
       await tester.pumpWidget(s.app(const HomeScreen()));
       await tester.pump();
 
       await tester.tap(find.text('Time Trial'));
-      await tester.pump();
-      expect(s.pushed, isEmpty);
-
-      await s.progress.awardStars(TrackIds.journey[0], 2);
-      await tester.pump();
-      await tester.tap(find.text('Pick any unlocked track'));
       await tester.pumpAndSettle();
-      expect((s.pushed.last.$2! as ModeArgs).mode, RaceMode.quickRace);
+      expect((s.pushed.last.$2! as ModeArgs).mode, RaceMode.timeTrial);
     });
 
     testWidgets('the banner shows only while the ad rules allow one', (WidgetTester tester) async {
@@ -101,7 +107,7 @@ void main() {
   });
 
   group('GarageScreen', () {
-    testWidgets('lists vehicles and the six upgrades, with later vehicles locked', (WidgetTester tester) async {
+    testWidgets('lists every vehicle open, and the six upgrades', (WidgetTester tester) async {
       await _size(tester);
       final TestScope s = TestScope();
       await tester.pumpWidget(s.app(const GarageScreen()));
@@ -109,7 +115,7 @@ void main() {
 
       expect(find.text('Light Chariot'), findsOneWidget);
       expect(find.text('In use'), findsOneWidget);
-      expect(find.text('Opens with track 9'), findsWidgets);
+      expect(find.text('Opens with track 9'), findsNothing);
       expect(find.text('Wisdom'), findsOneWidget);
       expect(find.text('Fear of the LORD'), findsOneWidget);
     });
@@ -239,12 +245,13 @@ void main() {
 
       await tester.tap(find.text('Next track'));
       await tester.pumpAndSettle();
-      final TrackIntroArgs args = s.pushed.last.$2! as TrackIntroArgs;
+      expect(s.pushed.last.$1, Routes.play);
+      final PlayArgs args = s.pushed.last.$2! as PlayArgs;
       expect(args.trackId, TrackIds.journey[1]);
       expect(args.mode, RaceMode.journey);
     });
 
-    testWidgets('Race again returns to the track intro in the same mode', (WidgetTester tester) async {
+    testWidgets('Race again starts the same track and mode at once', (WidgetTester tester) async {
       await _size(tester);
       final TestScope s = TestScope();
       s.race.start(_config(RaceMode.quickRace));
@@ -255,7 +262,7 @@ void main() {
       expect(find.text('Next track'), findsNothing);
       await tester.tap(find.text('Race again'));
       await tester.pumpAndSettle();
-      final TrackIntroArgs args = s.pushed.last.$2! as TrackIntroArgs;
+      final PlayArgs args = s.pushed.last.$2! as PlayArgs;
       expect(args.mode, RaceMode.quickRace);
       expect(args.trackId, TrackIds.journey[0]);
     });

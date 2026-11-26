@@ -89,6 +89,7 @@ final class TestScope {
 
   /// Route names pushed so far, with their arguments, oldest first.
   final List<(String, Object?)> pushed = <(String, Object?)>[];
+  bool homeBuilt = false;
 
   /// [home] inside the scope, the theme and a [WidgetsApp] whose other routes
   /// are placeholders that are recorded in [pushed].
@@ -116,8 +117,16 @@ final class TestScope {
             DefaultWidgetsLocalizations.delegate,
           ],
           supportedLocales: AppLocalizations.supportedLocales,
-          home: home,
           onGenerateRoute: (RouteSettings s) {
+            // The first '/' is the screen under test; asking for '/' again
+            // (the app's Home) is recorded like any other route.
+            if (s.name == '/' && !homeBuilt) {
+              homeBuilt = true;
+              return PageRouteBuilder<void>(
+                settings: s,
+                pageBuilder: (BuildContext c, Animation<double> a, Animation<double> b) => home,
+              );
+            }
             pushed.add((s.name ?? '', s.arguments));
             return PageRouteBuilder<void>(
               settings: s,

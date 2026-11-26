@@ -149,7 +149,7 @@ void main() {
     Future<void> pumpInput(
       WidgetTester tester,
       InputController c, {
-      Settings settings = const Settings(),
+      Settings settings = const Settings(controlScheme: ControlScheme.buttons),
       TextDirection dir = TextDirection.ltr,
       Stream<double>? tilt,
       bool tiltAvailable = true,
@@ -182,6 +182,63 @@ void main() {
       expect(c.boost, isFalse);
     });
 
+    group('touch the sides (the default)', () {
+      Future<void> pumpHalves(WidgetTester tester, InputController c) =>
+          pumpInput(tester, c, settings: const Settings());
+
+      testWidgets('a finger on the left half steers left, on the right half steers right', (WidgetTester tester) async {
+        final InputController c = controller();
+        await pumpHalves(tester, c);
+        final TestGesture l = await tester.startGesture(const Offset(60, 200));
+        expect(c.left, isTrue);
+        expect(c.right, isFalse);
+        await l.up();
+        expect(c.left, isFalse);
+        final TestGesture r = await tester.startGesture(const Offset(300, 200));
+        expect(c.right, isTrue);
+        expect(c.left, isFalse);
+        await r.up();
+        expect(c.right, isFalse);
+      });
+
+      testWidgets('both halves at once go straight, and sliding across switches sides', (WidgetTester tester) async {
+        final InputController c = controller();
+        await pumpHalves(tester, c);
+        final TestGesture a = await tester.startGesture(const Offset(60, 200));
+        final TestGesture b = await tester.startGesture(const Offset(300, 200));
+        expect(c.left && c.right, isTrue);
+        expect(c.read(0.1).steer, closeTo(0, 0.01));
+        await b.up();
+        await a.moveTo(const Offset(320, 200));
+        expect(c.right, isTrue);
+        expect(c.left, isFalse);
+        await a.up();
+      });
+
+      testWidgets('the one big boost button works beside steering and there is no brake', (WidgetTester tester) async {
+        final InputController c = controller();
+        await pumpHalves(tester, c);
+        expect(find.bySemanticsLabel('Brake'), findsNothing);
+        final TestGesture steer = await tester.startGesture(const Offset(60, 200));
+        final TestGesture boost = await tester.startGesture(tester.getCenter(find.bySemanticsLabel('Boost')));
+        expect(c.boost, isTrue);
+        expect(c.left, isTrue);
+        await boost.up();
+        expect(c.boost, isFalse);
+        await steer.up();
+        final Rect r = tester.getRect(find.bySemanticsLabel('Boost'));
+        expect(r.width, greaterThanOrEqualTo(96));
+      });
+
+      testWidgets('touching the boost button does not also steer', (WidgetTester tester) async {
+        final InputController c = controller();
+        await pumpHalves(tester, c);
+        final TestGesture boost = await tester.startGesture(tester.getCenter(find.bySemanticsLabel('Boost')));
+        expect(c.left || c.right, isFalse);
+        await boost.up();
+      });
+    });
+
     testWidgets('every control is at least 72 square with 24 between them', (WidgetTester tester) async {
       await pumpInput(tester, controller());
       final Rect left = tester.getRect(find.bySemanticsLabel('Steer left'));
@@ -203,13 +260,13 @@ void main() {
       await pumpInput(tester, controller());
       expect(tester.getCenter(find.bySemanticsLabel('Steer left')).dx, lessThan(180));
       expect(tester.getCenter(find.bySemanticsLabel('Boost')).dx, greaterThan(180));
-      await pumpInput(tester, controller(), settings: const Settings(handedness: Handedness.left));
+      await pumpInput(tester, controller(), settings: const Settings(controlScheme: ControlScheme.buttons, handedness: Handedness.left));
       expect(tester.getCenter(find.bySemanticsLabel('Steer left')).dx, greaterThan(180));
       expect(tester.getCenter(find.bySemanticsLabel('Boost')).dx, lessThan(180));
     });
 
     testWidgets('the one-handed layout stacks pedals above steering on one side', (WidgetTester tester) async {
-      await pumpInput(tester, controller(), settings: const Settings(oneHandedLayout: true));
+      await pumpInput(tester, controller(), settings: const Settings(controlScheme: ControlScheme.buttons, oneHandedLayout: true));
       final Offset boost = tester.getCenter(find.bySemanticsLabel('Boost'));
       final Offset steer = tester.getCenter(find.bySemanticsLabel('Steer right'));
       expect(boost.dy, lessThan(steer.dy));
