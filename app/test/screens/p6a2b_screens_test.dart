@@ -14,6 +14,7 @@ import 'package:ruach/screens/result_screen.dart';
 import 'package:ruach/widgets/gift_badge.dart';
 import 'package:ruach/widgets/star_badge.dart';
 
+import '../core/logic/test_support.dart' show follow;
 import '../support/fakes.dart';
 import '../support/scope_host.dart';
 
@@ -110,7 +111,12 @@ void main() {
       await s.progress.change(
         (p) => p.copyWith(bestLapMillis: <String, int>{TrackCatalog.journey.first.id: 999999}),
       );
-      _finishWin(s);
+      s.race.start(_config());
+      final RaceSimulation sim = s.race.simulation!;
+      for (int i = 0; i < 100000 && sim.phase != RacePhase.finished; i++) {
+        sim.step(follow(sim, sim.player));
+      }
+      s.race.advance(0.02, DriveInput.idle);
       await tester.pumpWidget(s.app(const ResultScreen()));
       await tester.pump();
       await tester.pump();
