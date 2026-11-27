@@ -17,7 +17,7 @@ abstract final class VehicleCatalog {
     drag: 0.35,
     steerRate: 1.6,
     canDrift: false,
-    boost: BoostProfile(durationSeconds: 1.8, topSpeedMultiplier: 1.22, accelerationMultiplier: 1.5),
+    boost: BoostProfile(durationSeconds: 1.8, topSpeedMultiplier: 1.4, accelerationMultiplier: 2),
   );
 
   static const Vehicle heavyChariot = Vehicle(
@@ -32,7 +32,7 @@ abstract final class VehicleCatalog {
     drag: 0.3,
     steerRate: 1.4,
     canDrift: false,
-    boost: BoostProfile(durationSeconds: 3, topSpeedMultiplier: 1.12, accelerationMultiplier: 1.25),
+    boost: BoostProfile(durationSeconds: 3, topSpeedMultiplier: 1.3, accelerationMultiplier: 1.6),
   );
 
   static const Vehicle roadCart = Vehicle(
@@ -47,7 +47,7 @@ abstract final class VehicleCatalog {
     drag: 0.3,
     steerRate: 1.9,
     canDrift: false,
-    boost: BoostProfile(durationSeconds: 2.4, topSpeedMultiplier: 1.15, accelerationMultiplier: 1.3),
+    boost: BoostProfile(durationSeconds: 2.4, topSpeedMultiplier: 1.35, accelerationMultiplier: 1.8),
   );
 
   static const Vehicle hatch = Vehicle(
@@ -62,7 +62,7 @@ abstract final class VehicleCatalog {
     drag: 0.3,
     steerRate: 2.2,
     canDrift: false,
-    boost: BoostProfile(durationSeconds: 2.5, topSpeedMultiplier: 1.15, accelerationMultiplier: 1.4),
+    boost: BoostProfile(durationSeconds: 2.5, topSpeedMultiplier: 1.35, accelerationMultiplier: 1.9),
   );
 
   static const Vehicle roadster = Vehicle(
@@ -77,7 +77,7 @@ abstract final class VehicleCatalog {
     drag: 0.28,
     steerRate: 2.4,
     canDrift: true,
-    boost: BoostProfile(durationSeconds: 2.2, topSpeedMultiplier: 1.2, accelerationMultiplier: 1.5),
+    boost: BoostProfile(durationSeconds: 2.2, topSpeedMultiplier: 1.4, accelerationMultiplier: 2),
   );
 
   static const Vehicle utility4x4 = Vehicle(
@@ -92,7 +92,7 @@ abstract final class VehicleCatalog {
     drag: 0.34,
     steerRate: 2,
     canDrift: false,
-    boost: BoostProfile(durationSeconds: 3, topSpeedMultiplier: 1.1, accelerationMultiplier: 1.3),
+    boost: BoostProfile(durationSeconds: 3, topSpeedMultiplier: 1.28, accelerationMultiplier: 1.7),
   );
 
   static const List<Vehicle> all = <Vehicle>[

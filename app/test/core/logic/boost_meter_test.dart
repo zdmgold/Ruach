@@ -18,11 +18,11 @@ void main() {
     expect(m.fill, 0);
   });
 
-  test('clean driving fills three segments in about 40 seconds', () {
+  test('clean driving fills three segments in about 20 seconds', () {
     final BoostMeter m = BoostMeter();
-    _clean(m, 14);
+    _clean(m, 7);
     expect(m.fullSegments, 1);
-    _clean(m, 27);
+    _clean(m, 14);
     expect(m.fill, closeTo(BoostMeter.segments.toDouble(), 1e-9));
   });
 

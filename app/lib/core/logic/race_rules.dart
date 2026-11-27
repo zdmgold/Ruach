@@ -1,5 +1,7 @@
 import 'package:ruach/core/logic/boost_meter.dart';
+import 'package:ruach/core/logic/boost_pads.dart';
 import 'package:ruach/core/logic/car_physics.dart';
+import 'package:ruach/core/logic/drive_assist.dart';
 import 'package:ruach/core/logic/lap_tracker.dart';
 import 'package:ruach/core/logic/surface_model.dart';
 import 'package:ruach/core/logic/track_geometry.dart';
@@ -90,6 +92,8 @@ final class RaceSimulation {
     CarTuning rivalTuning = const CarTuning(),
     this.wind = Vec2.zero,
     double startingBoost = 0,
+    this.assist,
+    bool boostPads = false,
   })  : geometry = TrackGeometry.of(config.track),
         assert(
           rivalVehicles == null || rivalVehicles.length == config.rivals.length,
@@ -97,6 +101,8 @@ final class RaceSimulation {
         ) {
     final List<Vehicle> vehicles = rivalVehicles ??
         List<Vehicle>.filled(config.rivals.length, config.vehicle);
+    pads = boostPads ? BoostPads.forTrack(config.track, geometry) : const <BoostPad>[];
+    final CarTuning shownPlayerTuning = assist == null ? playerTuning : assist!.stabilise(playerTuning);
     final int field = config.fieldSize;
     cars = <RaceCar>[];
     for (int i = 0; i < field; i++) {
@@ -119,7 +125,7 @@ final class RaceSimulation {
           isPlayer: isPlayer,
           rival: isPlayer ? null : config.rivals[i - 1],
           vehicle: isPlayer ? config.vehicle : vehicles[i - 1],
-          tuning: isPlayer ? playerTuning : rivalTuning,
+          tuning: isPlayer ? shownPlayerTuning : rivalTuning,
           state: state,
           tracker: LapTracker(
             trackLength: geometry.length,
@@ -159,6 +165,12 @@ final class RaceSimulation {
   /// Constant sideways push on every car, in m/s squared (Galilee wind).
   final Vec2 wind;
 
+  /// Makes the player's car easy to drive; null drives it exactly as asked.
+  final PlayerAssist? assist;
+
+  /// The boost pads on the road; empty when the race has none.
+  late final List<BoostPad> pads;
+
   late final List<RaceCar> cars;
 
   RacePhase _phase = RacePhase.countdown;
@@ -197,7 +209,7 @@ final class RaceSimulation {
       if (car.finished || car.eliminated) {
         inputs.add(const DriveInput(brake: 0.3));
       } else if (car.isPlayer) {
-        inputs.add(playerInput);
+        inputs.add(assist?.apply(this, car, playerInput) ?? playerInput);
       } else {
         final int c = car.index - 1;
         inputs.add(c < controllers.length ? controllers[c].drive(this, car) : DriveInput.idle);
@@ -277,6 +289,14 @@ final class RaceSimulation {
     }
 
     car.tracker.update(car.projection.distance, (_raceTick + 1) * dt);
+    if (pads.isNotEmpty && !car.finished && !car.eliminated) {
+      for (final BoostPad pad in pads) {
+        if (BoostPads.hit(pad, car.projection.distance, car.projection.lateral, geometry.length)) {
+          if (car.boostSeconds < BoostPads.boostSeconds) car.boostSeconds = BoostPads.boostSeconds;
+          break;
+        }
+      }
+    }
 
     if (car.finished || car.eliminated) return;
     car.racingTicks++;

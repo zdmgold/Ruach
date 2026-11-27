@@ -8,11 +8,11 @@ final class BoostMeter {
 
   static const int segments = 3;
 
-  /// Segments per second of clean driving: three segments take 40 seconds.
-  static const double cleanRate = 0.075;
+  /// Segments per second of clean driving: three segments take 20 seconds.
+  static const double cleanRate = 0.15;
 
   /// Segments per second while slipstreaming, after [slipstreamDelay].
-  static const double slipstreamRate = 0.25;
+  static const double slipstreamRate = 0.5;
 
   /// Seconds behind a rival before the slipstream starts to charge.
   static const double slipstreamDelay = 0.5;

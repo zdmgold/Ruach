@@ -121,7 +121,7 @@ void main() {
 
   test('rubber-banding is capped and eases the leader', () {
     expect(AiTuning.rubberBand(0), 1);
-    expect(AiTuning.rubberBand(10000), closeTo(1 - AiTuning.rubberBandCap, 1e-9));
+    expect(AiTuning.rubberBand(10000), closeTo(1 - AiTuning.rubberBandEase, 1e-9));
     expect(AiTuning.rubberBand(-10000), closeTo(1 + AiTuning.rubberBandCap, 1e-9));
     expect(AiTuning.rubberBand(50), lessThan(1));
     expect(AiTuning.rubberBand(-50), greaterThan(1));

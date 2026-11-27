@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:ruach/core/logic/ai_driver.dart';
 import 'package:ruach/core/logic/car_physics.dart';
+import 'package:ruach/core/logic/drive_assist.dart';
 import 'package:ruach/core/logic/ghost.dart';
 import 'package:ruach/core/logic/mode_rules.dart';
 import 'package:ruach/core/logic/race_rules.dart';
@@ -99,6 +100,8 @@ final class RaceProvider extends ChangeNotifier {
       playerTuning: tuning,
       wind: wind,
       startingBoost: startingBoost,
+      assist: const PlayerAssist(),
+      boostPads: true,
     );
     _elimination = config.mode == RaceMode.elimination ? EliminationRule() : null;
     _escape = config.mode == RaceMode.escapeRun ? EscapeRun() : null;

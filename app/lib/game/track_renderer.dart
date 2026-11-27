@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
+import 'package:ruach/core/logic/boost_pads.dart';
 import 'package:ruach/core/logic/seeded_rng.dart';
 import 'package:ruach/core/logic/track_geometry.dart';
 import 'package:ruach/core/models/track.dart';
@@ -171,8 +172,48 @@ final class TrackRenderer {
     }
 
     _drawRailsAndLamps(c);
+    _drawPads(c);
     _drawStartLine(c);
     return recorder.endRecording();
+  }
+
+  /// Boost pads: a bright strip with arrows pointing the way the cars drive.
+  void _drawPads(Canvas c) {
+    final Paint fill = Paint()..color = WorldColors.padFill;
+    final Paint edge = Paint()
+      ..color = WorldColors.padEdge
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.3;
+    final Paint arrow = Paint()
+      ..color = WorldColors.padArrow
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.55
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    for (final BoostPad pad in BoostPads.forTrack(track, geometry)) {
+      final Vec2 along = geometry.tangentAt(pad.distance);
+      final Vec2 side = along.perpendicular;
+      final Vec2 mid = geometry.positionAt(pad.distance) + side * pad.lateral;
+      final double halfLength = BoostPads.length / 2;
+      const double halfWidth = BoostPads.reach;
+      final Path strip = Path()
+        ..addPolygon(<Offset>[
+          _o(mid - along * halfLength - side * halfWidth),
+          _o(mid + along * halfLength - side * halfWidth),
+          _o(mid + along * halfLength + side * halfWidth),
+          _o(mid - along * halfLength + side * halfWidth),
+        ], true);
+      c.drawPath(strip, fill);
+      c.drawPath(strip, edge);
+      for (final double step in <double>[-1.6, 0, 1.6]) {
+        final Vec2 tip = mid + along * (step + 1);
+        final Path chevron = Path()
+          ..moveTo(tip.x - along.x * 1.4 - side.x * 1.3, tip.y - along.y * 1.4 - side.y * 1.3)
+          ..lineTo(tip.x, tip.y)
+          ..lineTo(tip.x - along.x * 1.4 + side.x * 1.3, tip.y - along.y * 1.4 + side.y * 1.3);
+        c.drawPath(chevron, arrow);
+      }
+    }
   }
 
   void _drawStartLine(Canvas c) {

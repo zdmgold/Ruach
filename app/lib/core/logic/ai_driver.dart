@@ -12,9 +12,14 @@ import 'package:ruach/core/models/vec2.dart';
 /// capped here and never hidden elsewhere (blueprint section 2). These are
 /// tuning starting points that the balance simulation (batch p2c) adjusts.
 abstract final class AiTuning {
-  /// Largest pace change from rubber-banding, as a share (0.04 is plus or
-  /// minus 4 percent).
+  /// Largest push for a rival that is behind the player, as a share (0.04 is
+  /// 4 percent faster).
   static const double rubberBandCap = 0.04;
+
+  /// Largest easing for a rival that is far ahead of the player. It is bigger
+  /// than the push so the field stays together and the player is never left
+  /// alone at the back.
+  static const double rubberBandEase = 0.14;
 
   /// Distance in metres at which the rubber band reaches its cap.
   static const double rubberBandRange = 150;
@@ -32,11 +37,11 @@ abstract final class AiTuning {
       };
 
   /// Pace multiplier from rubber-banding. [gapMetres] is how far this car is
-  /// ahead of the player (negative when behind). Ahead means a slight easing,
-  /// behind a slight push, never more than [rubberBandCap].
+  /// ahead of the player (negative when behind). Ahead means an easing of up
+  /// to [rubberBandEase], behind a push of up to [rubberBandCap].
   static double rubberBand(double gapMetres) {
     final double t = clampDouble(gapMetres / rubberBandRange, -1, 1);
-    return 1 - t * rubberBandCap;
+    return t > 0 ? 1 - t * rubberBandEase : 1 - t * rubberBandCap;
   }
 }
 

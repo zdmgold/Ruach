@@ -150,6 +150,11 @@ abstract final class WorldColors {
   static const Color kerbRed = Color(0xFFFF3B30);
   static const Color kerbWhite = Color(0xFFFFFFFF);
 
+  /// Boost pads on the road.
+  static const Color padFill = Color(0xFFFF8A00);
+  static const Color padEdge = Color(0xFFFFFFFF);
+  static const Color padArrow = Color(0xFFFFFFFF);
+
   /// Outline drawn round every vehicle so it reads on any ground.
   static const Color carOutline = Color(0xFF14121F);
 
