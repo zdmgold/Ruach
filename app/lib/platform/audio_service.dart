@@ -2,7 +2,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:ruach/core/ports/device_ports.dart';
 
 /// Sound effects and music from the bundled, synthesised files in
-/// `assets/audio/` (made in batch p7a). A missing or unplayable file is
+/// `assets/audio/` (synthesised by tools/audio/synth.py). A missing or unplayable file is
 /// skipped silently; sound is never required.
 final class AudioService implements AudioPort {
   AudioService({this.onError});

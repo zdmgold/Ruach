@@ -94,6 +94,7 @@ final class TestScope {
   /// [home] inside the scope, the theme and a [WidgetsApp] whose other routes
   /// are placeholders that are recorded in [pushed].
   Widget app(Widget home) {
+    homeBuilt = false;
     return AppScope(
       settings: settings,
       theme: theme,

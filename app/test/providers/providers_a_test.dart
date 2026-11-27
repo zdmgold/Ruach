@@ -205,9 +205,10 @@ void main() {
       kv.values[GarageProvider.selectedKey] = VehicleIds.hatch;
       await g.load();
       expect(g.selected.id, VehicleIds.hatch);
-      kv.values[GarageProvider.selectedKey] = 'gone';
-      await g.load();
-      expect(g.selected.id, VehicleIds.lightChariot);
+      final (_, GarageProvider fresh, FakeKeyValueStore kv2) = await make(Progress());
+      kv2.values[GarageProvider.selectedKey] = 'gone';
+      await fresh.load();
+      expect(fresh.selected.id, VehicleIds.lightChariot);
     });
   });
 
