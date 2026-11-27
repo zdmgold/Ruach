@@ -194,6 +194,7 @@ void main() {
     expect(retries, 1);
 
     bool reported = false;
+    await tester.pumpWidget(const SizedBox());
     await tester.pumpWidget(s.app(ErrorScreen(onRetry: () {}, onReport: () => reported = true)));
     await tester.pump();
     await tester.tap(find.text('Email report'));
