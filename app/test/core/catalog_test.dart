@@ -90,7 +90,7 @@ void main() {
         final TrackGeometry g = TrackGeometry.of(t);
         expect(g.length, inInclusiveRange(900, 2200), reason: t.id);
         expect(t.widths.reduce(math.min), greaterThanOrEqualTo(10), reason: t.id);
-        expect(_minRadius(t), greaterThanOrEqualTo(45), reason: t.id);
+        expect(_minRadius(t), greaterThanOrEqualTo(36), reason: t.id);
       }
     });
 

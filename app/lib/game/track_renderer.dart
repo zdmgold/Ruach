@@ -113,6 +113,7 @@ final class TrackRenderer {
 
     c.drawRect(_bounds, Paint()..color = groundColor);
     _drawScenery(c);
+    _drawLandmarks(c);
 
     // Road: the area between the two edge loops.
     final Path road = Path()
@@ -288,6 +289,150 @@ final class TrackRenderer {
     }
   }
 
+  /// Each track has its own landmark, drawn large beside the road in three
+  /// places, so no two places look alike.
+  void _drawLandmarks(Canvas c) {
+    final _Landmark kind = _landmarkFor(track.number);
+    final SeededRng rng = SeededRng(track.number * 4241).fork('landmarks:${track.id}');
+    final int n = _center.length;
+    for (final double at in <double>[0.14, 0.46, 0.79]) {
+      final int i = (n * (at + rng.nextRange(-0.04, 0.04))).round() % n;
+      final double half = geometry.widthAt(geometry.length * i / n) / 2;
+      final double size = rng.nextRange(11, 16);
+      // Put it on the outer side of the loop, well off the road.
+      final double side = (_normal[i].dot(_center[i]) > 0) ? 1 : -1;
+      for (final double extra in <double>[0, 12, 24]) {
+        final Vec2 p = _center[i] + _normal[i] * (side * (half + size + 9 + extra));
+        final TrackProjection near = geometry.project(p);
+        if (near.lateral.abs() < near.halfWidth + size + 3) continue;
+        _paintLandmark(c, kind, p, size, geometry.tangentAt(geometry.length * i / n).angle);
+        break;
+      }
+    }
+  }
+
+  static _Landmark _landmarkFor(int number) => switch (number) {
+        1 => _Landmark.pyramid,
+        2 => _Landmark.wave,
+        3 || 6 || 16 => _Landmark.mountain,
+        4 || 9 || 14 => _Landmark.boat,
+        5 || 10 => _Landmark.tower,
+        7 || 11 || 12 => _Landmark.columns,
+        8 => _Landmark.gate,
+        13 => _Landmark.mesa,
+        _ => _Landmark.lighthouse,
+      };
+
+  static final Paint _edge = Paint()
+    ..color = WorldColors.carOutline
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 0.4
+    ..strokeJoin = StrokeJoin.round;
+
+  void _paintLandmark(Canvas c, _Landmark kind, Vec2 p, double size, double angle) {
+    c.save();
+    c.translate(p.x, p.y);
+    c.rotate(angle);
+    final double r = size / 2;
+    switch (kind) {
+      case _Landmark.pyramid:
+        final Rect square = Rect.fromCenter(center: Offset.zero, width: size, height: size);
+        c.drawRect(square, Paint()..color = const Color(0xFFFFD27A));
+        c.drawPath(
+          Path()
+            ..moveTo(-r, -r)
+            ..lineTo(r, -r)
+            ..lineTo(0, 0)
+            ..close()
+            ..moveTo(-r, r)
+            ..lineTo(r, r)
+            ..lineTo(0, 0)
+            ..close(),
+          Paint()..color = const Color(0xFFE0A03A),
+        );
+        c.drawRect(square, _edge);
+        c.drawLine(Offset(-r, -r), Offset(r, r), _edge);
+        c.drawLine(Offset(r, -r), Offset(-r, r), _edge);
+      case _Landmark.mountain:
+        final Path peak = Path();
+        for (int k = 0; k < 10; k++) {
+          final double a = 2 * math.pi * k / 10;
+          final double rr = r * (k.isEven ? 1.15 : 0.7);
+          final Offset q = Offset(rr * math.cos(a), rr * math.sin(a));
+          if (k == 0) {
+            peak.moveTo(q.dx, q.dy);
+          } else {
+            peak.lineTo(q.dx, q.dy);
+          }
+        }
+        peak.close();
+        c.drawPath(peak, Paint()..color = const Color(0xFF8E88B8));
+        c.drawPath(peak, _edge);
+        c.drawCircle(Offset.zero, r * 0.4, Paint()..color = const Color(0xFFFFFFFF));
+      case _Landmark.tower:
+        c.drawCircle(Offset.zero, r, Paint()..color = const Color(0xFFC9B8E8));
+        c.drawCircle(Offset.zero, r, _edge);
+        c.drawCircle(Offset.zero, r * 0.62, Paint()..color = const Color(0xFFFF5A4D));
+        c.drawCircle(Offset.zero, r * 0.62, _edge);
+        c.drawCircle(Offset.zero, r * 0.18, Paint()..color = const Color(0xFFFFFFFF));
+      case _Landmark.gate:
+        final Rect wall = Rect.fromCenter(center: Offset.zero, width: size * 0.5, height: size * 2.2);
+        c.drawRect(wall, Paint()..color = const Color(0xFF3D9BFF));
+        c.drawRect(wall, _edge);
+        for (final double s in <double>[-1, 1]) {
+          final Offset t = Offset(0, s * size * 1.1);
+          c.drawCircle(t, r * 0.9, Paint()..color = const Color(0xFFFFC400));
+          c.drawCircle(t, r * 0.9, _edge);
+          c.drawCircle(t, r * 0.35, Paint()..color = const Color(0xFFFF5A4D));
+        }
+      case _Landmark.columns:
+        final Rect base = Rect.fromCenter(center: Offset.zero, width: size * 1.3, height: size * 2);
+        c.drawRect(base, Paint()..color = const Color(0xFFF2E9D8));
+        c.drawRect(base, _edge);
+        for (int k = 0; k < 5; k++) {
+          for (final double x in <double>[-0.4, 0.4]) {
+            final Offset q = Offset(x * size, (k - 2) * size * 0.38);
+            c.drawCircle(q, size * 0.12, Paint()..color = const Color(0xFFFFFFFF));
+            c.drawCircle(q, size * 0.12, _edge);
+          }
+        }
+      case _Landmark.mesa:
+        final RRect rr = RRect.fromRectAndRadius(
+          Rect.fromCenter(center: Offset.zero, width: size * 1.6, height: size * 1.1),
+          Radius.circular(size * 0.3),
+        );
+        c.drawRRect(rr, Paint()..color = const Color(0xFFFF8A4C));
+        c.drawRRect(rr.deflate(size * 0.14), Paint()..color = const Color(0xFFFFB36B));
+        c.drawRRect(rr, _edge);
+      case _Landmark.boat:
+        final Path hull = Path()
+          ..moveTo(size * 0.9, 0)
+          ..quadraticBezierTo(size * 0.2, size * 0.55, -size * 0.7, size * 0.4)
+          ..lineTo(-size * 0.7, -size * 0.4)
+          ..quadraticBezierTo(size * 0.2, -size * 0.55, size * 0.9, 0)
+          ..close();
+        c.drawPath(hull, Paint()..color = const Color(0xFFB5651D));
+        c.drawPath(hull, _edge);
+        final Rect sail = Rect.fromCenter(center: Offset(size * 0.05, 0), width: size * 0.9, height: size * 0.16);
+        c.drawRect(sail, Paint()..color = const Color(0xFFFFFFFF));
+        c.drawRect(sail, _edge);
+      case _Landmark.wave:
+        for (int k = 0; k < 3; k++) {
+          final Rect w = Rect.fromCenter(center: Offset(0, (k - 1) * size * 0.55), width: size * 2.2, height: size * 0.5);
+          c.drawOval(w, Paint()..color = k.isEven ? const Color(0xFF2FB4F0) : const Color(0xFF1E7BFF));
+          c.drawOval(w.deflate(size * 0.1), Paint()..color = const Color(0x66FFFFFF));
+          c.drawOval(w, _edge);
+        }
+      case _Landmark.lighthouse:
+        c.drawCircle(Offset.zero, r, Paint()..color = const Color(0xFFFFFFFF));
+        c.drawCircle(Offset.zero, r, _edge);
+        c.drawCircle(Offset.zero, r * 0.7, Paint()..color = const Color(0xFFFF3B30));
+        c.drawCircle(Offset.zero, r * 0.4, Paint()..color = const Color(0xFFFFFFFF));
+        c.drawCircle(Offset.zero, r * 0.18, Paint()..color = const Color(0xFFFFC400));
+    }
+    c.restore();
+  }
+
   void _paintObject(Canvas c, _Kind kind, Vec2 p, double r) {
     final Offset o = _o(p);
     switch (kind) {
@@ -329,3 +474,5 @@ final class TrackRenderer {
 }
 
 enum _Kind { tree, rock, dune, water }
+
+enum _Landmark { pyramid, wave, mountain, boat, tower, columns, gate, mesa, lighthouse }
