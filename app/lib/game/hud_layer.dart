@@ -210,9 +210,25 @@ class _Hud extends StatelessWidget {
         if (counting || showGo)
           IgnorePointer(
             child: Center(
-              child: Text(
-                counting ? '${sim.countdownSeconds.ceil()}' : labels.go,
-                style: theme.type.display.copyWith(fontSize: 96, color: theme.colors.textPrimary),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: counting ? const Color(0xFFFFC400) : const Color(0xFF2ED158),
+                  border: Border.all(color: const Color(0xFFFFFFFF), width: 8),
+                ),
+                child: SizedBox(
+                  width: 200,
+                  height: 200,
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppSpacing.s24),
+                    child: FittedBox(
+                      child: Text(
+                        counting ? '${sim.countdownSeconds.ceil()}' : labels.go,
+                        style: theme.type.display.copyWith(fontSize: 110, color: const Color(0xFF14121F)),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
           ),

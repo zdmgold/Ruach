@@ -109,17 +109,17 @@ class AppColors {
 /// track looks the same in light and dark mode. No text is drawn on them
 /// directly; the HUD sits on its own panels.
 abstract final class WorldColors {
-  static const Color trackAsphalt = Color(0xFF4A433A);
-  static const Color trackSand = Color(0xFFD9BE8C);
-  static const Color trackStone = Color(0xFFA39683);
-  static const Color trackDirt = Color(0xFFB08A5A);
-  static const Color trackCobble = Color(0xFF8C8272);
-  static const Color trackFord = Color(0xFF6FA3B5);
-  static const Color trackGrass = Color(0xFF8FA66A);
+  static const Color trackAsphalt = Color(0xFF59617A);
+  static const Color trackSand = Color(0xFFFFD98A);
+  static const Color trackStone = Color(0xFFB8A9C9);
+  static const Color trackDirt = Color(0xFFD9955A);
+  static const Color trackCobble = Color(0xFF9C8FB0);
+  static const Color trackFord = Color(0xFF5CC8F0);
+  static const Color trackGrass = Color(0xFF7ADB5A);
 
   /// Ground beside the road.
-  static const Color groundGrass = Color(0xFF6F8554);
-  static const Color groundSand = Color(0xFFB8985F);
+  static const Color groundGrass = Color(0xFF4CCB4C);
+  static const Color groundSand = Color(0xFFFFB85C);
 
   /// Road markings.
   static const Color line = Color(0xFFF4EFE4);
@@ -128,23 +128,30 @@ abstract final class WorldColors {
   static const Color lampHalo = Color(0xFFFFE9A8);
 
   /// Scenery.
-  static const Color sceneryTree = Color(0xFF3F6B3A);
-  static const Color sceneryTreeEdge = Color(0xFF2C4D29);
-  static const Color sceneryRock = Color(0xFF8A8478);
-  static const Color sceneryWater = Color(0xFF5B93AD);
+  static const Color sceneryTree = Color(0xFF1FA14A);
+  static const Color sceneryTreeEdge = Color(0xFF0E6B30);
+  static const Color sceneryRock = Color(0xFFA7A3C4);
+  static const Color sceneryWater = Color(0xFF2FB4F0);
 
   /// The player's vehicle, and the palette rival teams draw from.
-  static const Color playerCar = Color(0xFFE08A1E);
+  static const Color playerCar = Color(0xFFFFC400);
   static const List<Color> rivalCars = <Color>[
-    Color(0xFFB3261E),
-    Color(0xFF1F5FA8),
-    Color(0xFF2E7D4F),
-    Color(0xFF6A3FA0),
-    Color(0xFFC9B21C),
-    Color(0xFF1C8C8C),
-    Color(0xFFD1558A),
-    Color(0xFF5C5C5C),
+    Color(0xFFFF3B30),
+    Color(0xFF1E7BFF),
+    Color(0xFF8E3DFF),
+    Color(0xFFFF4FA3),
+    Color(0xFF00C2B8),
+    Color(0xFFFF7A00),
+    Color(0xFF2ED158),
+    Color(0xFFF2F2F7),
   ];
+
+  /// Kerb stripes along the road edge.
+  static const Color kerbRed = Color(0xFFFF3B30);
+  static const Color kerbWhite = Color(0xFFFFFFFF);
+
+  /// Outline drawn round every vehicle so it reads on any ground.
+  static const Color carOutline = Color(0xFF14121F);
 
   /// Car body details.
   static const Color carGlass = Color(0xFF2B3A44);

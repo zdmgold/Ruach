@@ -134,13 +134,23 @@ final class TrackRenderer {
     }
     zones.forEach((SurfaceType s, Path p) => c.drawPath(p, Paint()..color = colorFor(s)));
 
-    // Edge lines.
-    final Paint edge = Paint()
-      ..color = WorldColors.line.withValues(alpha: 0.85)
+    // Red and white kerbs along both edges: the road reads at a glance.
+    final Path red = Path();
+    final Path white = Path();
+    for (int i = 0; i < n; i++) {
+      final int j = (i + 1) % n;
+      final Path target = (i ~/ 2).isEven ? red : white;
+      for (final List<Vec2> side in <List<Vec2>>[_a, _b]) {
+        target
+          ..moveTo(side[i].x, side[i].y)
+          ..lineTo(side[j].x, side[j].y);
+      }
+    }
+    final Paint kerb = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.35;
-    c.drawPath(_ring(_a), edge);
-    c.drawPath(_ring(_b), edge);
+      ..strokeWidth = 1.1;
+    c.drawPath(red, kerb..color = WorldColors.kerbRed);
+    c.drawPath(white, kerb..color = WorldColors.kerbWhite);
 
     // Lane dashes on asphalt only.
     if (track.baseSurface == SurfaceType.asphalt) {
@@ -154,9 +164,9 @@ final class TrackRenderer {
       c.drawPath(
         dashes,
         Paint()
-          ..color = WorldColors.line.withValues(alpha: 0.5)
+          ..color = WorldColors.line.withValues(alpha: 0.85)
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 0.25,
+          ..strokeWidth = 0.4,
       );
     }
 

@@ -293,12 +293,6 @@ class _ResultScreenState extends State<ResultScreen> {
               ),
             ),
             const SizedBox(height: AppSpacing.s24),
-            VerseBlock(
-              load: () => scope.verses.pick(_moment(r), seed: r.seed),
-              onShare: widget.onShare,
-            ),
-            MilestoneSlot(enabled: _saved, onShare: widget.onShare),
-            const SizedBox(height: AppSpacing.s24),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s16),
               child: Column(
@@ -307,10 +301,8 @@ class _ResultScreenState extends State<ResultScreen> {
                   if (next != null)
                     PrimaryButton(label: l.resultNextTrack, onPressed: () => _next(next)),
                   if (next != null) const SizedBox(height: AppSpacing.s8),
-                  if (next == null)
-                    PrimaryButton(label: l.resultRaceAgain, onPressed: () => _again(r))
-                  else
-                    AppRow(label: l.resultRaceAgain, onTap: () => _again(r)),
+                  PrimaryButton(label: l.resultRaceAgain, onPressed: () => _again(r)),
+                  const SizedBox(height: AppSpacing.s8),
                   if (canBoost)
                     AppRow(
                       icon: AppIcons.boost,
@@ -321,6 +313,12 @@ class _ResultScreenState extends State<ResultScreen> {
                 ],
               ),
             ),
+            const SizedBox(height: AppSpacing.s24),
+            VerseBlock(
+              load: () => scope.verses.pick(_moment(r), seed: r.seed),
+              onShare: widget.onShare,
+            ),
+            MilestoneSlot(enabled: _saved, onShare: widget.onShare),
           ],
         );
       },

@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flame/components.dart';
@@ -51,6 +52,23 @@ abstract final class VehicleArt {
     } else {
       _car(c, kind, length, width, main, glass, wheel);
     }
+    _shine(c, length, width);
+  }
+
+  /// A white highlight down the middle of the body and two lamps, so every
+  /// vehicle looks glossy and its front is obvious.
+  static void _shine(Canvas c, double length, double width) {
+    c.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTRB(-length * 0.3, -width * 0.12, length * 0.3, width * 0.12),
+        const Radius.circular(0.2),
+      ),
+      Paint()..color = const Color(0x40FFFFFF),
+    );
+    final Paint lamp = Paint()..color = WorldColors.lampHalo;
+    for (final double s in <double>[-1, 1]) {
+      c.drawCircle(Offset(length * 0.46, s * width * 0.28), 0.24, lamp);
+    }
   }
 
   static void _chariot(Canvas c, VehicleKind kind, double length, double width, Paint main, Paint wheel) {
@@ -74,6 +92,16 @@ abstract final class VehicleArt {
         const Radius.circular(0.3),
       ),
       main,
+    );
+    c.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromCenter(center: Offset(-length * 0.12, 0), width: length * 0.42, height: width * 0.8),
+        const Radius.circular(0.3),
+      ),
+      Paint()
+        ..color = WorldColors.carOutline
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 0.22,
     );
     // Pole and two animals, drawn as plain ovals.
     c.drawRect(Rect.fromLTRB(-length * 0.12, -0.08, length * 0.5, 0.08), wood);
@@ -110,6 +138,14 @@ abstract final class VehicleArt {
       ..lineTo(-length / 2, half * 0.92)
       ..close();
     c.drawPath(body, main);
+    c.drawPath(
+      body,
+      Paint()
+        ..color = WorldColors.carOutline
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 0.22
+        ..strokeJoin = StrokeJoin.round,
+    );
     // Cabin: bigger on the hatch and 4x4, tiny on the roadster.
     final double cabinLength = switch (kind) {
       VehicleKind.roadster => length * 0.22,
@@ -154,7 +190,35 @@ final class VehicleComponent extends Component {
     canvas.save();
     canvas.translate(car.state.position.x, car.state.position.y);
     canvas.rotate(car.state.heading);
+    if (car.isPlayer) _marker(canvas, car.vehicle.kind);
     VehicleArt.paint(canvas, car.vehicle.kind, color, boosting: car.boosting);
     canvas.restore();
+  }
+
+  /// A white ring under the player's vehicle that pulses gently, so "which one
+  /// am I" is never in doubt.
+  void _marker(Canvas canvas, VehicleKind kind) {
+    final (double length, double width) = VehicleArt.sizeOf(kind);
+    final double r = length * 0.78 + 0.25 * math.sin(_t * 6);
+    canvas.drawCircle(
+      Offset.zero,
+      r,
+      Paint()..color = const Color(0x55FFFFFF),
+    );
+    canvas.drawCircle(
+      Offset.zero,
+      r,
+      Paint()
+        ..color = const Color(0xFFFFFFFF)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 0.3,
+    );
+  }
+
+  double _t = 0;
+
+  @override
+  void update(double dt) {
+    _t += dt;
   }
 }
